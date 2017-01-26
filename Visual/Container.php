@@ -11,8 +11,11 @@ abstract class Container extends \Webos\VisualObject {
 		parent::__construct($initialAttributes);
 		$this->_parentObject = $application;
 		$application->addChildObject($this);
+		
+		$this->preInitialize();
 
 		$this->initialize();
 	}
+	public function preInitialize() {}
 	public function initialize() {}
 }
