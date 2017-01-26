@@ -13,6 +13,14 @@ class Window extends Container {
 	protected $activeControl     = null;
 	public $windowStatus = 'normal';
 	
+	public function preInitialize() {
+		$this->title = $this->getObjectID();
+		$this->width = '600px';
+		$this->height = '400px';
+		$this->top = '100px';
+		$this->left = '100px';
+	}
+	
 	public function initialize() {}
 
 	public function  getHTMLRendererName() {
@@ -174,8 +182,12 @@ class Window extends Container {
 	 * @param type $options
 	 * @return \Webos\Visual\Controls\ComboBox
 	 */
-	public function createComboBox($label, $options = array()) {
+	public function createComboBox($label, array $options = array()) {
 		return $this->createControl($label, '\Webos\Visual\Controls\ComboBox', $options);
+	}
+	
+	public function createButton($label, array $options = array()) {
+		return $this->createObject('\Webos\Visual\Controls\Button', array_merge($options, ['value'=>$label]));
 	}
 	
 	/**
@@ -206,7 +218,7 @@ class Window extends Container {
 		return $this->createObject('\Webos\Visual\Controls\DataTable', $options);
 	}
 
-	public function addHorizontalButton($caption, $name, $width = 80, array $params = array()) {
+	public function addHorizontalButton($caption, $width = 80, array $params = array()) {
 		$left = $this->__leftButton/1;
 		$width = empty($params['width']) ? $width : $params['width'];
 		$button = $this->createObject('\Webos\Visual\Controls\Button', array(
@@ -216,7 +228,6 @@ class Window extends Container {
 			'value' => $caption,
 		));
 		$this->__leftButton = ($this->__leftButton/1) + 10 + ($width*1); // + ($width/1) + 10;
-		$this->$name = $button;
 		return $button;
 	}
 
