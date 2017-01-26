@@ -18,8 +18,7 @@ class Item extends \Webos\Visual\Control {
 			if ($this->getObjectsByClassName(__NAMESPACE__ . '\ListItems')->count()) {
 				$this->selected = true;
 			} else {
-				$parent = $this->getParentByClassName(__NAMESPACE__ . ' \Button');
-				
+				$parent = $this->getParentByClassName(__NAMESPACE__ . '\Button');
 				if ($parent instanceof Button) {
 					$parent->close();
 				}
@@ -30,9 +29,9 @@ class Item extends \Webos\Visual\Control {
 		}
 	}
 	
-	function createItem($text, $shortCut = '') {
+	function createItem($text, $shortCut = '', array $params = array()) {
 		$listItems = $this->_getListItems();
-		return $listItems->createItem($text, $shortCut);
+		return $listItems->createItem($text, $shortCut, $params);
 	}
 	
 	public function createSeparator() {
