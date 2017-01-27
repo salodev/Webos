@@ -20,11 +20,11 @@ class ListItems extends \Webos\Visual\Control {
 		$this->_selectedItem = $menuItem;
 	}
 	
-	public function createItem($text, $shortCut = '') {
-		return $this->createObject('\Webos\Visual\Controls\Menu\Item', array(
+	public function createItem($text, $shortCut = '', array $params = array()) {
+		return $this->createObject('\Webos\Visual\Controls\Menu\Item', array_merge($params, array(
 			'text' => $text,
 			'shortCut' => $shortCut,
-		));
+		)));
 	}
 	
 	public function createSeparator() {
