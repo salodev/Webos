@@ -122,7 +122,7 @@ class Window extends Container {
 		$this->controlProperties = array();
 	}
 	
-	public function createControl($label, $className = '\Webos\Visual\Controls\TextField', array $options = array(), $attachToContainer = true) {
+	public function createControl($label, $name, $className = '\Webos\Visual\Controls\TextField', array $options = array(), $attachToContainer = true) {
 		if (!empty($options['top'])) {
 			$this->topControl = $options['top'];
 		}
@@ -145,13 +145,13 @@ class Window extends Container {
 			'top'   => $this->topControl            . 'px',
 			'left'  => $this->widthLabelControl + 5 . 'px',
 			'width' => $this->widthFieldControl . 'px',
-			// 'name'  => $name,
+			'name'  => $name,
 		), $options, $this->controlProperties));
 		$this->topControl +=28;
 
-		/*if ($attachToContainer) {
+		if ($attachToContainer) {
 			$this->$name = $control;
-		}*/
+		}
 
 		return $control;
 	}
@@ -162,8 +162,8 @@ class Window extends Container {
 	 * @param type $options
 	 * @return \Webos\Visual\Controls\TextBox
 	 */
-	public function createTextBox($label, $options = array()) {
-		return $this->createControl($label, '\Webos\Visual\Controls\TextBox', $options);
+	public function createTextBox($label, $name, $options = array()) {
+		return $this->createControl($label, $name, '\Webos\Visual\Controls\TextBox', $options);
 	}
 	
 	/**
@@ -182,8 +182,8 @@ class Window extends Container {
 	 * @param type $options
 	 * @return \Webos\Visual\Controls\ComboBox
 	 */
-	public function createComboBox($label, array $options = array()) {
-		return $this->createControl($label, '\Webos\Visual\Controls\ComboBox', $options);
+	public function createComboBox($label, $name, array $options = array()) {
+		return $this->createControl($label, $name, '\Webos\Visual\Controls\ComboBox', $options);
 	}
 	
 	public function createButton($label, array $options = array()) {
@@ -245,6 +245,20 @@ class Window extends Container {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function getFormData() {
+		$formData = array();
+		$objects = $this->getChildObjects();
+		foreach($objects as $childObject){
+			if ($childObject->name) {
+				$formData[$childObject->name] = $childObject->value;
+			}
+		}
+		return $formData;
 	}
 
 	public function __set_active($value) {

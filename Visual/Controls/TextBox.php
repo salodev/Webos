@@ -11,7 +11,7 @@ class TextBox extends Field {
 					'class="TextFieldControl"__style__ ' .
 					'onchange="__onchange__" ' .
 					'placeholder="__placeholder__" ' .
-					'name="__name__">__value__</textarea>'
+					'name="__name__"__disabled__>__value__</textarea>'
 			);
 		} else {
 			$html =  new \Webos\String(
@@ -21,7 +21,7 @@ class TextBox extends Field {
 					'onchange="__onchange__" ' .
 					'name="__name__" ' .
 					'placeholder="__placeholder__" ' .
-					'value="__value__" />'
+					'value="__value__"__disabled__ />'
 			);
 		}
 		$onchange = "__doAction('send',{actionName:'setValue',objectId:this.id, value:this.value});";
@@ -33,6 +33,7 @@ class TextBox extends Field {
 			'__value__'       => $this->value,
 			'__placeholder__' => $this->placeholder,
 			'__style__'       => $this->getInlineStyle(),
+			'__disabled__'    => $this->disabled ? ' disabled="disabled"' : '',
 		));
 
 		return $html;

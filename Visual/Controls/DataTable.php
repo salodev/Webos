@@ -35,9 +35,16 @@ class DataTable extends \Webos\Visual\Control {
 		return $this;
 	}
 
-	public function getActiveRowData() {
+	public function getActiveRowData($fieldName = null) {
 		if ($this->rowIndex !== null) {
-			return $this->getRowData($this->rowIndex/1);
+			$rowData = $this->getRowData($this->rowIndex/1);
+			if ($fieldName) {
+				if (!array_key_exists($fieldName, $rowData)) {
+					throw new \Exception("The '{$fieldName}' field does not exist.");
+				}
+				return $rowData[$fieldName];
+			}
+			return $rowData;
 		}
 		return null;
 	}
