@@ -149,7 +149,7 @@ class DataTable extends \Webos\Visual\Control {
 				$ondblClick = "__doAction('send', {actionName:'rowDoubleClick',objectId:\$(this).closest('.DataTable').attr('id'),row:{$i}, fieldName:'{$column->fieldName}'});";
 				$linkable = ($column->linkable) ? ' linkable' : '';
 				//echo($row[$column->fieldName] . ' - ');
-				$value = ifempty($row[$column->fieldName], '&nbsp;');
+				$value = empty($row[$column->fieldName]) ? '&nbsp;' : $row[$column->fieldName];
 				$html .= '<div class="DataTableCell' . $linkable . '" style="width:'.$column->width.';text-align:'.$column->align.';" onclick="'.$onClick.'" ondblclick="'.$ondblClick.'">' . $value . '</div>';
 			}
 			$html .= '</div>'; // end DataTableRow
