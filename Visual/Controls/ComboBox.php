@@ -24,6 +24,16 @@ class ComboBox extends Field {
 		return null;
 	}
 	
+	public function setRS(array $rs, $keyID = 'id', $keyText = 'text') {
+		$options = array();
+		foreach($rs as $row) {
+			$id = $row[$keyID];
+			$text = $row[$keyText];
+			$options[$id] = $text;
+		}
+		$this->options = $options;
+	}
+	
 	public function render() {
 		$onchange = "__doAction('send',{actionName:'setValue',objectId:this.id, value:this.value});";
 		$html = '<select id="' . $this->getObjectID() . '" class="ComboFieldControl" onclick="onclick" onchange="'.$onchange.'" '.$this->getInlineStyle().'>';
