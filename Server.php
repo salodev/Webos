@@ -8,8 +8,9 @@ use \salodev\IO;
 class Server {
 	public $interface = null;
 	public $system = null;
+	private $_username = null;
 	public function __construct() {
-		$this->interface = new Webos\SystemInterface();
+		$this->interface = new \Webos\SystemInterface();
 		$this->system = $this->interface->getSystemInstance();
 	}
 	
@@ -33,8 +34,10 @@ class Server {
 					return;
 				}
 
-				$command = $json['command'];
-				$data    = $json['data'];
+				$username = $json['username'];
+				$command  = $json['command'];
+				$data     = $json['data'];
+				$this->_username = $username;
 				try {
 					$commandResponse = $this->call($command, $data);
 				} catch(Exception $e) {
@@ -106,7 +109,7 @@ class Server {
 	
 	public function call($command, array $data = array()) {
 		if (!in_array($command, ['renderAll', 'action'])) {
-			throw new Exception('Invalid command');
+			throw new \Exception('Invalid command');
 		}
 		return $this->$command($data);
 	}
@@ -117,18 +120,18 @@ class Server {
 			$ws->startApplication('SG\Application');
 		});
 		$ws = $this->system->loadCreateWorkSpace($username);
-		if (!$ws instanceof Webos\Workspace) {
-			throw new Exception('Error loading workspace');
+		if (!$ws instanceof \Webos\Workspace) {
+			throw new \Exception('Error loading workspace');
 		}
 		return $ws;
 	}
 	
 	public function renderAll(array $data) {
-		if (empty($data['username'])) {
-			throw new Exception('Empty username');
+		if (empty($this->_username)) {
+			throw new \Exception('Empty username');
 		}
-		$username = $data['username'];
-		$this->_loadWorkspace($username);
+		
+		$this->_loadWorkspace($this->_username);
 		$objects = $this->interface->getApplications()->getVisualObjects();
 
 		$html = $objects->render();
@@ -136,11 +139,11 @@ class Server {
 	}
 	
 	public function action(array $data) {
-		if (empty($data['username'])) {
-			throw new Exception('Empty username');
+		if (empty($this->_username)) {
+			throw new \Exception('Empty username');
 		}
-		$ws = $this->_loadWorkspace($data['username']);
-		if (!$ws || !($ws instanceof Webos\WorkSpace)) {
+		$ws = $this->_loadWorkspace($this->_username);
+		if (!$ws || !($ws instanceof \Webos\WorkSpace)) {
 			return array(
 				'events' => array(
 					array('name'=>'authUser'),
@@ -151,7 +154,7 @@ class Server {
 		$response['errors'] = array();
 		// Si se envía un parámetro actionName, entonces se enviará la acción al sistema.
 		if (!isset($data['actionName'])) {
-			throw new Exception('Missing actionName param');
+			throw new \Exception('Missing actionName param');
 		}
 
 		$params = array();
