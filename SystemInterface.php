@@ -178,7 +178,11 @@ class SystemInterface {
 	}
 
 	public function getNotifications() {
-		return $this->_notifications;
+		$notifications = $this->_notifications;
+		foreach($this->_notifications as $type=> $list) {
+			$this->_notifications[$type] = [];
+		}
+		return $notifications;
 	}
 
 	public function setSessionId($id) {
