@@ -22,10 +22,15 @@ abstract class Field extends \Webos\Visual\Control {
 		}
 	}*/
 
-	public function setValue(array $params) {
-		if (!isset($params['value'])) return false;
-
-		$this->value = $params['value'];
+	public function setValue($mixed) {
+		if (is_array($mixed)) {
+			if (!isset($mixed['value'])) {
+				return false;
+			}
+			$this->value = $mixed['value'];
+		} else {
+			$this->value = $mixed;
+		}
 		$this->triggerEvent('updateValue', array(
 			'value' => $this->value,
 		));
