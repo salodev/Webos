@@ -15,7 +15,7 @@ class ComboBox extends Field {
 		$options = &$this->_attributes['options'];
 		if (isset($options) && is_array($options)) {
 			foreach($options as $key => $text) {
-				$firstValue = is_numeric($key) ? $text : $key;
+				$firstValue = $this->assoc ? $key : $text;
 				$this->_attributes['value'] = $firstValue;
 				return $firstValue;
 			}
