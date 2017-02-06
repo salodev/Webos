@@ -8,9 +8,8 @@ class ComboBox extends Field {
 	}
 
 	public function __get_value() {
-		$value = &$this->_attributes['value'];
-		if (isset($value)) {
-			return $value;
+		if (isset($this->_attributes['value'])) {
+			return $this->_attributes['value'];
 		}
 		
 		$options = &$this->_attributes['options'];
@@ -32,6 +31,8 @@ class ComboBox extends Field {
 			$options[$id] = $text;
 		}
 		$this->options = $options;
+		$this->assoc = true;
+		return $this;
 	}
 	
 	public function render() {
