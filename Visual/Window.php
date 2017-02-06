@@ -1,6 +1,7 @@
 <?php
 namespace Webos\Visual;
 class Window extends Container {
+	protected $maxTopControl     = 15;
 	protected $topControl        = 15;
 	protected $leftControl       = 0;
 	protected $widthLabelControl = 75;
@@ -10,6 +11,7 @@ class Window extends Container {
 	protected $allowMaximize     = true;
 	protected $controlProperties = array();
 	protected $controlClassName  = '\Webos\Visual\Controls\TextField';
+	protected $hasHorizontalButtons = false;
 	protected $activeControl     = null;
 	public $windowStatus = 'normal';
 	
@@ -123,31 +125,36 @@ class Window extends Container {
 	}
 	
 	public function createControl($label, $name, $className = '\Webos\Visual\Controls\TextField', array $options = array(), $attachToContainer = true) {
-		if (!empty($options['top'])) {
+		if (isset($options['top'])) {
 			$this->topControl = $options['top'];
 		}
-		if (!empty($options['left'])) {
+		if (isset($options['left'])) {
 			$this->leftControl = $options['left'];
 		}
-		if (!empty($options['width'])) {
+		if (isset($options['width'])) {
 			$this->widthFieldControl = $options['width'];
 		}
-		if (!empty($options['labelWidth'])) {
+		if (isset($options['labelWidth'])) {
 			$this->widthLabelControl = $options['labelWidth'];
 		}
-		$this->createObject('\Webos\Visual\Controls\Label', array_merge(array(
+		$this->createObject('\Webos\Visual\Controls\Label', array_merge(
+			$options, 
+			array('text'=>$label), array(
+			'top'   => $this->topControl        . 'px',
 			'left'  => $this->leftControl       . 'px',
 			'width' => $this->widthLabelControl . 'px',
-			'top'   => $this->topControl        . 'px',
-		), $options, $this->controlProperties, array('text'=>$label)));
+		)));
 
-		$control = $this->createObject($className, array_merge(array(
-			'top'   => $this->topControl            . 'px',
-			'left'  => $this->widthLabelControl + 5 . 'px',
+		$control = $this->createObject($className, array_merge($options, array(
+			'top'   => $this->topControl . 'px',
+			'left'  => $this->leftControl + $this->widthLabelControl + 5 . 'px',
 			'width' => $this->widthFieldControl . 'px',
 			'name'  => $name,
-		), $options, $this->controlProperties));
+		)));
 		$this->topControl +=28;
+		if ($this->topControl > $this->maxTopControl) {
+			$this->maxTopControl = $this->topControl;
+		}
 
 		if ($attachToContainer) {
 			$this->$name = $control;
@@ -195,6 +202,7 @@ class Window extends Container {
 	 */
 	public function createToolBar() {
 		$this->topControl += 20;
+		$this->maxTopControl += 20;
 		return $this->createObject('\Webos\Visual\Controls\ToolBar');
 	}
 	
@@ -209,7 +217,7 @@ class Window extends Container {
 	 */
 	public function createDataTable($options = array()) {
 		$initialOptions = array(
-			'top' => $this->topControl . 'px',
+			'top' => $this->maxTopControl . 'px',
 			'left' => '0',
 			'right' => '0',
 			'bottom' => '0',
@@ -219,12 +227,18 @@ class Window extends Container {
 	}
 
 	public function addHorizontalButton($caption, $width = 80, array $params = array()) {
+		if (!$this->hasHorizontalButtons) {
+			$this->hasHorizontalButtons = true;
+			$this->topHorizontalButtons = $this->maxTopControl;
+			$this->maxTopControl += 28;
+			$this->topControl = $this->maxTopControl;
+		}
 		$left = $this->__leftButton/1;
 		$width = empty($params['width']) ? $width : $params['width'];
 		$button = $this->createObject('\Webos\Visual\Controls\Button', array(
-			'top'   => $this->topControl . 'px',
+			'top'   => $this->topHorizontalButtons . 'px',
 			'left'  => $left . 'px',
-			'width' => $width,
+			'width' => $width . 'px',
 			'value' => $caption,
 		));
 		$this->__leftButton = ($this->__leftButton/1) + 10 + ($width*1); // + ($width/1) + 10;
