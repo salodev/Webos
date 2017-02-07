@@ -87,6 +87,20 @@ class System {
 		return $ws;
 	}
 	
+	public function loadCreateWorkSpace($name) {
+		if (!$this->_workSpace) {
+			$ws = $this->createWorkSpace($name);
+			$ws->setSystemEnvironment($this);
+			$this->_workSpace = $ws;
+
+			$this->triggerEvent('loadedWorkSpace', $this, array(
+				'workspace'=>$ws
+			));
+			$this->_workSpaceName = $name;
+		}
+		return $this->_workSpace;
+	}
+	
 	public function loadWorkSpace($name) {
 		$this->_workSpaceName = $name;
 
