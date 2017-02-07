@@ -53,7 +53,7 @@ class WorkSpace {
 
 		$appClassName = $name;// . 'Application';
 
-		$application = new $appClassName($this, $this->_getNewApplicationId());
+		$application = new $appClassName($this, $this->_getNewApplicationId(), $params);
 		
 		$this->triggerEvent('startApplication', $this, array(
 			'object' => $application,
