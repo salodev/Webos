@@ -122,6 +122,10 @@ class WorkSpace {
 		$this->_systemEnvironment = $system;
 	}
 
+	/**
+	 * 
+	 * @return \Webos\System;
+	 */
 	public function getSystemEnvironment() {
 		return $this->_systemEnvironment;
 	}
