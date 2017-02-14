@@ -264,7 +264,7 @@ class Window extends Container {
 	/**
 	 * @return array
 	 */
-	public function getFormData() {
+	public function getFormData(array $merge = array()) {
 		$formData = array();
 		$objects = $this->getChildObjects();
 		foreach($objects as $childObject){
@@ -272,7 +272,7 @@ class Window extends Container {
 				$formData[$childObject->name] = $childObject->value;
 			}
 		}
-		return $formData;
+		return array_merge($formData, $merge);
 	}
 
 	public function __set_active($value) {
@@ -294,6 +294,10 @@ class Window extends Container {
 		}
 		
 		return false;
+	}
+	
+	public function openWindow($className, array $params = array()) {
+		return $this->getParentApp()->openWindow($className, $params, $this);
 	}
 	
 	public function render() {
