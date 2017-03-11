@@ -46,6 +46,9 @@ abstract class Application extends BaseObject {
 		$this->_workSpace = $workSpace;
 	}
 
+	/**
+	 * @return \Webos\WorkSpace
+	 */
 	public function getWorkSpace() {
 		return $this->_workSpace;
 	}
