@@ -261,6 +261,15 @@ class Window extends Container {
 		}
 	}
 	
+	public function clearFormData() {
+		$objects = $this->getChildObjects();
+		foreach($objects as $object) {
+			if ($object instanceOf Control) {
+				$object->value = null;
+			}
+		};
+	}
+	
 	/**
 	 * @return array
 	 */
