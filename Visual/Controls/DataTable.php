@@ -72,13 +72,13 @@ class DataTable extends \Webos\Visual\Control {
 			$this->rowIndex = null;
 		} else {
 			// sino, selecciona.
-			$this->rowIndex = $params['row'];
+			$this->rowIndex = $params['row']/1;
 		}
 
 		$row       = $params['row'];
 		$fieldName = $params['fieldName'];
 		$rowData   = $this->getRowData($row);
-		$cellValue = $rowData[$fieldName];
+		$cellValue = &$rowData[$fieldName];
 		
 		$this->triggerEvent('rowClick', array(
 			'row'       => $row,
@@ -152,7 +152,7 @@ class DataTable extends \Webos\Visual\Control {
 			$html .= '<div class="DataTableRow' . $classSelected . '">';
 			foreach($this->columns as $column) {
 				// $column = (property_exists($column, 'fieldName'))? $column->fieldName : '';
-				$onClick    = "__doAction('send', {actionName:'rowClick',objectId:\$(this).closest('.DataTable').attr('id'),row:{$i}, fieldName:'{$column->fieldName}'});";
+				$onClick    = "__doAction('send', {actionName:'rowClick',objectId:\$(this).closest('.DataTable').attr('id'),row:{$i}, fieldName:'{$column->fieldName}'}); $(this).closest('.DataTableBody').find('.DataTableRow.selected').removeClass('selected'); $(this).closest('.DataTableRow').addClass('selected')";
 				$ondblClick = "__doAction('send', {actionName:'rowDoubleClick',objectId:\$(this).closest('.DataTable').attr('id'),row:{$i}, fieldName:'{$column->fieldName}'});";
 				$linkable = ($column->linkable) ? ' linkable' : '';
 				//echo($row[$column->fieldName] . ' - ');
