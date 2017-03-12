@@ -1,6 +1,7 @@
 <?php
 namespace Webos\Visual\Controls;
 use \Exception;
+use \Webos\Visual\Controls\DataTable\Column;
 class DataTable extends \Webos\Visual\Control {
 	public $rowIndex = null;
 	public function initialize() {
@@ -23,16 +24,13 @@ class DataTable extends \Webos\Visual\Control {
 
 	public function addColumn($fieldName, $label, $width='100px', $allowOrder=false, $linkable=false, $align = 'left') {
 		// $column = new ColumnDataTable();
-		$column = new \stdClass();
-		$column->label      = $label;
+		$column = new Column($label, $fieldName);
 		$column->width      = $width;
-		$column->fieldName  = $fieldName;
 		$column->allowOrder = $allowOrder;
 		$column->linkable   = $linkable;
 		$column->align      = $align;
 		$this->columns->add($column);
-		$this->bodyWidth += str_replace('px','', $width+8)/1;
-		return $this;
+		return $column;
 	}
 
 	public function getActiveRowData($fieldName = null) {
@@ -123,7 +121,11 @@ class DataTable extends \Webos\Visual\Control {
 		$scrollLeft = empty($this->scrollLeft) ? 0 : $this->scrollLeft;
 		$html = '<div id="'.$this->getObjectID().'" class="DataTable" '. $this->getInlineStyle() .'>';
 		$rs = $this->rows;
-		$html .= '<div class="DataTableHeaders" style="width:'.$this->bodyWidth.'px">';
+		$bodyWidth = 0;
+		foreach($this->columns as $column) {
+			$bodyWidth += (str_replace('px', '', $column->width)/1)+8;
+		}
+		$html .= '<div class="DataTableHeaders" style="width:'.$bodyWidth.'px">';
 		if (count($this->columns)) {			
 			$html .= '<div class="DataTableRow">';
 			foreach($this->columns as $column) {
@@ -141,7 +143,7 @@ class DataTable extends \Webos\Visual\Control {
 		}
 		$html .= '</div>'; // end TataTableHeaders
 		$html .= '<div class="DataTableHole">';
-		$html .= '<div class="DataTableBody" style="width:'.$this->bodyWidth.'px">';
+		$html .= '<div class="DataTableBody" style="width:'.$bodyWidth.'px">';
 		foreach($rs as $i => $row) {
 			$classSelected = '';
 			if ($this->rowIndex!==null && $i == $this->rowIndex) {
@@ -155,8 +157,11 @@ class DataTable extends \Webos\Visual\Control {
 				$onClick    = "__doAction('send', {actionName:'rowClick',objectId:\$(this).closest('.DataTable').attr('id'),row:{$i}, fieldName:'{$column->fieldName}'}); $(this).closest('.DataTableBody').find('.DataTableRow.selected').removeClass('selected'); $(this).closest('.DataTableRow').addClass('selected')";
 				$ondblClick = "__doAction('send', {actionName:'rowDoubleClick',objectId:\$(this).closest('.DataTable').attr('id'),row:{$i}, fieldName:'{$column->fieldName}'});";
 				$linkable = ($column->linkable) ? ' linkable' : '';
-				//echo($row[$column->fieldName] . ' - ');
-				$value = empty($row[$column->fieldName]) ? '&nbsp;' : $row[$column->fieldName];
+				if (empty($row[$column->fieldName])) {
+					$value = '&nbsp;';
+				} else {
+					$value = $column->renderValue($row[$column->fieldName]);
+				}
 				$html .= '<div class="DataTableCell' . $linkable . '" style="width:'.$column->width.';text-align:'.$column->align.';" onclick="'.$onClick.'" ondblclick="'.$ondblClick.'">' . $value . '</div>';
 			}
 			$html .= '</div>'; // end DataTableRow
