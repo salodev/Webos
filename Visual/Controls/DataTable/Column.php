@@ -12,6 +12,7 @@ class Column {
 	public $decimals      = null;
 	public $decimalsGlue  = null;
 	public $thousandsGlue = null;
+	public $dateFormat    = null;
 	
 	public function __construct($label, $fieldName) {
 		$this->label     = $label;
@@ -49,6 +50,10 @@ class Column {
 		$this->thousandsGlue = $thousandsGlue;
 	}
 	
+	public function dateFormat($format) {
+		$this->dateFormat = $format;
+	}
+	
 	public function renderValue($value) {
 		if ($this->decimals !== null) {
 			if (is_numeric($value)) {
@@ -59,6 +64,13 @@ class Column {
 		
 		if ($this->format !== null) {
 			return sprintf($this->format, $value);
+		}
+		
+		if ($this->dateFormat !== null) {
+			list($m, $d, $y) = explode('-', date('m-d-Y', strtotime($value)));
+			if (checkdate($m/1, $d/1, $y/1)) {
+				return date($this->dateFormat, $value);
+			}
 		}
 		
 		return $value;
