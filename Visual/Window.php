@@ -264,7 +264,7 @@ class Window extends Container {
 	public function clearFormData() {
 		$objects = $this->getChildObjects();
 		foreach($objects as $object) {
-			if ($object instanceOf Control) {
+			if ($object instanceOf Controls\Field) {
 				$object->value = null;
 			}
 		};
