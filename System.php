@@ -141,6 +141,11 @@ class System {
 		return $ws;
 	}
 	
+	public function removeWorkSpace() {
+		$wsFileName = $this->getConfig('path/workspaces') . $this->_workSpaceName;
+		unlink($wsFileName);
+	}
+	
 	public function storeWorkSpace() {
 		if (!$this->_workSpaceName || !($this->_workSpace instanceof WorkSpace)) {
 			return;
