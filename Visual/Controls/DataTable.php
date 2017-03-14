@@ -90,6 +90,7 @@ class DataTable extends \Webos\Visual\Control {
 		if (!isset($params['row'])) {
 			throw new Exception('The \'rowDoubleClick\' event needs a \'row\' parameter');
 		}
+		$this->rowIndex = $params['row'];
 		$this->triggerEvent('rowDoubleClick', array('row'=>$params['row']));
 	}
 

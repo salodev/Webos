@@ -235,12 +235,12 @@ class Window extends Container {
 		}
 		$left = $this->__leftButton/1;
 		$width = empty($params['width']) ? $width : $params['width'];
-		$button = $this->createObject('\Webos\Visual\Controls\Button', array(
+		$button = $this->createObject('\Webos\Visual\Controls\Button', array_merge($params, array(
 			'top'   => $this->topHorizontalButtons . 'px',
 			'left'  => $left . 'px',
 			'width' => $width . 'px',
 			'value' => $caption,
-		));
+		)));
 		$this->__leftButton = ($this->__leftButton/1) + 10 + ($width*1); // + ($width/1) + 10;
 		return $button;
 	}
