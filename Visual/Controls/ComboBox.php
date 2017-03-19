@@ -32,12 +32,16 @@ class ComboBox extends Field {
 		}
 		$this->options = $options;
 		$this->assoc = true;
+		if (count($rs)) {
+			$this->value = $rs[0][$keyID];
+		}
 		return $this;
 	}
 	
 	public function render() {
 		$onchange = "__doAction('send',{actionName:'setValue',objectId:this.id, value:this.value});";
-		$html = '<select id="' . $this->getObjectID() . '" class="ComboFieldControl" onclick="onclick" onchange="'.$onchange.'" '.$this->getInlineStyle().'>';
+		$disabled = $this->disabled ? ' disabled="disabled"' : '';
+		$html = '<select id="' . $this->getObjectID() . '" class="ComboFieldControl" onclick="onclick" onchange="'.$onchange.'" '.$this->getInlineStyle(). $disabled . '>';
 		$assoc = $this->assoc;
 		foreach($this->options as $key => $option) {
 			$selected = '';
