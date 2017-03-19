@@ -283,6 +283,24 @@ class Window extends Container {
 		}
 		return array_merge($formData, $merge);
 	}
+	
+	public function enableForm() {
+		$objects = $this->getChildObjects();
+		foreach($objects as $object) {
+			if ($object instanceOf Controls\Field) {
+				$object->disabled = false;
+			}
+		};
+	}
+	
+	public function disableForm() {
+		$objects = $this->getChildObjects();
+		foreach($objects as $object) {
+			if ($object instanceOf Controls\Field) {
+				$object->disabled = true;
+			}
+		};
+	}
 
 	public function __set_active($value) {
 		if ($value) {
