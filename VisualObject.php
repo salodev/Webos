@@ -245,10 +245,12 @@ abstract class VisualObject extends BaseObject {
 		} else {
 			throw new \Exception("Event $eventName not available in " . get_class($this) . " object.");
 		}
+		return $this;
 	}
 
 	public function unbind($eventName) {
 		$this->_eventsHandler->removeListeners($eventName);
+		return $this;
 	}
 
 	public function triggerEvent($eventName, $params = null) {
