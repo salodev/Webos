@@ -2,11 +2,9 @@
 namespace Webos\Visual;
 class MessageWindow extends Window {
 
-	public function initialize() {
-		if (!$this->title) {
-			$this->title = 'Mensaje:';
-		}
-		$message = $this->message;
+	public function initialize(array $params = array()) {
+		$this->title = \salodev\Utils::Ifnull($params['title'], 'Mensaje:');
+		$message = \salodev\Utils::Ifnull($params['message'], 'Mensaje:');
 		$this->createObject('\Webos\Visual\Controls\Label', array(
 			'text' => $message,
 			'height' => $this->height,
@@ -44,7 +42,7 @@ class MessageWindow extends Window {
 
 		$content = new \Webos\String(
 			'<div style="text-align:center;">' .
-				'<div>MESSAGE</div>' .
+				'<div>MESSAGE<br /></div>' .
 				'<div>' .
 					'<input type="button" value="Cerrar" onclick="ONCLICK" />'.
 				'</div>' .
