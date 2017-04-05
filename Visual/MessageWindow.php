@@ -1,14 +1,14 @@
 <?php
 namespace Webos\Visual;
+use \salodev\Utils;
 class MessageWindow extends Window {
 
 	public function initialize(array $params = array()) {
-		$this->title = \salodev\Utils::Ifnull($params['title'], 'Mensaje:');
-		$message = \salodev\Utils::Ifnull($params['message'], 'Mensaje:');
-		$this->createObject('\Webos\Visual\Controls\Label', array(
-			'text' => $message,
-			'height' => $this->height,
-		));
+		$this->title   = Utils::Ifnull($params['title'  ], 'Mensaje:');
+		$this->message = Utils::Ifnull($params['message'], 'Mensaje:');
+		$this->width   = Utils::Ifnull($params['width'  ], '450px'   );
+		$this->height  = Utils::Ifnull($params['height' ], '150px'   );
+		$this->messageType = Utils::Ifnull($params['type']);
 
 	}
 
@@ -42,19 +42,29 @@ class MessageWindow extends Window {
 
 		$content = new \Webos\String(
 			'<div style="text-align:center;">' .
-				'<div>MESSAGE<br /></div>' .
+				'<div style="margin:10px 20px 20px 20px;font-weight:bold;__MESSAGE_TYPE__">__MESSAGE__</div>' .
 				'<div>' .
-					'<input type="button" value="Cerrar" onclick="ONCLICK" />'.
+					'<input type="button" value="Cerrar" onclick="__ONCLICK__" />'.
 				'</div>' .
 			'</div>'
 		);
 		
-		$content->replace('MESSAGE', $this->message);
-		$content->replace('ONCLICK', "__doAction('send',{actionName:'close', objectId:'OBJECTID'});");
-		$content->replace('OBJECTID', $this->getObjectID());
-
-		$template->replace('__TITLE__', $this->title);
-		$template->replace('__CONTENT__', $content);
+		$messageType = 'color:blue;';
+		if ($this->messageType=='info') {
+			$messageType = 'color:blue;';
+		}
+		if ($this->messageType=='error') {
+			$messageType = 'color:red;';
+		}
+		
+		$onClick = "__doAction('send',{actionName:'close', objectId:'__OBJECTID__'});";
+		$content->replace('__MESSAGE__',      $this->message      );
+		$content->replace('__MESSAGE_TYPE__', $messageType        );
+		$content->replace('__ONCLICK__',      $onClick            );
+		$content->replace('__OBJECTID__',     $this->getObjectID());
+		
+		$template->replace('__TITLE__',       $this->title        );
+		$template->replace('__CONTENT__',     $content            );
 		
 		return $template;
 	}
