@@ -17,6 +17,10 @@ class MultiTab extends \Webos\Visual\Control {
 		);
 	}
 
+	/**
+	 * 
+	 * @return TabFolder|null;
+	 */
 	public function getActiveTab() {
 		if (!$this->_childObjects->count()) return null;
 
@@ -27,6 +31,11 @@ class MultiTab extends \Webos\Visual\Control {
 		return $this->_activeTab;
 	}
 	
+	/**
+	 * 
+	 * @param type $title
+	 * @return TabFolder
+	 */
 	public function createTab($title) {
 		return $this->createObject(__NAMESPACE__ . '\TabFolder', array(
 			'title' => $title,
