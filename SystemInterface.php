@@ -38,7 +38,9 @@ class SystemInterface {
 		// inspect($apps); die();
 		$object = $ws->getApplications()->getObjectByID($objectID);		
 		// inspect($object); die();
-		if (!($object instanceof VisualObject)) return false;
+		if (!($object instanceof \Webos\VisualObject)) {
+			throw new \Exception('Object does not exist');
+		}
 
 		// Se activa la aplicación antes de efectuar la acción. //
 		$app = $object->getParentApp();
@@ -50,7 +52,7 @@ class SystemInterface {
 			
 			$window = $object->getParentWindow();
 
-			if ($window instanceof VisualObject){
+			if ($window instanceof \Webos\VisualObject){
 				//$window->active = true;
 				$app->setActiveWindow($window);
 			}
