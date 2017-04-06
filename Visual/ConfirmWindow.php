@@ -11,9 +11,11 @@ class ConfirmWindow extends Window {
 	}
 
 	public function initialize() {
+		$this->title = 'Confirmar';
+		$this->height = '130px';
 		$this->createObject('\Webos\Visual\Controls\Label', array(
 			'text' => $this->message,
-			'top'  => '25px',
+			'top'  => '50px',
 			'left' => '25px',
 		));
 	}
@@ -40,7 +42,7 @@ class ConfirmWindow extends Window {
 
 	public function confirm() {
 		$this->triggerEvent('confirm');
-		$this->getParentApp()->closeWindow($this);
+		$this->close();
 	}
 
 	public function close() {
@@ -54,7 +56,7 @@ class ConfirmWindow extends Window {
 		$content = new \Webos\String(
 			'<div style="text-align:center;">' .
 				'<div>MESSAGE</div>' .
-				'<div>' .
+				'<div style="margin-top:20px;">' .
 					'<input type="button" value="Sí" onclick="CLICK_YES" />'.
 					'<input type="button" value="no" onclick="CLICK_NO" />'.
 				'</div>' .
