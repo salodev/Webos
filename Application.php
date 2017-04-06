@@ -113,7 +113,7 @@ abstract class Application extends BaseObject {
 	}
 
 	public function setActiveWindow($window) {
-		if ($window instanceof Container) {
+		if ($window instanceof \Webos\Visual\Container) {
 
 			$windows = $this->getWorkSpace()->getApplications()->getObjectsByClassName('\Webos\Visual\Window');
 			foreach($windows as $wnd) {
