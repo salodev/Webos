@@ -29,4 +29,15 @@ abstract class Control extends \Webos\VisualObject {
 	public function hasFocus() {
 		return $this->getParentWindow()->hasFocus($this);
 	}
+	
+	public function action($name, array $params = null) {
+		/**
+		 * Por razones de seguridad, si el objeto está deshabilitado,
+		 * se verifica y se frena la acción.
+		 */
+		if ($this->disabled == true) {
+			throw new \Exception('Object disabled');
+		}
+		return parent::action($name, $params);
+	}
 }
