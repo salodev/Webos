@@ -374,7 +374,7 @@ class Window extends Container {
 	 * @param callable $onConfirmCallback
 	 * @return Window
 	 */
-	public function onConfirm($text, \callable $onConfirmCallback) {
+	public function onConfirm($text, callable $onConfirmCallback) {
 		return $this->openWindow(__NAMESPACE__.'\ConfirmWindow', [
 			'message'=>$text
 		])->bind('confirm', $onConfirmCallback);
@@ -386,7 +386,7 @@ class Window extends Container {
 	 * @param callable $onCloseCallback
 	 * @return Window
 	 */
-	public function onMessageWindow($text, \callable $onCloseCallback) {
+	public function onMessageWindow($text, callable $onCloseCallback) {
 		return $this->messageWindow($text, 'Message')->bind('close', $onCloseCallback);
 	}
 	
