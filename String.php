@@ -34,6 +34,26 @@ class String {
 	public function split($separator) {
 		return explode($this->_string);
 	}
+	
+	public function concat($string) {
+		$this->_string .= $string;
+		return $this;
+	}
+	
+	public function lPad($padString, $padLength) {
+		$this->_string = str_pad($this->_string, $padLength, $padString, STR_PAD_LEFT);
+		return $this;
+	}
+	
+	public function rPad($padString, $padLength) {
+		$this->_string = str_pad($this->_string, $padLength, $padString, STR_PAD_RIGHT);
+		return $this;
+	}
+	
+	public function formatAsNumber($decimals = 2, $glueDec = '.', $glueThousands = '') {
+		$this->_string = number_format($this->_string, $decimals, $glueDec, $glueThousands);
+		return $this;
+	}
 
 	public function __toString() {
 		return $this->_string;
