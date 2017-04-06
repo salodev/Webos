@@ -124,6 +124,15 @@ class Window extends Container {
 		$this->controlProperties = array();
 	}
 	
+	/**
+	 * 
+	 * @param string $label
+	 * @param string $name
+	 * @param string $className
+	 * @param array $options
+	 * @param bool $attachToContainer
+	 * @return \Webos\Visual\Control
+	 */
 	public function createControl($label, $name, $className = '\Webos\Visual\Controls\TextField', array $options = array(), $attachToContainer = true) {
 		if (isset($options['top'])) {
 			$this->topControl = $options['top'];
@@ -165,34 +174,42 @@ class Window extends Container {
 	
 	/**
 	 * 
-	 * @param type $label
-	 * @param type $options
+	 * @param string $label
+	 * @param string $name
+	 * @param array $options
 	 * @return \Webos\Visual\Controls\TextBox
 	 */
-	public function createTextBox($label, $name, $options = array()) {
+	public function createTextBox($label, $name, array $options = array()) {
 		return $this->createControl($label, $name, '\Webos\Visual\Controls\TextBox', $options);
 	}
 	
 	/**
 	 * 
-	 * @param type $label
-	 * @param type $options
+	 * @param string $text
+	 * @param array $options
 	 * @return \Webos\Visual\Controls\TextBox
 	 */
-	public function createLabel($text, $options = array()) {
+	public function createLabel($text, array $options = array()) {
 		return $this->createObject('\Webos\Visual\Controls\Label', array_merge($options, array('text'=>$text)));
 	}
 	
 	/**
 	 * 
-	 * @param type $label
-	 * @param type $options
+	 * @param string $label
+	 * @param string $name
+	 * @param array $options
 	 * @return \Webos\Visual\Controls\ComboBox
 	 */
 	public function createComboBox($label, $name, array $options = array()) {
 		return $this->createControl($label, $name, '\Webos\Visual\Controls\ComboBox', $options);
 	}
 	
+	/**
+	 * 
+	 * @param string $label
+	 * @param array $options
+	 * @return \Webos\Visual\Controls\Button
+	 */
 	public function createButton($label, array $options = array()) {
 		return $this->createObject('\Webos\Visual\Controls\Button', array_merge($options, ['value'=>$label]));
 	}
@@ -206,6 +223,10 @@ class Window extends Container {
 		return $this->createObject('\Webos\Visual\Controls\ToolBar');
 	}
 	
+	/**
+	 * 
+	 * @return \Webos\Visual\Controls\Menu\Bar
+	 */
 	public function createMenuBar() {
 		return $this->createObject('\Webos\Visual\Controls\Menu\Bar');
 	}
@@ -323,8 +344,50 @@ class Window extends Container {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param string $className
+	 * @param array $params
+	 * @return Window;
+	 */
 	public function openWindow($className, array $params = array()) {
 		return $this->getParentApp()->openWindow($className, $params, $this);
+	}
+	
+	/**
+	 * 
+	 * @param string $message
+	 * @param string $title
+	 * @return Window
+	 */
+	public function messageWindow($message, $title = 'Message') {
+		return $this->openWindow('\Webos\Visual\MessageWindow', [
+			'title'   => $title,
+			'message' => $message,
+			'type'    => 'info',
+		]);
+	}
+	
+	/**
+	 * 
+	 * @param string $text
+	 * @param callable $onConfirmCallback
+	 * @return Window
+	 */
+	public function onConfirm($text, \callable $onConfirmCallback) {
+		return $this->openWindow(__NAMESPACE__.'\ConfirmWindow', [
+			'message'=>$text
+		])->bind('confirm', $onConfirmCallback);
+	}
+	
+	/**
+	 * 
+	 * @param string $text
+	 * @param callable $onCloseCallback
+	 * @return Window
+	 */
+	public function onMessageWindow($text, \callable $onCloseCallback) {
+		return $this->messageWindow($text, 'Message')->bind('close', $onCloseCallback);
 	}
 	
 	public function render() {
