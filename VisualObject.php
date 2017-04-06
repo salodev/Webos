@@ -12,6 +12,10 @@ abstract class VisualObject extends BaseObject {
 	protected $_parentObject  = null;
 	protected $_childObjects  = null;
 	protected $_events        = null;
+	/**
+	 *
+	 * @var EventsHandler;
+	 */
 	protected $_eventsHandler = null;
 
 	public function __construct(array $data = array()) {
@@ -253,6 +257,12 @@ abstract class VisualObject extends BaseObject {
 		return $this;
 	}
 
+	/**
+	 * 
+	 * @param string $eventName
+	 * @param array|null $params
+	 * @return \Webos\EventsHandler
+	 */
 	public function triggerEvent($eventName, $params = null) {
 		return $this->_eventsHandler->trigger($eventName, $this, $params);
 	}
