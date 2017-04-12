@@ -48,16 +48,17 @@ class SystemInterface {
 
 		// Se activa el formulario al que pertenece el objeto antes
 		// de efectuar la acción //
+		// Los termine anulando porque es lo que genera
+		// que se redibuje toda la ventana luego de actualizar un campo.
 		if (!($object instanceof \Webos\Visual\Window)) {
 			
 			$window = $object->getParentWindow();
 
 			if ($window instanceof \Webos\VisualObject){
-				//$window->active = true;
-				$app->setActiveWindow($window);
+				// $app->setActiveWindow($window);
 			}
 		} else {
-			$app->setActiveWindow($object);
+			// $app->setActiveWindow($object);
 		}
 
 		// Esto permite que las aplicaciones puedan actuar en consecuencia
@@ -141,7 +142,8 @@ class SystemInterface {
 				$test = $object->getObjectByID($objectId);
 
 				// Si es contenedor, no es necesario notificar.
-				if ($test instanceof VisualObject) {
+				// if ($test instanceof VisualObject) {
+				if ($test instanceof Visual\Window) {
 					// Log::write('El objeto ' . $test->getObjectID() . ' no necesita notificarse.');
 					return false;
 				}
