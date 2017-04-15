@@ -38,7 +38,7 @@ class Button extends \Webos\Visual\Control {
 	
 	public function render() {
 		$html = new \Webos\String(
-			'<input id="__id__" class="__class__" type="button" name="__name__" value="__value__" onclick="__onclick__"__style____disabled__ />'
+			'<button id="__id__" class="__class__" type="button" name="__name__" onclick="__onclick__"__style____disabled__>__value__</button>'
 		);
 		
 		$html->replace('__style__', $this->getInLineStyle());
@@ -49,7 +49,7 @@ class Button extends \Webos\Visual\Control {
 			'__id__'      => $this->getObjectID(),
 			'__class__'   => $this->getClassName(),
 			'__name__'    => $this->name,
-			'__value__'   => $this->value,
+			'__value__'   => $this->getChildObjects()->render() . $this->value,
 			'__onclick__' => $onclick,
 			'__disabled__' => $this->disabled ? 'disabled="disabled"' : '',
 		));
