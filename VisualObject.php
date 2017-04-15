@@ -106,6 +106,12 @@ abstract class VisualObject extends BaseObject {
 		return str_replace('\\','-', $this->getClassName()) . '-' . md5(mt_rand()) . md5(microtime());
 	}
 	
+	/**
+	 * Crea un objeto y lo agrega a la colección de hijos.
+	 * @param string $className
+	 * @param array $initialAttributes
+	 * @return \Webos\VisualObject
+	 */
 	public function createObject($className, array $initialAttributes = array()) {
 		$object = new $className($this, $initialAttributes);
 
