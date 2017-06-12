@@ -95,6 +95,12 @@ abstract class Application extends BaseObject {
 		
 		return $window;
 	}
+	
+	public function openExceptionWindow(\Exception $e) {
+		return $this->openWindow('\Webos\Visual\ExceptionWindow', [
+			'e' => $e,
+		], $this);
+	}
 
 	public function closeWindow(Visual\Window $window) {
 		$objectId = $window->getObjectID();
