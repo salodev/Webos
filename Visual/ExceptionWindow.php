@@ -6,7 +6,7 @@ class ExceptionWindow extends Window {
 	public function initialize(array $params = []) {
 		$this->title  = 'Exception trown';
 		$this->width  = '800px';
-		$this->height = '490px';
+		$this->height = '500px';
 		if (!$params['e'] || !($params['e'] instanceof \Exception)) {
 			throw new \Exception('ExceptionWindow must be open with exception parameter');
 		}
@@ -50,9 +50,10 @@ class ExceptionWindow extends Window {
 		$this->widthFieldControl = 400;
 		$this->widthLabelControl = 90;
 		$this->topControl = 368;
-		$this->createControl('File', 'file', '\Webos\Visual\Controls\Label');
-		$this->createControl('Line', 'line', '\Webos\Visual\Controls\Label');
-		$this->createControl('Function', 'function', '\Webos\Visual\Controls\Label');
+		$this->createTextBox('File', 'file');
+		$this->createTextBox('Line', 'line');
+		$this->createTextBox('Function', 'function');
+		$this->disableForm();
 	}
 
 	public function onCallStackRowclick() {
