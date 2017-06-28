@@ -96,12 +96,22 @@ abstract class Application extends BaseObject {
 		return $window;
 	}
 	
+	/**
+	 * 
+	 * @param \Exception $e
+	 * @return Visual\ExceptionWindow
+	 */
 	public function openExceptionWindow(\Exception $e) {
 		return $this->openWindow('\Webos\Visual\ExceptionWindow', [
 			'e' => $e,
 		], $this);
 	}
 
+	/**
+	 * 
+	 * @param \Webos\Visual\Window $window
+	 * @return $this
+	 */
 	public function closeWindow(Visual\Window $window) {
 		$objectId = $window->getObjectID();
 		$this->_visualObjects->removeObject($window);
@@ -114,10 +124,19 @@ abstract class Application extends BaseObject {
 		return $this;
 	}
 
+	/**
+	 * 
+	 * @return Visual\Window
+	 */
 	public function getActiveWindow() {
 		return $this->_activeWindow;
 	}
 
+	/**
+	 * 
+	 * @param \Webos\Visual\Container $window
+	 * @return $this
+	 */
 	public function setActiveWindow($window) {
 		if ($window instanceof \Webos\Visual\Container) {
 
@@ -127,8 +146,15 @@ abstract class Application extends BaseObject {
 			}
 			$this->_activeWindow = $window;
 		}
+		return $this;
 	}
 	
+	/**
+	 * 
+	 * @param type $title
+	 * @param type $message
+	 * @return Visual\MessageWindow
+	 */
 	public function openMessageWindow($title, $message) {
 		return $this->openWindow('\Webos\Visual\MessageWindow', array(
 			'title' => $title,
@@ -136,20 +162,37 @@ abstract class Application extends BaseObject {
 		), $this->getActiveWindow());
 	}
 
+	/**
+	 * 
+	 * @return Visual\Control
+	 */
 	public function getActiveControl() {
 		return $this->_activeControl;
 	}
 
-	public function setActiveControl($control) {
-		if ($control instanceof ControlObject) {
-			$this->_activeControl = $control;
-		}
+	/**
+	 * 
+	 * @param \Webos\Visual\Control $control
+	 * @return $this
+	 */
+	public function setActiveControl(Visual\Control $control) {
+		$this->_activeControl = $control;
+		return $this;
 	}
 
+	/**
+	 * 
+	 * @return ObjectsCollection
+	 */
 	public function getVisualObjects() {
 		return $this->_visualObjects;
 	}
 
+	/**
+	 * 
+	 * @param type $id
+	 * @return Visual\Window
+	 */
 	public function getWindow($id) {
 		$window = $this->_visualObjects->getObjectByID($id);
 		if ($window instanceof Visual\Window) {
@@ -159,18 +202,32 @@ abstract class Application extends BaseObject {
 		return null;
 	}
 
+	/**
+	 * 
+	 * @return ObjectsCollection
+	 */
 	public function getWindows() {
 		return $this->_visualObjects->getObjectsByClassName('\Webos\Visual\Window');
 	}
-	
+
+	/**
+	 * 
+	 * @return ObjectsCollection
+	 */
 	public function getChildObjects() {
 		return $this->_visualObjects;
 	}
 
+	/**
+	 * 
+	 * @param \Webos\VisualObject $child
+	 * @return $this
+	 * @throws \Exception
+	 */
 	public function addChildObject(VisualObject $child) {
 		$parent = $child->getParent();
 		if (!($parent instanceof Application)) {
-			throw new Exception('Trying to add a child object without parent to ' . get_class($this));
+			throw new \Exception('Trying to add a child object without parent to ' . get_class($this));
 		}
 
 		if (get_class($parent) != get_class($this)) {
@@ -190,6 +247,11 @@ abstract class Application extends BaseObject {
 		return $this;
 	}
 
+	/**
+	 * 
+	 * @param \Webos\VisualObject $child
+	 * @return $this
+	 */
 	public function removeChildObject(VisualObject $child) {
 		$objectId = $child->getObjectID();
 		$this->_visualObjects->removeObject($child);
