@@ -40,10 +40,10 @@ class EventsHandler {
 
 		if(isset($this->events[$eventName])) {			
 			foreach ($this->events[$eventName] as $k => $evData) {
-				$return = $this->call($evData->eventListener, $source, $eventName, $params);
 				if (!$evData->persistent) {
 					unset($this->events[$eventName][$k]);
 				}
+				$return = $this->call($evData->eventListener, $source, $eventName, $params);
 
 				// Si un eventListener response con FALSE, significa que está solicitando
 				// la detención de ejecución de los eventos, y dicho valor será entregado
@@ -96,5 +96,12 @@ class EventsHandler {
 
 	public function getAvailableEvents() {
 		return $this->availableEvents;
+	}
+	
+	public function hasListenersForEventName($eventName) {
+		if (!isset($this->events[$eventName])) {
+			return false;
+		}
+		return count($this->events[$eventName])>0;
 	}
 }

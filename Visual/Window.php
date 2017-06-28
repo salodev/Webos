@@ -15,6 +15,11 @@ class Window extends Container {
 	protected $activeControl     = null;
 	public $windowStatus = 'normal';
 	
+	public function bind($eventName, $eventListener, $persistent = true) {
+		if ($eventName=='ready') { $persistent = false; }
+		return parent::bind($eventName, $eventListener, $persistent);
+	}
+	
 	public function preInitialize() {
 		$this->title = $this->getObjectID();
 		$this->width = '600px';
@@ -50,6 +55,7 @@ class Window extends Container {
 			'maximize',
 			'restore',
 			'focus',
+			'ready',
 		);
 	}
 	
@@ -413,7 +419,7 @@ class Window extends Container {
 					'</div>' .
 				'</div>' .
 				'<div class="form-content">__CONTENT__</div>' .
-				'__AUTOFOCUS__' .
+				'__AUTOFOCUS__' . '__READY__' .
 			'</div>'
 		);
 		
@@ -429,6 +435,20 @@ class Window extends Container {
 			);
 					
 		}
+		
+		$ready = '';
+		
+		if ($this->_eventsHandler->hasListenersForEventName('ready')) {
+			$ready = new \Webos\String(
+				'<script>' .
+					'$(function() {' .
+						'__doAction(\'send\', {actionName:\'ready\',objectId:\''. $this->getObjectID() . '\'});' .
+					'});' .
+				'</script>'
+			);
+			// $ready = '___doAction(\'send\', {actionName:\'ready\',objectId:\''. $this->getObjectID() . '\'});';
+		}
+		
 
 		$styles = array(
 			'width'    => $this->width,
@@ -452,6 +472,7 @@ class Window extends Container {
 			'__TITLE__'     => $this->title,
 			'__STYLE__'     => $this->getAsStyles($styles),
 			'__AUTOFOCUS__' => $autofocus,
+			'__READY__'     => $ready,
 		));
 
 		return $html;
