@@ -83,7 +83,7 @@ abstract class Application extends BaseObject {
 	 *
 	 * @param string $windowName
 	 * @param array $params
-	 * @return Window
+	 * @return Visual\Window
 	 */
 	public function openWindow($windowName, array $params = array(), $relativeTo = null) {
 		$window = new $windowName($this, $params);
