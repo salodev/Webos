@@ -1,5 +1,6 @@
 <?php
 namespace Webos;
+use Exception;
 /**
  * Un VisualObject es subtipo de BaseObject porque puede ser representado
  * como un objeto de datos, o puede ser una representación visual de un
@@ -243,7 +244,7 @@ abstract class VisualObject extends BaseObject {
 		if (in_array($name,$this->getAllowedActions())){
 			$this->$name($params);
 		} else {
-			throw new Exception("Action $name not allowed by " . get_class($this) . " object.");
+			throw new \Exception("Action $name not allowed by " . get_class($this) . " object.");
 		}
 		/*  */
 	}
