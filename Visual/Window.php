@@ -252,6 +252,14 @@ class Window extends Container {
 		$options = array_merge($initialOptions, $options);
 		return $this->createObject('\Webos\Visual\Controls\DataTable', $options);
 	}
+	
+	/**
+	 * 
+	 * @return Controls\Tree
+	 */
+	public function createTree(array $options = array()) {
+		return $this->createObject('\Webos\Visual\Controls\Tree', $options);
+	}
 
 	public function addHorizontalButton($caption, $width = 80, array $params = array()) {
 		if (!$this->hasHorizontalButtons) {
