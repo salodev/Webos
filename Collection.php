@@ -14,42 +14,42 @@ class Collection implements \Iterator{
 		$this->_data = $data;
     }
 
-    function rewind() {
+    public function rewind() {
 		//reset($this->_data);
         $this->_position = 0;
     }
 
-    function current() {
+    public function current() {
 		//return current($this->_data);
         return $this->_data[$this->_position];
     }
 
-    function key() {
+    public function key() {
 		//return key($this->_data);
         return $this->_position;
     }
 
-    function next() {
+    public function next() {
 		//next($this->_data);
         ++$this->_position;
     }
 
-    function valid() {
+    public function valid() {
 		//return !is_null(key($this->_data));
 		return isset($this->_data[$this->_position]);
     }
 
-	function add($obj) {
+	public function add($obj) {
 		$this->_data[] = $obj;
 	}
 
-	function append($objects) {
+	public function append($objects) {
 		foreach($objects as $object){
 			$this->add($object);
 		}
 	}
 
-	function remove($key) {
+	public function remove($key) {
 		if (isset($this->_data[$key])) {
 			/*$object = &$this->_data[$key];
 			unset($object);*/
@@ -68,22 +68,26 @@ class Collection implements \Iterator{
 
 	}
 
-	function clear() {
+	public function clear() {
 		$this->_data = array();
 	}
 
-	function item($key) {
+	public function item($key) {
 		if (isset($this->_data[$key]))
 			return $this->_data[$key];
 
 		return null;
 	}
 
-	function count(){
+	public function count(){
+		return count($this->_data);
+	}
+	
+	public function length() {
 		return count($this->_data);
 	}
 
-	function getFirstObject(){
+	public function getFirstObject(){
 		return $this->_data[0];
 	}
 
@@ -119,7 +123,7 @@ class Collection implements \Iterator{
 	 *
 	 * @param function $callback
 	 */
-	function each($callback) {
+	public function each(callable $callback) {
 		$result = null;
 		foreach($this->_data as $object) {
 			$result = $callback($object, $result);
