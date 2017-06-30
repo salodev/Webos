@@ -20,7 +20,7 @@ class Tree extends \Webos\Visual\Control {
 	}
 	
 	public function getAvailableEvents() {
-		return array();
+		return array('nodeToggled');
 	}
 	/**
 	 * 

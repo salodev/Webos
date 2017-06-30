@@ -2,7 +2,7 @@
 
 namespace Webos\Visual\Controls;
 
-class FrameControl extends \Webos\Visual\Control {
+class Frame extends \Webos\Visual\Control {
 
 	public function setInitialAttributes(array $userAttrs = array()){
 		$attrs = array(
@@ -28,9 +28,7 @@ class FrameControl extends \Webos\Visual\Control {
 	public function render() {
 		$html = new \Webos\String('<div class="FrameControl"__style__>__content__</div>');
 
-		$html->replace('__style__', $this->getAsStyles(array(
-			'position' => 'relative',
-		)));
+		$html->replace('__style__',  $this->getInlineStyle(true));
 		$html->replace('__content__', $this->controls()->render());
 		return $html;
 	}

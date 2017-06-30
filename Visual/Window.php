@@ -40,6 +40,7 @@ class Window extends Container {
 
 	public function getAvailableEvents(){
 		return array(
+			'click',
 			'close',
 			'ready',
 			'focus',
@@ -255,10 +256,20 @@ class Window extends Container {
 	
 	/**
 	 * 
+	 * @param array $options
 	 * @return Controls\Tree
 	 */
 	public function createTree(array $options = array()) {
 		return $this->createObject('\Webos\Visual\Controls\Tree', $options);
+	}
+	
+	/**
+	 * 
+	 * @param array $options
+	 * @return Controls\Frame
+	 */
+	public function createFrame(array $options = array()) {
+		return $this->createObject('\Webos\Visual\Controls\Frame', $options);
 	}
 
 	public function addHorizontalButton($caption, $width = 80, array $params = array()) {

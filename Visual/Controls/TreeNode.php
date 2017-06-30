@@ -47,6 +47,8 @@ class TreeNode extends \Webos\Visual\Control {
 		} else {
 			$this->expanded = true;
 		}
+		$this->treeControl->triggerEvent('nodeToggled',['node'=>$this]);
+		$this->select();
 	}
 	
 	public function click() {
@@ -85,11 +87,16 @@ class TreeNode extends \Webos\Visual\Control {
 				$content .= $child->render();
 			}
 		}
+		
+		$toggleClass = 'none';
+		// if ($this->getChildObjects()->length()) {
+			$toggleClass = $this->expanded ? 'collapse' : 'expand';
+		// }
 
 		$html->replaces(array(
 			'__id__'            => $this->getObjectID(),
 			'__style__'         => $this->getInlineStyle(true),
-			'__toggleClass__'   => $this->expanded ? 'collapse' : 'expand',
+			'__toggleClass__'   => $toggleClass,
 			'__selected__'      => $this->selected ? " selected" : '',
 			'__text__'          => $this->text,
 			'__content__'       => $content,
