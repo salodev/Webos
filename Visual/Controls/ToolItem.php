@@ -19,7 +19,7 @@ class ToolItem extends \Webos\Visual\Control {
 	}
 	
 	public function render() {
-		$html = new String('<input class="ToolItem" type="button" value="__value__" id="__objectId__" />');
+		$html = new \Webos\String('<input class="ToolItem" type="button" value="__value__" id="__objectId__" />');
 		$html->replace('__value__',    $this->title)
 			 ->replace('__objectId__', $this->getObjectID());
 

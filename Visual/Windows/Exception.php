@@ -1,7 +1,8 @@
 <?php
-namespace Webos\Visual;
+namespace Webos\Visual\Windows;
+use \Webos\Visual\Window;
 
-class ExceptionWindow extends Window {
+class Exception extends Window {
 
 	public function initialize(array $params = []) {
 		$this->title  = 'Exception trown';

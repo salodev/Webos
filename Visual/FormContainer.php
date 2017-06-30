@@ -182,6 +182,9 @@ trait FormContainer {
 		if (!empty($params['left'])) {
 			$this->leftButton = $params['left']/1;
 		}
+		if (!empty($params['top'])) {
+			$this->topControl = $this->topHorizontalButtons = $params['top']/1;
+		}
 		$left = $this->leftButton/1;
 		$width = empty($params['width']) ? $width : $params['width'];
 		$button = $this->createObject('\Webos\Visual\Controls\Button', array_merge($params, array(

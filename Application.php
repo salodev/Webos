@@ -102,7 +102,7 @@ abstract class Application extends BaseObject {
 	 * @return Visual\ExceptionWindow
 	 */
 	public function openExceptionWindow(\Exception $e) {
-		return $this->openWindow('\Webos\Visual\ExceptionWindow', [
+		return $this->openWindow('\Webos\Visual\Windows\Exception', [
 			'e' => $e,
 		], $this);
 	}
@@ -156,7 +156,7 @@ abstract class Application extends BaseObject {
 	 * @return Visual\MessageWindow
 	 */
 	public function openMessageWindow($title, $message) {
-		return $this->openWindow('\Webos\Visual\MessageWindow', array(
+		return $this->openWindow('\Webos\Visual\Windows\Message', array(
 			'title' => $title,
 			'message' => $message,
 		), $this->getActiveWindow());

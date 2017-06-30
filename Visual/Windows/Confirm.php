@@ -1,6 +1,7 @@
 <?php
-namespace Webos\Visual;
-class ConfirmWindow extends Window {
+namespace Webos\Visual\Windows;
+use \Webos\Visual\Window;
+class Confirm extends Window {
 
 	public function  getInitialAttributes() {
 		$attrs = parent::getInitialAttributes();

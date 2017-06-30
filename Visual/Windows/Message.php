@@ -1,7 +1,8 @@
 <?php
-namespace Webos\Visual;
+namespace Webos\Visual\Windows;
+use \Webos\Visual\Window;
 use \salodev\Utils;
-class MessageWindow extends Window {
+class Message extends Window {
 
 	public function initialize(array $params = array()) {
 		$this->title   = Utils::Ifnull($params['title'  ], 'Mensaje:');

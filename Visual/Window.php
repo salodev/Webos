@@ -150,7 +150,7 @@ class Window extends Container {
 	 * @return Window
 	 */
 	public function messageWindow($message, $title = 'Message') {
-		return $this->openWindow('\Webos\Visual\MessageWindow', [
+		return $this->openWindow('\Webos\Visual\Windows\Message', [
 			'title'   => $title,
 			'message' => $message,
 			'type'    => 'info',
@@ -164,7 +164,19 @@ class Window extends Container {
 	 * @return Window
 	 */
 	public function onConfirm($text, callable $onConfirmCallback) {
-		return $this->openWindow(__NAMESPACE__.'\ConfirmWindow', [
+		return $this->openWindow(__NAMESPACE__.'\Windows\Confirm', [
+			'message'=>$text
+		])->bind('confirm', $onConfirmCallback);
+	}
+	
+	/**
+	 * 
+	 * @param type $text
+	 * @param \Webos\Visual\callable $onConfirmCallback
+	 * @return Window
+	 */
+	public function onPrompt($text, callable $onConfirmCallback) {
+		return $this->openWindow(__NAMESPACE__.'\Windows\Prompt', [
 			'message'=>$text
 		])->bind('confirm', $onConfirmCallback);
 	}
