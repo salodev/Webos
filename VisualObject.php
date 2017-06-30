@@ -163,6 +163,26 @@ abstract class VisualObject extends BaseObject {
 		//echo 'Agregando ' . get_class($child) . ' a ' . get_class($this) . '<br />';
 		$this->_childObjects->add($child);
 	}
+	
+	/**
+	 * 
+	 * @param \Webos\VisualObject $child
+	 * @return $this
+	 */
+	public function removeChild(VisualObject $child){
+		$childs = $this->getChildObjects();
+		$childs->removeObject($child);
+		return $this;
+	}
+	
+	/**
+	 * 
+	 * @return $this
+	 */
+	public function removeChilds() {
+		$this->getChildObjects()->clear();
+		return $this;
+	}
 
 	/**
 	 * Permite obtener su padre o contenedor.

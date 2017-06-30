@@ -1,8 +1,9 @@
 <?php
 
 namespace Webos\Visual\Controls;
-
+use \Webos\Visual\FormContainer;
 class Frame extends \Webos\Visual\Control {
+	use FormContainer;
 
 	public function setInitialAttributes(array $userAttrs = array()){
 		$attrs = array(

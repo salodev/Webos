@@ -20,7 +20,10 @@ class Tree extends \Webos\Visual\Control {
 	}
 	
 	public function getAvailableEvents() {
-		return array('nodeToggled');
+		return [
+			'nodeToggled',
+			'nodeSelected',
+		];
 	}
 	/**
 	 * 
@@ -28,11 +31,11 @@ class Tree extends \Webos\Visual\Control {
 	 * @param mixed $value
 	 * @return TreeNode
 	 */
-	public function addNode($text, $value = null) {
+	public function addNode($text, $data = null) {
 		return $this->createObject('\Webos\Visual\Controls\TreeNode', [
 			'treeControl' => $this,
-			'text'  => $text,
-			'value' => $value,
+			'text'        => $text,
+			'data'        => $data,
 		]);
 	}
 	

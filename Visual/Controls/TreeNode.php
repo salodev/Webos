@@ -9,11 +9,11 @@ class TreeNode extends \Webos\Visual\Control {
 	 * @param mixed $value
 	 * @return TreeNode
 	 */
-	public function addNode($text, $value = null) {
+	public function addNode($text, $data = null) {
 		return $this->createObject('\Webos\Visual\Controls\TreeNode', [
 			'treeControl' => $this->treeControl,
-			'text'  => $text,
-			'value' => $value,
+			'text'        => $text,
+			'data'        => $data,
 		]);
 	}
 
@@ -53,10 +53,12 @@ class TreeNode extends \Webos\Visual\Control {
 	
 	public function click() {
 		$this->treeControl->setSelectedNode($this);
+		$this->treeControl->triggerEvent('nodeSelected',['node'=>$this]);
 	}
 	
 	public function select() {
 		$this->treeControl->setSelectedNode($this);
+		$this->treeControl->triggerEvent('nodeSelected',['node'=>$this]);
 	}
 	
 	public function getAvailableEvents() {
