@@ -1,5 +1,9 @@
 <?php
 namespace Webos;
+
+use SuperClosure\Serializer;
+use SuperClosure\SerializableClosure;
+
 class EventsHandler {
 
 	public $events = null;
@@ -19,7 +23,7 @@ class EventsHandler {
 		if (!($eventListener instanceof EventListener || is_callable($eventListener))) {
 			throw new \Exception('eventListener must be a function or an EventListener instance');
 		}
-
+		
 		$evData = new \stdClass();
 		$evData->eventListener = $eventListener;
 		$evData->persistent    = (bool) $persistent;
