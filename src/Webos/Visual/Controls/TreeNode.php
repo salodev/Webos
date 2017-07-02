@@ -40,6 +40,10 @@ class TreeNode extends \Webos\Visual\Control {
 		);
 	}
 	
+	/**
+	 * 
+	 * @return $this
+	 */
 	public function toggle() {
 		$expanded = $this->expanded;
 		if ($expanded) {
@@ -49,16 +53,27 @@ class TreeNode extends \Webos\Visual\Control {
 		}
 		$this->treeControl->triggerEvent('nodeToggled',['node'=>$this]);
 		$this->select();
+		return $this;
 	}
 	
+	/**
+	 * 
+	 * @return $this
+	 */
 	public function click() {
 		$this->treeControl->setSelectedNode($this);
 		$this->treeControl->triggerEvent('nodeSelected',['node'=>$this]);
+		return $this;
 	}
 	
+	/**
+	 * 
+	 * @return $this
+	 */
 	public function select() {
 		$this->treeControl->setSelectedNode($this);
 		$this->treeControl->triggerEvent('nodeSelected',['node'=>$this]);
+		return $this;
 	}
 	
 	public function getAvailableEvents() {

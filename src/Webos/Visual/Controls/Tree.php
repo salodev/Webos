@@ -5,10 +5,20 @@ class Tree extends \Webos\Visual\Control {
 
 	// private $_selectedNode = null;
 
+	/**
+	 * 
+	 * @param \Webos\Visual\Controls\TreeNode $treeNode
+	 * @return $this
+	 */
 	public function setSelectedNode(TreeNode $treeNode) {
 		$this->_selectedNode = $treeNode;
+		return $this;
 	}
 
+	/**
+	 * 
+	 * @return TreeNode;
+	 */
 	public function getSelectedNode() {
 		return $this->_selectedNode;
 	}
@@ -32,11 +42,27 @@ class Tree extends \Webos\Visual\Control {
 	 * @return TreeNode
 	 */
 	public function addNode($text, $data = null) {
-		return $this->createObject('\Webos\Visual\Controls\TreeNode', [
+		$newNode = $this->createObject('\Webos\Visual\Controls\TreeNode', [
 			'treeControl' => $this,
 			'text'        => $text,
 			'data'        => $data,
 		]);
+		$newNode->select();
+		return $newNode;
+	}
+	
+	/**
+	 * 
+	 * @param \Webos\Visual\Controls\TreeNode $node
+	 * @return $this
+	 */
+	public function removeNode(TreeNode $node) {
+		$parent = $node->getParent();
+		$parent->removeChild($node);
+		if ($parent instanceof TreeNode) {
+			$parent->select();
+		}
+		return $this;
 	}
 	
 	public function render() {

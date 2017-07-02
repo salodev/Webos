@@ -1,9 +1,6 @@
 <?php
 namespace Webos;
 
-use SuperClosure\Serializer;
-use SuperClosure\SerializableClosure;
-
 class EventsHandler {
 
 	public $events = null;

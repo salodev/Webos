@@ -186,6 +186,7 @@ abstract class VisualObject extends BaseObject {
 
 	/**
 	 * Permite obtener su padre o contenedor.
+	 * @return VisualObject
 	 */
 	final public function getParent() {
 		return $this->_parentObject;
@@ -270,7 +271,7 @@ abstract class VisualObject extends BaseObject {
 	}
 
 	/* IWithEvents */
-	public function bind($eventName, $eventListener, $persistent = true) {
+	public function bind($eventName, $eventListener, $persistent = true) {		
 		if (in_array($eventName, $this->getAvailableEvents())) {
 			$this->_eventsHandler->addListener($eventName, $eventListener, $persistent);
 		} else {
