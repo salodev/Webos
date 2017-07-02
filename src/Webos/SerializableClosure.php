@@ -6,10 +6,12 @@ namespace Webos;
  */
 class SerializableClosure {
 	
-	private $_code = null;
-	private $_thisScope = null;
+	private $_code           = null;
+	private $_thisScope      = null;
 	private $_topDefinitions = null;
-	
+	private $_codeToEval     = null;
+	private $_args           = null;
+
 	public function __construct(\Closure $closure) {
 		$this->_code = $this->_getClosureCode($closure);
 		$this->_thisScope = $this->_getThisScope($closure);
@@ -38,6 +40,8 @@ class SerializableClosure {
 	}
 	
 	private function _myEvaluate($codeToEval, $args, $thisScope) {
+		$this->_codeToEval = $codeToEval; // useful for debugging.
+		$this->_args       = $args;       // useful for debugging.
 		eval($codeToEval);
 		return $ret;
 	}
@@ -68,9 +72,10 @@ class SerializableClosure {
 		$r = new \ReflectionFunction($closure);
 		$f = $r->getFileName();
 		if (strpos($r, "eval()'d code")) {
-			return '';
+			return $this->_getTopDeclarationsFromLastEval();
+		} else {
+			return $this->_getTopDeclarationsFromFile($f);
 		}
-		return $this->_getTopDeclarationsFromFile($f);
 	}
 	
 	private function _getTopDeclarationsFromFile($f) {
@@ -93,7 +98,40 @@ class SerializableClosure {
 		return implode("\n", $extractedLines);
 	}
 	
+	private function _getTopDeclarationsFromLastEval() {
+		$lastTrace = $this->_getLastEvalFromTrace();
+		if (!$lastTrace) {
+			return '';
+		}
+		
+		$prevClosureThis = &$lastTrace['args'][2];
+				
+		if (empty($prevClosureThis)){
+			return '';
+		}
+		$r = new \ReflectionObject($prevClosureThis);
+		$f = $r->getFileName();
+		return $this->_getTopDeclarationsFromFile($f);
+		
+	}
+	
 	private function _getCodeFromLastEval() {
+		$lastTrace = $this->_getLastEvalFromTrace();
+		if (!$lastTrace) {
+			return '';
+		}
+		$prevClosureCode = $lastTrace['args'][0];
+		$prevClosureThis = &$lastTrace['args'][3];
+				
+		if (!empty($prevClosureThis)){
+			$r = new \ReflectionObject($prevClosureThis);
+		}
+		
+		return $prevClosureCode;
+		
+	}
+	
+	private function _getLastEvalFromTrace() {
 		$stack = debug_backtrace();
 		$lastTrace = null;
 		// print_r($stack);
@@ -105,21 +143,14 @@ class SerializableClosure {
 			}
 		}
 		if ($lastTrace==null){
-			return null;
+			return false;
 		}
 		
 		if (empty($lastTrace['args'])) {
-			return null;
-		}
-		$prevClosureCode = $lastTrace['args'][0];
-		$prevClosureThis = $lastTrace['args'][3];
-				
-		if (!empty($prevClosureThis)){
-			$r = new \ReflectionObject($prevClosureThis);
+			return false;
 		}
 		
-		return $prevClosureCode;
-		
+		return $lastTrace;
 	}
 	
 	private function _getDefinitionFromCode($sourceCode, $s, $e) {

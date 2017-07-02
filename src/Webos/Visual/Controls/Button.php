@@ -1,8 +1,6 @@
 <?php
 namespace Webos\Visual\Controls;
 class Button extends \Webos\Visual\Control {
-	private $_openWindowClassName  = null;
-	private $_openWindowParameters = null;
 	public function getAllowedActions() {
 		return array(
 			'press',
@@ -28,12 +26,31 @@ class Button extends \Webos\Visual\Control {
 	public function openWindow($className, array $parameters = array()) {
 		$this->_openWindowClassName  = $className;
 		$this->_openWindowParameters = $parameters;
-		$this->bind('press', array($this, 'onPressOpenWindow'));
+		$this->onPress(function() {
+			$this->getParentApp()->openWindow($this->_openWindowClassName, $this->_openWindowParameters, $this->getParentWindow());
+		});
 		return $this;
 	}
 	
-	public function onPressOpenWindow() {
-		$this->getParentApp()->openWindow($this->_openWindowClassName, $this->_openWindowParameters, $this->getParentWindow());
+	/**
+	 * 
+	 * @return $this
+	 */
+	public function closeWindow() {
+		$this->onPress(function() {
+			$this->getParentWindow()->close();
+		});
+		return $this;
+	}
+	
+	/**
+	 * 
+	 * @param \Webos\Visual\Controls\callable $eventListener
+	 * @return $this
+	 */
+	public function onPress(callable $eventListener) {
+		$this->bind('press', $eventListener);
+		return $this;
 	}
 	
 	public function render() {

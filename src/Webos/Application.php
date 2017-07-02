@@ -85,7 +85,10 @@ abstract class Application extends BaseObject {
 	 * @param array $params
 	 * @return Visual\Window
 	 */
-	public function openWindow($windowName, array $params = array(), $relativeTo = null) {
+	public function openWindow($windowName = null, array $params = array(), $relativeTo = null) {
+		if ($windowName===null) {
+			$windowName = 'Webos\Visual\Window';
+		}
 		$window = new $windowName($this, $params);
 		$this->setActiveWindow($window);
 		if ($relativeTo instanceof Visual\Window) {
