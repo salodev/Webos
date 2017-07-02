@@ -8,7 +8,7 @@ class TextBox extends Field {
 		if ($this->multiline) {
 			$html =  new \Webos\String(
 				'<textarea id="__id__" ' .
-					'class="TextFieldControl"__style__ ' .
+					'class="TextFieldControl__leaveTyping__"__style__ ' .
 					'onchange="__onchange__" ' .
 					'placeholder="__placeholder__" ' .
 					'name="__name__"__disabled__>__value__</textarea>'
@@ -16,7 +16,7 @@ class TextBox extends Field {
 		} else {
 			$html =  new \Webos\String(
 				'<input id="__id__" ' .
-					'class="TextFieldControl"__style__ ' .
+					'class="TextFieldControl__leaveTyping__"__style__ ' .
 					'type="text" ' .
 					'onchange="__onchange__" ' .
 					'name="__name__" ' .
@@ -25,7 +25,7 @@ class TextBox extends Field {
 			);
 		}
 		$onchange = "__doAction('send',{actionName:'setValue',objectId:this.id, value:this.value});";
-
+		$hasLeaveTypingEvent = $this->_eventsHandler->hasListenersForEventName('leaveTyping');
 		$html->replaces(array(
 			'__id__'          => $this->getObjectID(),
 			'__onchange__'    => $onchange,
@@ -34,6 +34,7 @@ class TextBox extends Field {
 			'__placeholder__' => $this->placeholder,
 			'__style__'       => $this->getInlineStyle(),
 			'__disabled__'    => $this->disabled ? ' disabled="disabled"' : '',
+			'__leaveTyping__' => $hasLeaveTypingEvent ? ' leaveTyping' : '',
 		));
 
 		return $html;
