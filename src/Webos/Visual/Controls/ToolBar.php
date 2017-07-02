@@ -1,6 +1,8 @@
 <?php
 namespace Webos\Visual\Controls;
 class ToolBar extends \Webos\Visual\Control {
+	
+	use \Webos\Visual\ControlsFactory;
 
 	public function toolItems() {
 		return $this->_childObjects;//->getObjectsByClassName('ToolItem');

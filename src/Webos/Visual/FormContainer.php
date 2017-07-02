@@ -172,6 +172,13 @@ trait FormContainer {
 		return $this->createObject('\Webos\Visual\Controls\Frame', $options);
 	}
 
+	/**
+	 * 
+	 * @param type $caption
+	 * @param type $width
+	 * @param array $params
+	 * @return \Webos\Visual\Controls\Button
+	 */
 	public function addHorizontalButton($caption, $width = 80, array $params = array()) {
 		if (!$this->hasHorizontalButtons) {
 			$this->hasHorizontalButtons = true;

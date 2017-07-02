@@ -21,6 +21,10 @@ class EventsHandler {
 			throw new \Exception('eventListener must be a function or an EventListener instance');
 		}
 		
+		if ($eventListener instanceof \Closure) {
+			$eventListener = new SerializableClosure($eventListener);
+		}
+		
 		$evData = new \stdClass();
 		$evData->eventListener = $eventListener;
 		$evData->persistent    = (bool) $persistent;

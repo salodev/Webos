@@ -38,4 +38,17 @@ class TextBox extends Field {
 
 		return $html;
 	}
+	
+	public function leaveTyping($value) {
+		$this->setValue($value);
+		$this->triggerEvent('leaveTyping');
+	}
+	
+	public function getAvailableEvents() {
+		return array_merge(parent::getAvailableEvents(), ['leaveTyping']);
+	}
+	
+	public function getAllowedActions() {
+		return array_merge(parent::getAllowedActions(), ['leaveTyping']);
+	}
 }
