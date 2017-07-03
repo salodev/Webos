@@ -55,6 +55,11 @@ abstract class Field extends \Webos\Visual\Control {
 			'value' => $text,
 		));
 	}
+	
+	public function onUpdateValue(callable $callback) {
+		$this->bind('updateValue', $callback);
+		return $this;
+	}
 
 	public function getAllowedActions() {
 		return array(

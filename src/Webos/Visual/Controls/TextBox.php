@@ -45,6 +45,11 @@ class TextBox extends Field {
 		$this->triggerEvent('leaveTyping');
 	}
 	
+	public function onLeaveTyping(callable $callback) {
+		$this->bind('leaveTyping', $callback);
+		return $this;
+	}
+	
 	public function getAvailableEvents() {
 		return array_merge(parent::getAvailableEvents(), ['leaveTyping']);
 	}

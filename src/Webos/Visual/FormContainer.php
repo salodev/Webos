@@ -124,10 +124,14 @@ trait FormContainer {
 	/**
 	 * @return \Webos\Visual\Controls\ToolBar
 	 */
-	public function createToolBar() {
+	public function createToolBar(array $params = []) {
 		$this->topControl += 20;
 		$this->maxTopControl += 20;
-		return $this->createObject('\Webos\Visual\Controls\ToolBar');
+		return $this->createObject('\Webos\Visual\Controls\ToolBar', array_merge([
+			'top' => '0',
+			'left' => '0',
+			'right' => '0',
+		],$params));
 	}
 	
 	/**

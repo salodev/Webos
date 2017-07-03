@@ -100,9 +100,7 @@ class TreeNode extends \Webos\Visual\Control {
 		$expand   = " + ";
 		$collapse = " - ";
 		if ($this->expanded) {
-			foreach($this->getChildObjects() as $child) {
-				$content .= $child->render();
-			}
+			$content = $this->getChildObjects()->render();
 		}
 		
 		$toggleClass = 'none';

@@ -28,7 +28,7 @@ class ToolBar extends \Webos\Visual\Control {
 	}
 	
 	public function render() {
-		$html = '<div class="Toolbar">';
+		$html = '<div class="Toolbar"'.$this->getInlineStyle(true).'>';
 		$html .= $this->toolItems()->render();
 		$html .= '</div>';
 		return $html;

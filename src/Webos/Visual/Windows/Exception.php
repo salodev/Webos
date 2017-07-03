@@ -12,7 +12,8 @@ class Exception extends Window {
 			throw new \Exception('ExceptionWindow must be open with exception parameter');
 		}
 		
-		$e = $this->exception = $params['e'];
+		// $e = $this->exception = $params['e'];
+		$e = $params['e'];
 		$this->title = get_class($e) . ' thrown:';
 		$this->createLabel("'{$e->getMessage()}' in file {$e->getFile()} ({$e->getLine()})",[
 			'top' => '0',
@@ -25,7 +26,7 @@ class Exception extends Window {
 			'right' => '0',
 			'bottom' => '94px',
 		]);
-		$this->trace = $e->getTrace();
+		// $this->trace = $e->getTrace();
 		$this->callStack->addColumn('id', '#', '30px', false, false, 'right');
 		$this->callStack->addColumn('function', 'Function', '500px');
 		$this->callStack->addColumn('location', 'Location', '300px');
@@ -34,16 +35,34 @@ class Exception extends Window {
 			$class = &$info['class'];
 			$type = &$info['type'];
 			$argumentsString = '';
-			if (count($info['args'])==1 && is_string($info['args'][0])) {
-				$argumentsString = "'{$info['args'][0]}'";
+			$argsList = [];
+			if (count($info['args'])) {
+				foreach($info['args'] as $arg) {
+					if (is_string($arg)) {
+						$argsList[] = "'{$arg}'";
+					} elseif (is_numeric($arg)) {
+						$argsList[] = "{$arg}";
+					} elseif(is_callable($arg)) {
+						$argsList[] = "closure()";
+					} elseif (is_object($arg)) {
+						$argsList[] = get_class($arg)."(...)";
+					} elseif (is_array($arg)) {
+						$argsList[] = 'array('.count($arg).')';
+					} elseif (is_null($arg)) {
+						$argsList[] = 'NULL';
+					} else {
+						$argsList[] = '??'. gettype($arg).'??';
+					}
+				}
+				$argumentsString = implode(', ', $argsList);
 			}
 			$rows[] = [
 				'id' => "$k ",
 				'function' => $class . $type . $info['function'] . '(' . $argumentsString . ')',
 				'location' => '../' . basename($info['file']) . ' (' . $info['line']. ')',
-				'file' => $info['file'],
-				'line' => $info['line'],
-				'args' => $info['args'],
+				'file' => &$info['file'],
+				'line' => &$info['line'],
+				'args' => '', //&$info['args'],
 			];
 		}
 		$this->callStack->rows = $rows;
