@@ -17,12 +17,12 @@ class EventsHandler {
 
 		$this->checkAvailableEvent($eventName);
 
-		if (!($eventListener instanceof EventListener || is_callable($eventListener))) {
-			throw new \Exception('eventListener must be a function or an EventListener instance');
+		if (!is_callable($eventListener)) {
+			throw new \Exception('eventListener must be a function or an Closure instance');
 		}
 		
 		if ($eventListener instanceof \Closure) {
-			$eventListener = new SerializableClosure($eventListener);
+			$eventListener = new Closure($eventListener);
 		}
 		
 		$evData = new \stdClass();
@@ -72,25 +72,17 @@ class EventsHandler {
 	}
 
 	private function call($eventListener, $source, $eventName, $params) {
-		if (is_callable($eventListener)) {
-			return $this->callFunction($eventListener, $source, $eventName, $params);
-		} else {
-			return $eventListener->execute($source, $eventName, $params);
-		}
-	}
-
-	private function callFunction($fnc, $source, $eventName, $params) {
-		if (is_array($fnc)) {
-			if (isset($fnc[0], $fnc[1])) {
-				$object = $fnc[0];
-				$method = $fnc[1];
+		if (is_array($eventListener)) {
+			if (isset($eventListener[0], $eventListener[1])) {
+				$object = $eventListener[0];
+				$method = $eventListener[1];
 
 				return $object->$method($source, $eventName, $params);
 			}
 		}
 
-		if (is_callable($fnc)) {
-			return $fnc($source, $eventName, $params);
+		if (is_callable($eventListener)) {
+			return $eventListener($source, $eventName, $params);
 		}
 	}
 

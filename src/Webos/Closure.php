@@ -4,7 +4,7 @@ namespace Webos;
 /**
  * ESTO SI QUE ME HA HECHO PARIR!!!!!
  */
-class SerializableClosure {
+class Closure {
 	
 	private $_code           = null;
 	private $_thisScope      = null;

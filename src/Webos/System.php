@@ -2,81 +2,27 @@
 namespace Webos;
 class System {
 
-	private $_logHandler     = null;
 	private $_eventsHandler  = null;
 	private $_sessionHandler = null;
-	private $_authSystem     = null;
-	private $_sda = null;
 	private $_workSpaceName  = null;
 
 	private $_workSpace = null;
 	private $_config = null;
 
 	public function __construct() {
-		
-		//$logHandler = new LogHandler();
-		//$logHandler->setSystemEnvironment($this);
-		
-		//$this->setLogHandler($logHandler);
-		$this->setEventsHandler(new EventsHandler());
-		// $this->setSessionHandler(new SessionHandler());
-		// $this->setAuthSystem(new AuthSystem($this));
+		$this->_eventsHandler = new EventsHandler();
 	}
 
 	public function start() {
-		$this->triggerEvent('start', $this);
-		$this->triggerEvent('globalConfigRequested', $this);
-		// $this->triggerEvent('sessionHandlerRequested', $this);
-		// $this->triggerEvent('systemDataAccessRequested', $this);
-
-		if ($this->_sessionHandler instanceof Session) {
-			$this->triggerEvent('ready', $this);
-		}
-	}
-
-	public function setLogHandler(ILogHandler $logHandler){
-		$this->_logHandler = $logHandler;
-	}
-
-	public function getLogHandler() {
-		return $this->_logHandler;
-	}
-
-	public function setEventsHandler(EventsHandler $eventsHandler) {
-		$this->_eventsHandler = $eventsHandler;
-	}
-
-	public function getEventsHandler(){
-		return $this->_eventsHandler;
-	}
-
-	public function setSessionHandler($sessionHandler) {
-		$this->_sessionHandler = $sessionHandler;
-	}
-
-	public function getSessionHandler() {
-		return $this->_sessionHandler;
-	}
-	
-	public function setAuthSystem(AuthSystem $instance) {
-		$this->_authSystem = $instance;
+		// $this->triggerEvent('start', $this);
+		// $this->triggerEvent('globalConfigRequested', $this);
 	}
 	
 	/**
-	 * @return AuthSystem;
+	 * 
+	 * @param string $name
+	 * @return \Webos\WorkSpace
 	 */
-	public function getAuthSystem() {
-		return $this->_authSystem;
-	}
-
-	public function setSystemDataAccess($sda) {
-		$this->_sda = $sda;
-	}
-
-	public function getSystemDataAccess() {
-		return $this->_sda;
-	}
-
 	public function createWorkSpace($name) {
 		$ws = new WorkSpace($name);
 		$ws->setSystemEnvironment($this);
@@ -154,57 +100,25 @@ class System {
 		file_put_contents($wsFileName, serialize($this->_workSpace), FILE_IGNORE_NEW_LINES);
 	}
 
-	public function getWorkSpace($sessionId = null) {
-
+	/**
+	 * 
+	 * @return WorkSpace
+	 * @throws \Exception
+	 */
+	public function getWorkSpace() {
 		if ($this->_workSpace) {
 			return $this->_workSpace;
 		}
-
-		$sess = $this->_sessionHandler->getSession($sessionId);
-
-		if (!$sess) {
-			return false;
-		}
-
-		$user = $sess->getUser();
-
-		$auth = new AuthSystem($this);
-
-		$ws = $auth->getWorkSpace($user);
-
-		if (!$ws) {
-			$ws = $auth->createWorkspace($user);
-		}
-		
-		/**
-		 * NOTA:
-		 * Por accidente (o por el diseño del sistema) queda almacenado
-		 * en el WorkSpace la instancia del objeto System. Esto es incorrecto
-		 * pero es necesario que el WorkSpace pueda enviar mensajes al
-		 * sistema que lo contiene.
-		 * 
-		 * Es por eso que cuando se recupera del disco duro, tiene que 
-		 * volver a indicarse la instacia actual del sistema para que
-		 * trabajen los controladores que se configuran cuando éste se
-		 * inicia.
-		 **/ 
-		$ws->setSystemEnvironment($this);
-		$this->_workSpace = $ws;
-
-		$this->triggerEvent('loadedWorkSpace', $this, array(
-			'workspace'=>$ws
-		));
-
-		return $ws;
+		throw new \Exception('No workspace loaded');
 	}
 
 	public function addEventListener($eventName, $eventListener, $persistent = true) {
-		$this->getEventsHandler()->addListener($eventName, $eventListener, $persistent);
+		$this->_eventsHandler->addListener($eventName, $eventListener, $persistent);
 		return $this;
 	}
 
 	public function triggerEvent($eventName, $source, $params = null) {
-		$this->getEventsHandler()->trigger($eventName, $source, $params);
+		$this->_eventsHandler->trigger($eventName, $source, $params);
 		return $this;
 	}
 
@@ -221,23 +135,6 @@ class System {
 
 	public function getAllConfig() {
 		return $this->_config;
-	}
-
-	public function authUser($username, $password) {
-		// $auth = new AuthSystem($this);
-		$auth = $this->getAuthSystem();
-		// $auth = new AuthWideExchangeAdmin($this);
-		$session = $auth->authUser($username, $password);
-
-		if ($session instanceof Session) {
-			$this->triggerEvent('sessionCreated', $this, array(
-				'sessionId'=>$session->getSessionId(),
-			));
-			
-			return $session;
-		}
-
-		return false;
 	}
 
 	public function __destruct() {

@@ -157,10 +157,6 @@ class WorkSpace {
 		return $this;
 	}
 
-	public function authUser($username, $password) {
-		$this->getSystemEnvironment()->authUser($username, $password);
-	}
-
 	private function _getNewApplicationId() {
 		$appId = ($this->_applications->count() + 1);
 		$this->_lastApplicationId = $appId;
