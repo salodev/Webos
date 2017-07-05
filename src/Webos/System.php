@@ -3,7 +3,6 @@ namespace Webos;
 class System {
 
 	private $_eventsHandler  = null;
-	private $_sessionHandler = null;
 	private $_workSpaceName  = null;
 
 	private $_workSpace = null;
