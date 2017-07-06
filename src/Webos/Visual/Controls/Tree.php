@@ -1,9 +1,15 @@
 <?php
 namespace Webos\Visual\Controls;
+use \Exception;
+use \Webos\Visual\Controls\DataTable\Column;
 
 class Tree extends \Webos\Visual\Control {
 
 	// private $_selectedNode = null;
+	
+	public function initialize() {
+		$this->columns = new \Webos\Collection();
+	}
 
 	/**
 	 * 
@@ -22,8 +28,6 @@ class Tree extends \Webos\Visual\Control {
 	public function getSelectedNode() {
 		return $this->_selectedNode;
 	}
-
-	public function initialize() {}
 	
 	public function getAllowedActions() {
 		return array();
@@ -67,7 +71,7 @@ class Tree extends \Webos\Visual\Control {
 	}
 	
 	public function render() {
-		$html = new \Webos\String('<ul id="__id__" class="TreeControl"__style__ >__content__</ul>');
+		$html = new \Webos\String('<ul id="__id__" class="Tree"__style__ >__content__</ul>');
 		$onchange = "__doAction('send',{actionName:'setValue',objectId:this.id, value:this.value});";
 
 		$content = '';
@@ -82,5 +86,26 @@ class Tree extends \Webos\Visual\Control {
 		));
 
 		return $html;
+	}
+	
+	/**
+	 * 
+	 * @param string $fieldName
+	 * @param string $label
+	 * @param string $width
+	 * @param bool   $allowOrder
+	 * @param bool   $linkable
+	 * @param string $align
+	 * @return Column
+	 */
+	public function addColumn($fieldName, $label, $width='100px', $allowOrder=false, $linkable=false, $align = 'left') {
+		// $column = new ColumnDataTable();
+		$column = new Column($label, $fieldName);
+		$column->width      = $width;
+		$column->allowOrder = $allowOrder;
+		$column->linkable   = $linkable;
+		$column->align      = $align;
+		$this->columns->add($column);
+		return $column;
 	}
 }

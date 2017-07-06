@@ -83,10 +83,11 @@ class TreeNode extends \Webos\Visual\Control {
 	public function render() {
 
 		$html = new \Webos\String(
-			'<li id="__id__" class="NodeTree__selected__"__style__ onclick="__onclick__">' .
-				'<div style="min-width:600px;">' . 
+			'<li id="__id__" class="TreeNode"__style__ onclick="__onclick__">' .
+				'<div class="row __selected__">' . 
 					'<span class="toggle __toggleClass__" onclick="__onclickToggle__"></span>' .
-					'__text__'.
+					'<div class="title">__text__</div>'.
+					'__columns__' .
 				'</div>'.
 				'<ul>__content__</ul>'.
 			'</li>'
@@ -118,8 +119,23 @@ class TreeNode extends \Webos\Visual\Control {
 			'__onclick__'       => $onclick,
 			'__ondblclick__'    => $ondblclick,
 			'__onclickToggle__' => $onclickToggle,
+			'__columns__'       => $this->_renderColumns(),
 		))->replace('__id__', $this->getObjectID());
 
+		return $html;
+	}
+	
+	private function _renderColumns() {
+		$html = '';
+		foreach($this->treeControl->columns as $column) {
+			$data = $this->data;
+			$value = &$data[$column->fieldName];
+			$styles = $this->getAsStyles([
+				'width' => $column->width,
+				'text-align' => $column->align,
+			]);
+			$html .= '<div class="column" style="'.$styles.'">' . $value . '</div>';
+		}
 		return $html;
 	}
 }
