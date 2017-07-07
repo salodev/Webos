@@ -6,6 +6,8 @@ class SystemInterface {
 	protected $_system        = null;
 	protected $_notifications = null;
 	private   $_sessionId     = null;
+	public $lastObjectID = null;
+	public $updateObject = true;
 
 	public function __construct() {
 
@@ -32,7 +34,9 @@ class SystemInterface {
 		$this->_system = $system;
 	}
 
-	public function action($actionName, $objectID, $parameters) {
+	public function action($actionName, $objectID, $parameters, $updateObject = true) {
+		$this->lastObjectID = $objectID;
+		$this->updateObject = $updateObject;
 		$ws = $this->_system->getWorkSpace(/*$this->getSessionId()*/);
 		$apps = $object = $ws->getApplications();
 		// inspect($apps); die();
@@ -133,6 +137,11 @@ class SystemInterface {
 	 * @return <type>
 	 */
 	public function checkNeccessary($objectId) {
+		if ($objectId == $this->lastObjectID) {
+			if (!$this->updateObject) {
+				return false;
+			}
+		}
 		$notif = $this->getNotifications();
 
 		// Verifico objetos a crear.
