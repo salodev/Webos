@@ -52,7 +52,7 @@ class Tree extends \Webos\Visual\Control {
 			'data'        => $data,
 		]);
 		// $this->lastchange = microtime(true);
-		$newNode->select();
+		// $newNode->select();
 		return $newNode;
 	}
 	
