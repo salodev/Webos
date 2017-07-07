@@ -7,7 +7,7 @@ class SystemInterface {
 	protected $_notifications = null;
 	private   $_sessionId     = null;
 	public $lastObjectID = null;
-	public $updateObject = true;
+	public $ignoreUpdateObject = false;
 
 	public function __construct() {
 
@@ -34,9 +34,9 @@ class SystemInterface {
 		$this->_system = $system;
 	}
 
-	public function action($actionName, $objectID, $parameters, $updateObject = true) {
+	public function action($actionName, $objectID, $parameters, $ignoreUpdateObject = false) {
 		$this->lastObjectID = $objectID;
-		$this->updateObject = $updateObject;
+		$this->ignoreUpdateObject = $ignoreUpdateObject;
 		$ws = $this->_system->getWorkSpace(/*$this->getSessionId()*/);
 		$apps = $object = $ws->getApplications();
 		// inspect($apps); die();
@@ -138,7 +138,7 @@ class SystemInterface {
 	 */
 	public function checkNeccessary($objectId) {
 		if ($objectId == $this->lastObjectID) {
-			if (!$this->updateObject) {
+			if ($this->ignoreUpdateObject) {
 				return false;
 			}
 		}
