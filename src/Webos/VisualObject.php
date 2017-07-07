@@ -170,8 +170,12 @@ abstract class VisualObject extends BaseObject {
 	 * @return $this
 	 */
 	public function removeChild(VisualObject $child){
+		$objectID = $child->getObjectID();
 		$childs = $this->getChildObjects();
 		$childs->removeObject($child);
+		$this->getParentApp()->triggerSystemEvent('removeObject', $this, array(
+			'objectId' => $objectID,
+		));
 		return $this;
 	}
 	
@@ -180,7 +184,18 @@ abstract class VisualObject extends BaseObject {
 	 * @return $this
 	 */
 	public function removeChilds() {
-		$this->getChildObjects()->clear();
+		$childs = $this->getChildObjects();
+		$childsID = [];
+		foreach($childs as $child) { 
+			$childsID[] = $child->getObjectID();
+		}
+		$childs->clear();
+		foreach($childsID as $objectID) {
+			$this->getParentApp()->triggerSystemEvent('removeObject', $this, array(
+				'objectId' => $objectID,
+			));
+		}
+		
 		return $this;
 	}
 
