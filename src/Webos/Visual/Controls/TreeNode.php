@@ -85,7 +85,8 @@ class TreeNode extends \Webos\Visual\Control {
 		$html = new \Webos\String(
 			'<li id="__id__" class="TreeNode"__style__ onclick="__onclick__">' .
 				'<div class="row __selected__">' . 
-					'<span class="toggle __toggleClass__" onclick="__onclickToggle__"></span>' .
+					($this->hasChilds===false ? '' :
+					'<span class="toggle __toggleClass__" onclick="__onclickToggle__"></span>' ).
 					'<div class="title">__text__</div>'.
 					'__columns__' .
 				'</div>'.
@@ -127,14 +128,19 @@ class TreeNode extends \Webos\Visual\Control {
 	
 	private function _renderColumns() {
 		$html = '';
+		$width = 0;
 		foreach($this->treeControl->columns as $column) {
+			$width += $column->width/1;
 			$data = $this->data;
-			$value = &$data[$column->fieldName];
+			$value = \salodev\Utils::Ifnull($data[$column->fieldName], '&nbsp;');
 			$styles = $this->getAsStyles([
 				'width' => $column->width,
 				'text-align' => $column->align,
 			]);
 			$html .= '<div class="column" style="'.$styles.'">' . $value . '</div>';
+		}
+		if ($width) {
+			$html = '<div class="columns" style="width:'.$width.'px">' . $html . '</div>';
 		}
 		return $html;
 	}

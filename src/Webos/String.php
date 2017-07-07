@@ -58,6 +58,15 @@ class String {
 	public function __toString() {
 		return $this->_string;
 	}
+	
+	/**
+	 * 
+	 * @param string $var
+	 * @return \Webos\String
+	 */
+	static public function Create($var = null) {
+		return new String($var);
+	}
 }
 
 function String($string) {

@@ -16,9 +16,15 @@ class ToolBar extends \Webos\Visual\Control {
 		return array();
 	}
 
+	/**
+	 * 
+	 * @param string $title
+	 * @param array $options
+	 * @return Button
+	 */
 	public function addButton($title, array $options = array()) {
-		return $this->createObject('\Webos\Visual\Controls\ToolItem', array_merge(array(
-			'title'=>$title,
+		return $this->createObject('\Webos\Visual\Controls\Button', array_merge(array(
+			'value'=>$title,
 			'left'=>'5px'), 
 		$options));
 	}
