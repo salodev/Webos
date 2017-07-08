@@ -37,7 +37,7 @@ class MultiTab extends \Webos\Visual\Control {
 	 * @return TabFolder
 	 */
 	public function createTab($title) {
-		return $this->createObject(__NAMESPACE__ . '\TabFolder', array(
+		return $this->createObject(TabFolder::class, array(
 			'title' => $title,
 		));
 	}

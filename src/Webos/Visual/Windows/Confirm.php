@@ -1,6 +1,7 @@
 <?php
 namespace Webos\Visual\Windows;
 use \Webos\Visual\Window;
+use \Webos\Visual\Controls\Label;
 class Confirm extends Window {
 
 	public function  getInitialAttributes() {
@@ -14,7 +15,7 @@ class Confirm extends Window {
 	public function initialize() {
 		$this->title = 'Confirmar';
 		$this->height = '130px';
-		$this->createObject('\Webos\Visual\Controls\Label', array(
+		$this->createObject(Label::class, array(
 			'text' => $this->message,
 			'top'  => '50px',
 			'left' => '25px',

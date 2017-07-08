@@ -10,7 +10,7 @@ class TreeNode extends \Webos\Visual\Control {
 	 * @return TreeNode
 	 */
 	public function addNode($text, $data = null) {
-		return $this->createObject('\Webos\Visual\Controls\TreeNode', [
+		return $this->createObject(TreeNode::class, [
 			'treeControl' => $this->treeControl,
 			'text'        => $text,
 			'data'        => $data,

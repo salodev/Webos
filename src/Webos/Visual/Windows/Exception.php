@@ -36,7 +36,7 @@ class Exception extends Window {
 			$type = &$info['type'];
 			$argumentsString = '';
 			$argsList = [];
-			if (count($info['args'])) {
+			if (!empty($info['args'])) {
 				foreach($info['args'] as $arg) {
 					if (is_string($arg)) {
 						$argsList[] = "'{$arg}'";
@@ -56,10 +56,12 @@ class Exception extends Window {
 				}
 				$argumentsString = implode(', ', $argsList);
 			}
+			$file = &$info['file'];
+			$line = &$info['line'];
 			$rows[] = [
 				'id' => "$k ",
 				'function' => $class . $type . $info['function'] . '(' . $argumentsString . ')',
-				'location' => '../' . basename($info['file']) . ' (' . $info['line']. ')',
+				'location' => '../' . basename($file) . ' (' . $line . ')',
 				'file' => &$info['file'],
 				'line' => &$info['line'],
 				'args' => '', //&$info['args'],

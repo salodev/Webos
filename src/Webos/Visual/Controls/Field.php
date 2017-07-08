@@ -48,11 +48,28 @@ abstract class Field extends \Webos\Visual\Control {
 		$left = $this->left + $this->width - $width;
 		//die("{$this->left} + {$this->width} - {$width} = {$left}");
 		$this->width = ($this->width - $width - 5) . 'px';
-		$this->button = $this->getParentWindow()->createObject('\Webos\Visual\Controls\Button', array(
+		$this->button = $this->getParentWindow()->createObject(Button::class, array(
 			'top' => $top,
 			'left' => $left . 'px',
 			'width' => $width . 'px',
 			'value' => $text,
+		));
+		return $this->button;
+	}
+	
+	public function attachLabel($name, $width = 200, $left = 10) {
+		$top = $this->top;
+		$left += $this->left;
+		if ($this->button instanceof Button) {
+			$left += $this->button->width;
+		}
+		//die("{$this->left} + {$this->width} - {$width} = {$left}");
+		$this->width = ($this->width - $width - 5) . 'px';
+		$this->label = $this->getParentWindow()->createObject(Label::class, array(
+			'top'   => $top,
+			'left'  => $left . 'px',
+			'width' => $width . 'px',
+			'name'  => $name,
 		));
 		return $this->button;
 	}

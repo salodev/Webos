@@ -9,7 +9,7 @@ class Bar extends \Webos\Visual\Control {
 
 	public function __get_text() {
 		if (empty($this->_data['text'])) {
-			$count = $this->getParent()->getObjectsByClassName('\Webos\Visual\Controls\Menu\Bar')->count();
+			$count = $this->getParent()->getObjectsByClassName(Bar::class)->count();
 			return 'MenuBar' . $count;
 		}
 	}
@@ -24,10 +24,10 @@ class Bar extends \Webos\Visual\Control {
 	}
 	
 	public function createButton($text) {
-		$menuButton = $this->createObject('\Webos\Visual\Controls\Menu\Button', array(
+		$menuButton = $this->createObject(Button::class, array(
 			'text' => $text,
 		));
-		return $menuButton->createObject('\Webos\Visual\Controls\Menu\ListItems');
+		return $menuButton->createObject(ListItems::class);
 	}
 	
 	public function render() {

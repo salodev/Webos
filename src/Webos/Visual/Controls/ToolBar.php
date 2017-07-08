@@ -23,14 +23,14 @@ class ToolBar extends \Webos\Visual\Control {
 	 * @return Button
 	 */
 	public function addButton($title, array $options = array()) {
-		return $this->createObject('\Webos\Visual\Controls\Button', array_merge(array(
+		return $this->createObject(Button::class, array_merge(array(
 			'value'=>$title,
 			'left'=>'5px'), 
 		$options));
 	}
 	
 	public function addSeparator() {
-		$this->createObject('\Webos\Visual\Controls\ToolBarSeparator');
+		$this->createObject(VerticalSeparator::class);
 	}
 	
 	public function render() {

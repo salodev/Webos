@@ -21,14 +21,14 @@ class ListItems extends \Webos\Visual\Control {
 	}
 	
 	public function createItem($text, $shortCut = '', array $params = array()) {
-		return $this->createObject('\Webos\Visual\Controls\Menu\Item', array_merge($params, array(
+		return $this->createObject(Item::class, array_merge($params, array(
 			'text' => $text,
 			'shortCut' => $shortCut,
 		)));
 	}
 	
 	public function createSeparator() {
-		return $this->createObject('\Webos\Visual\Controls\Menu\Separator');
+		return $this->createObject(Separator::class);
 	}
 	
 	public function render() {

@@ -36,14 +36,14 @@ class Item extends \Webos\Visual\Control {
 	
 	public function createSeparator() {
 		$listItems = $this->_getListItems();
-		return $listItems->createObject('\Webos\Visual\Controls\Menu\Separator');
+		return $listItems->createObject(Separator::class);
 	}
 	
 	private function _getListItems() {
-		$ret = $this->getObjectsByClassName(__NAMESPACE__ . '\ListItems');
+		$ret = $this->getObjectsByClassName(ListItems::class);
 		if ($ret->count() != 1) {
-			$this->createObject(__NAMESPACE__ . '\ListItems');
-			$ret = $this->getObjectsByClassName(__NAMESPACE__ . '\ListItems');
+			$this->createObject(ListItems::class);
+			$ret = $this->getObjectsByClassName(ListItems::class);
 		}
 		$listItems = $ret->item(0);
 		return $listItems;
