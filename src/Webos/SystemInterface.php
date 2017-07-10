@@ -48,8 +48,7 @@ class SystemInterface {
 		}
 
 		// Se activa la aplicación antes de efectuar la acción. //
-		$app = $object->getParentApp();
-		$ws->setActiveApplication($app);
+		$ws->setActiveApplication($object->getApplication());
 
 		// Se activa el formulario al que pertenece el objeto antes
 		// de efectuar la acción //

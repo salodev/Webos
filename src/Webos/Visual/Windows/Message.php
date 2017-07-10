@@ -13,20 +13,20 @@ class Message extends Window {
 
 	}
 
-	public function  getInitialAttributes() {
+	public function  getInitialAttributes(): array {
 		return array(
 			'height' => 100,
 			'width'  => 200
 		);
 	}
-	public function  getAllowedActions() {
+	public function  getAllowedActions(): array {
 		return array(
 			'close',
 			'move'
 		);
 	}
 
-	public function  getAvailableEvents() {
+	public function  getAvailableEvents(): array {
 		return array(
 			'close',
 			'move'
@@ -35,10 +35,10 @@ class Message extends Window {
 
 	public function close() {
 		$this->triggerEvent('close');
-		$this->getParentApp()->closeWindow($this);
+		$this->getApplication()->closeWindow($this);
 	}
 	
-	public function render() {
+	public function render(): string {
 		$template = $this->_getRenderTemplate();
 
 		$content = new \Webos\StringChar(

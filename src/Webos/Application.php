@@ -3,7 +3,7 @@ namespace Webos;
 use \Webos\Visual\Container;
 use \Webos\Visual\Window;
 
-abstract class Application extends BaseObject {
+abstract class Application {
 
 	protected $_activeWindow        = null;
 	protected $_activeControl       = null;
@@ -13,26 +13,20 @@ abstract class Application extends BaseObject {
 	protected $_eventsHandler       = null;
 	protected $_systemEventsHandler = null;
 	
-	final public function __construct(WorkSpace $workSpace, array $data = array()) {
-		
-		parent::__construct($data);
+	final public function __construct(WorkSpace $workSpace) {
 
 		$this->_workSpace           = $workSpace;
 		$this->_config              = array();
 		$this->_visualObjects       = new ObjectsCollection();
 		$this->_eventsHandler       = new EventsHandler();
 		$this->_systemEventsHandler = new EventsHandler();
-
-		$workSpace->getApplications()->add($this);
-
-		$this->initialize();
 	}
 
 	abstract public function main(array $data = array());
+	
+	public function signalFinish() {}
 
-	public function initialize() {}
-
-	public function finish() {
+	final public function finish() {
 		$this->_workSpace->finishApplication($this);
 	}
 

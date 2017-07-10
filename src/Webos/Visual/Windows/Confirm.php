@@ -4,7 +4,7 @@ use \Webos\Visual\Window;
 use \Webos\Visual\Controls\Label;
 class Confirm extends Window {
 
-	public function  getInitialAttributes() {
+	public function  getInitialAttributes(): array {
 		$attrs = parent::getInitialAttributes();
 
 		return array_merge($attrs, array(
@@ -22,7 +22,7 @@ class Confirm extends Window {
 		));
 	}
 
-	public function getAllowedActions() {
+	public function getAllowedActions(): array {
 		return array(
 			'confirm',
 			'close',
@@ -30,7 +30,7 @@ class Confirm extends Window {
 		);
 	}
 
-	public function  getAvailableEvents() {
+	public function  getAvailableEvents(): array {
 		return array(
 			'confirm',
 			'close',
@@ -45,10 +45,10 @@ class Confirm extends Window {
 
 	public function close() {
 		$this->triggerEvent('close');
-		$this->getParentApp()->closeWindow($this);
+		$this->getApplication()->closeWindow($this);
 	}
 	
-	public function render() {
+	public function render(): string {
 		$template = $this->_getRenderTemplate();
 
 		$content = new \Webos\StringChar(

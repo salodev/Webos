@@ -54,4 +54,14 @@ class ApplicationsCollection extends Collection {
 		}
 		return $list;
 	}
+	
+	public function removeApplication(Application $applicationToRemove): self {
+		foreach($this as $application) {
+			if ($application===$applicationToRemove){
+				parent::remove($this->key());
+				break;
+			}
+		}
+		return $this;
+	}
 }

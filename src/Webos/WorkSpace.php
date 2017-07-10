@@ -17,20 +17,20 @@ class WorkSpace {
 	/**
 	 * @returns WorkSpace;
 	 */
-	static public function LoadFromFile($pathToFile) {
+	static public function LoadFromFile(string $pathToFile): self {
 		$file = FileHandler::openFile($pathToFile, 'readwrite');
 		$ws = unserialize($file->getContent());
 		return $ws['ws'];
 	}
 
-	public function __construct($name) {
+	public function __construct(string $name) {
 		$this->_name = $name;
 		$this->_applications = new ApplicationsCollection();
 		$this->_eventsHandler = new EventsHandler();
 		return $this;
 	}
 	
-	public function getName() {
+	public function getName(): string {
 		return $this->_name;
 	}
 
@@ -38,26 +38,17 @@ class WorkSpace {
 		return $this->_applications;
 	}
 
-	public function getApplicationByID($id) {
-		foreach($this->_applications as $application) {
-			if ($application->getApplicationID() == $id) {
-				return $application;
-			}
-		}
-
-		return null;
-	}
-
-	public function startApplication($name, array $params = array()) {
+	public function startApplication(string $name, array $params = []): self {
 
 		$appClassName = $name;// . 'Application';
 
-		$application = new $appClassName($this, $params);
+		$application = new $appClassName($this);
 		
 		$this->triggerEvent('startApplication', $this, array(
 			'object' => $application,
 		));
 		
+		$this->getApplications()->add($application);
 		$this->setActiveApplication($application);
 		$application->main($params);
 
@@ -77,26 +68,21 @@ class WorkSpace {
 	 * @param <type> $key
 	 * @return WorkSpace
 	 */
-	public function finishApplication(Application $application, $method = 1) {
-		$applicationKey = 0;
-		foreach($this->_applications as $test) {
-			if ($test === $application) {
-				$applicationKey = $this->_applications->key();
-				break;
-			}
-		}
+	public function finishApplication(Application $application): self {
 
 		$this->triggerEvent('beforeFinishApplication', $this, array(
 			'object' => $application,
 		));
+		
+		$application->signalFinish();
 
-		$windows = $application->getObjectsByClassName('\Webos\Visual\Window');
+		$windows = $application->getObjectsByClassName(\Webos\Visual\Window::class);
 		
 		foreach($windows as $window) {
 			$application->closeWindow($window);
 		}
 
-		$this->_applications->remove($applicationKey);
+		$this->_applications->removeApplication($application);
 
 		$this->triggerEvent('finishApplication', $this, array(
 			'object' => $application,

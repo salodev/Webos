@@ -76,10 +76,8 @@ class Window extends Container {
 	}
 
 	public function close() {
-		$id = $this->getObjectID();
-
 		if ($this->triggerEvent('close')) {
-			$this->getParentApp()->closeWindow($this);
+			$this->getApplication()->closeWindow($this);
 		}
 	}
 
@@ -99,7 +97,7 @@ class Window extends Container {
 	}
 	
 	public function isActive() {
-		$ws   = $this->getParentApp()->getWorkSpace();
+		$ws   = $this->getApplication()->getWorkSpace();
 		$app  = $ws->getActiveApplication();
 		$test = $app->getObjectByID($this->getObjectID());
 
@@ -114,18 +112,18 @@ class Window extends Container {
 
 	public function __set_active($value) {
 		if ($value) {
-			$this->getParentApp()->setActiveWindow($this);
+			$this->getApplication()->setActiveWindow($this);
 		} else {
 			if ($this->active) {
-				$this->getParentApp()->setActiveWindow(null);
+				$this->getApplication()->setActiveWindow(null);
 			}
 		}
 	}
 
 	public function __get_active() {
-		$activeWindow = $this->getParentApp()->getActiveWindow();
+		$activeWindow = $this->getApplication()->getActiveWindow();
 		if ($activeWindow instanceof Window) {
-			if ($activeWindow->getObjectID() == $this->getObjectID()) {
+			if ($activeWindow === $this) {
 				return true;
 			}
 		}
@@ -140,7 +138,7 @@ class Window extends Container {
 	 * @return Window;
 	 */
 	public function openWindow(string $className, array $params = array()): Window {
-		return $this->getParentApp()->openWindow($className, $params, $this);
+		return $this->getApplication()->openWindow($className, $params, $this);
 	}
 	
 	/**

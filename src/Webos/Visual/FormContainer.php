@@ -149,7 +149,7 @@ trait FormContainer {
 	 * 
 	 * @return \Webos\Visual\Controls\Menu\Bar
 	 */
-	public function createMenuBar(): Menu\Bar {
+	public function createMenuBar(): Controls\Menu\Bar {
 		return $this->createObject(Controls\Menu\Bar::class);
 	}
 	

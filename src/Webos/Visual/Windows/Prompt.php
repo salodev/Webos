@@ -3,7 +3,7 @@ namespace Webos\Visual\Windows;
 use \Webos\Visual\Window;
 class Prompt extends Window {
 
-	public function  getInitialAttributes() {
+	public function  getInitialAttributes(): array {
 		$attrs = parent::getInitialAttributes();
 
 		return array_merge($attrs, array(
@@ -17,7 +17,7 @@ class Prompt extends Window {
 		$this->createTextBox($this->message, 'promptText');
 	}
 
-	public function getAllowedActions() {
+	public function getAllowedActions(): array {
 		return array(
 			'confirm',
 			'close',
@@ -25,7 +25,7 @@ class Prompt extends Window {
 		);
 	}
 
-	public function  getAvailableEvents() {
+	public function  getAvailableEvents(): array {
 		return array(
 			'confirm',
 			'close',
@@ -42,10 +42,10 @@ class Prompt extends Window {
 
 	public function close() {
 		$this->triggerEvent('close');
-		$this->getParentApp()->closeWindow($this);
+		$this->getApplication()->closeWindow($this);
 	}
 	
-	public function render() {
+	public function render(): string {
 		$template = $this->_getRenderTemplate();
 
 		$content = new \Webos\StringChar(

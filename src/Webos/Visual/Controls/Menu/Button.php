@@ -4,8 +4,7 @@ use Webos\Exceptions\Collection\NotFound;
 class Button extends \Webos\Visual\Control {
 
 	public function initialize() {
-		$ws = $this->getParentApp()->getWorkSpace();
-		$ws->addEventListener('actionCalled', function ($source, $eventName, $params) {
+		$this->getApplication()->getWorkSpace()->addEventListener('actionCalled', function ($source, $eventName, $params) {
 			if ($params['object'] === $this) {
 				return true;
 			}
@@ -13,7 +12,7 @@ class Button extends \Webos\Visual\Control {
 				$parentObject = $params['object']->getParentByClassName(self::class);
 			} catch (\TypeError $e) {
 				$this->close();
-				return $this;
+				return true;
 			}
 			//return;
 			if ($parentObject !== $this) {

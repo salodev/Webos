@@ -51,7 +51,7 @@ abstract class VisualObject extends BaseObject {
 	}
 
 	final public function modified() {
-		$this->getParentApp()->triggerSystemEvent(
+		$this->getApplication()->triggerSystemEvent(
 			'updateObject',
 			$this,
 			array('object' => $this)
@@ -112,7 +112,7 @@ abstract class VisualObject extends BaseObject {
 	public function createObject(string $className, array $initialAttributes = array()): self {
 		$object = new $className($this->_application, $this, $initialAttributes);
 
-		$this->getParentApp()->triggerSystemEvent('createObject', $this, array(
+		$this->getApplication()->triggerSystemEvent('createObject', $this, array(
 			'object' => $object,
 		));
 
@@ -179,7 +179,7 @@ abstract class VisualObject extends BaseObject {
 		$objectID = $child->getObjectID();
 		$childs = $this->getChildObjects();
 		$childs->removeObject($child);
-		$this->getParentApp()->triggerSystemEvent('removeObject', $this, array(
+		$this->getApplication()->triggerSystemEvent('removeObject', $this, array(
 			'objectId' => $objectID,
 		));
 		return $this;
@@ -197,7 +197,7 @@ abstract class VisualObject extends BaseObject {
 		}
 		$childs->clear();
 		foreach($childsID as $objectID) {
-			$this->getParentApp()->triggerSystemEvent('removeObject', $this, array(
+			$this->getApplication()->triggerSystemEvent('removeObject', $this, array(
 				'objectId' => $objectID,
 			));
 		}
