@@ -1,5 +1,5 @@
 <?php
-namespace Webos;
+namespace Webos\Service;
 use \salodev\Socket;
 use \salodev\SocketServer;
 use \salodev\Worker;
@@ -14,13 +14,13 @@ class Server {
 		$this->system = $this->interface->getSystemInstance();
 	}
 	
-	public function start($host = '127.0.0.1', $port = 3000) {
+	public function start(string $host = '127.0.0.1', int $port = 3000):void {
 		$this->setupSocket($host, $port);
 		$this->setupInteractiveConsole();
 		SocketServer::Start();
 	}
 	
-	public function setupSocket($host = '127.0.0.1', $port = 3000) {
+	public function setupSocket(string $host = '127.0.0.1', int $port = 3000):void {
 		SocketServer::AddListener($host, $port, function(Socket $connection) {
 			$connection->readLine(function($content) use ($connection){
 				// IO::WriteLine("recibido: {$content}\n");
@@ -107,7 +107,7 @@ class Server {
 		}, false);
 	}
 	
-	public function call($command, array $data = array()) {
+	public function call(string $command, array $data = array()) {
 		if (!in_array($command, ['renderAll', 'action'])) {
 			throw new \Exception('Invalid command');
 		}

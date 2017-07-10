@@ -18,7 +18,8 @@ class WorkSpace {
 	 * @returns WorkSpace;
 	 */
 	static public function LoadFromFile(string $pathToFile): self {
-		$file = FileHandler::openFile($pathToFile, 'readwrite');
+		$file = new File($pathToFile);
+		$file->open('readwrite');
 		$ws = unserialize($file->getContent());
 		return $ws['ws'];
 	}

@@ -4,17 +4,40 @@ namespace Webos;
 class File {
 
 	private $fh = null;
-	public function __construct($fileName, $fh) {
+	public function __construct($fileName) {
 		$this->fileName = $fileName;
-		$this->fh = $fh;
+	}
+	
+	public function open(string $option = 'readwrite'): self {
+		$options = array(
+			'create'    => 'w+',
+			'readwrite' => 'r+',
+			'append'    => 'r+',
+			'read'      => 'r',
+			'write'     => 'w',
+		);
+
+		$op = &$options[$option];
+		if (!isset($op)) {
+			$op = $options['readwrite'];
+		}
+
+		if ($option == 'readwrite') {
+			if (!file_exists($this->fileName)) { 
+				$op = $options['create'];
+			}
+		}
+
+		$this->fh = fopen($this->fileName, $op);
+		return $this;
+	}
+	
+	public function close(): void {
+		fclose($this->fh);
 	}
 
-	public function getFileName() {
+	public function getFileName(): string {
 		return $this->fileName;
-	}
-
-	public function getFH() {
-		return $this->fh;
 	}
 
 	public function getContent() {
@@ -22,7 +45,8 @@ class File {
 		return $content;
 	}
 
-	public function putContent($content) {
+	public function putContent($content): self {
 		fwrite($this->fh, $content);
+		return $this;
 	}
 }
