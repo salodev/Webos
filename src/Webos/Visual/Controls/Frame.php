@@ -2,32 +2,33 @@
 
 namespace Webos\Visual\Controls;
 use \Webos\Visual\FormContainer;
+use \Webos\ObjectsCollection;
 class Frame extends \Webos\Visual\Control {
 	use FormContainer;
 
 	public function setInitialAttributes(array $userAttrs = array()){
 		$attrs = array(
-			'width' => '400px',
-			'height' => '100px',
+			'width' => 400,
+			'height' => 100,
 		);
 
 		$this->_attributes = array_merge($attrs, $userAttrs);
 	}
 
-	public function controls() {
+	public function getControls(): ObjectsCollection {
 		return $this->_childObjects;
 	}
 
-	public function getAllowedActions() {
+	public function getAllowedActions(): array {
 		return array();
 	}
 
-	public function getAvailableEvents() {
+	public function getAvailableEvents():array  {
 		return array();
 	}
 	
-	public function render() {
-		$html = new \Webos\String('<div class="FrameControl"__style__>__content__</div>');
+	public function render(): string {
+		$html = new \Webos\StringChar('<div class="FrameControl"__style__>__content__</div>');
 
 		$html->replace('__style__',  $this->getInlineStyle(true));
 		$html->replace('__content__', $this->controls()->render());

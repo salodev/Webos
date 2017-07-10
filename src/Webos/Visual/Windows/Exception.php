@@ -6,8 +6,8 @@ class Exception extends Window {
 
 	public function initialize(array $params = []) {
 		$this->title  = 'Exception trown';
-		$this->width  = '800px';
-		$this->height = '500px';
+		$this->width  = 800;
+		$this->height = 500;
 		if (!$params['e'] || !($params['e'] instanceof \Exception)) {
 			throw new \Exception('ExceptionWindow must be open with exception parameter');
 		}
@@ -16,20 +16,20 @@ class Exception extends Window {
 		$e = $params['e'];
 		$this->title = get_class($e) . ' thrown:';
 		$this->createLabel("'{$e->getMessage()}' in file {$e->getFile()} ({$e->getLine()})",[
-			'top' => '0',
-			'left' => '0',
-			'right' => '0',
+			'top'   => 0,
+			'left'  => 0,
+			'right' => 0,
 		]);
 		$this->callStack = $this->createDataTable([
-			'top' => '50px',
-			'left' => '0',
-			'right' => '0',
-			'bottom' => '94px',
+			'top'    => 50,
+			'left'   => 0,
+			'right'  => 0,
+			'bottom' => 94,
 		]);
 		// $this->trace = $e->getTrace();
-		$this->callStack->addColumn('id', '#', '30px', false, false, 'right');
-		$this->callStack->addColumn('function', 'Function', '500px');
-		$this->callStack->addColumn('location', 'Location', '300px');
+		$this->callStack->addColumn('id', '#', 30, false, false, 'right');
+		$this->callStack->addColumn('function', 'Function', 500);
+		$this->callStack->addColumn('location', 'Location', 300);
 		$rows = array();
 		foreach($e->getTrace() as $k => $info) {
 			$class = &$info['class'];

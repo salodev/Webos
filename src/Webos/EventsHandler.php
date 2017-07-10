@@ -13,7 +13,7 @@ class EventsHandler {
 		$this->useAvailableEvents = false;
 	}
 
-	public function addListener($eventName, $eventListener, $persistent = true){
+	public function addListener(string $eventName, callable $eventListener, bool $persistent = true): self {
 
 		$this->checkAvailableEvent($eventName);
 
@@ -34,12 +34,12 @@ class EventsHandler {
 		return $this;
 	}
 
-	public function removeListeners($eventName){
+	public function removeListeners(string $eventName){
 		//@todo: completar esto..
 		throw new \Exception('TODO: complete it.');
 	}
 
-	public function trigger($eventName, $source, $params = null) {
+	public function trigger(string $eventName, $source, $params = null): bool {
 
 		$this->checkAvailableEvent($eventName);
 
@@ -63,7 +63,7 @@ class EventsHandler {
 		return true;
 	}
 
-	private function checkAvailableEvent($eventName) {
+	private function checkAvailableEvent(string $eventName) {
 		if ($this->useAvailableEvents) {
 			if (!in_array($eventName, $this->availableEvents)) {
 			 throw new \Exception("Unavailable {$eventName} event.");
@@ -71,7 +71,7 @@ class EventsHandler {
 		}
 	}
 
-	private function call($eventListener, $source, $eventName, $params) {
+	private function call(callable $eventListener, $source, $eventName, $params) {
 		if (is_array($eventListener)) {
 			if (isset($eventListener[0], $eventListener[1])) {
 				$object = $eventListener[0];
@@ -91,11 +91,11 @@ class EventsHandler {
 		$this->useAvailableEvents = true;
 	}
 
-	public function getAvailableEvents() {
+	public function getAvailableEvents(): array {
 		return $this->availableEvents;
 	}
 	
-	public function hasListenersForEventName($eventName) {
+	public function hasListenersForEventName(string $eventName): bool {
 		if (!isset($this->events[$eventName])) {
 			return false;
 		}

@@ -1,13 +1,14 @@
 <?php
 namespace Webos;
+use \Webos\Exceptions\Collection\NotFound;
+
 class SystemInterface {
-	const PRUEBA = 1;
-	protected $_renderer      = null;
-	protected $_system        = null;
-	protected $_notifications = null;
-	private   $_sessionId     = null;
-	public $lastObjectID = null;
-	public $ignoreUpdateObject = false;
+	private   $_sessionId         = null;
+	protected $_renderer          = null;
+	protected $_system            = null;
+	protected $_notifications     = null;
+	public    $lastObjectID       = null;
+	public    $ignoreUpdateObject = false;
 
 	public function __construct() {
 
@@ -38,12 +39,12 @@ class SystemInterface {
 		$this->lastObjectID = $objectID;
 		$this->ignoreUpdateObject = $ignoreUpdateObject;
 		$ws = $this->_system->getWorkSpace(/*$this->getSessionId()*/);
-		$apps = $object = $ws->getApplications();
+		// $apps = $object = $ws->getApplications();
 		// inspect($apps); die();
-		$object = $ws->getApplications()->getObjectByID($objectID);		
-		// inspect($object); die();
-		if (!($object instanceof \Webos\VisualObject)) {
-			throw new \Exception('Object does not exist');
+		try {
+			$object = $ws->getApplications()->getObjectByID($objectID);
+		} catch (NotFound $e) {
+			throw new \Exception('Object does not exist', null, $e);
 		}
 
 		// Se activa la aplicación antes de efectuar la acción. //
@@ -70,6 +71,7 @@ class SystemInterface {
 		$ws->triggerEvent('actionCalled', $this, array(
 			'actionName' => $actionName,
 			'objectId'   => $objectID,
+			'object'     => $object,
 			'parameters' => $parameters,
 		));
 
@@ -147,16 +149,13 @@ class SystemInterface {
 		// Verifico objetos a crear.
 		if (!empty($notif['create'])) {
 			foreach($notif['create'] as $object) {
-				// Log::write(' - ALREADY CREATED: ' . $object->getObjectID());
-				$test = $object->getObjectByID($objectId);
-
-				// Si es contenedor, no es necesario notificar.
-				// if ($test instanceof VisualObject) {
-				if ($test instanceof Visual\Window) {
-					// Log::write('El objeto ' . $test->getObjectID() . ' no necesita notificarse.');
-					return false;
+				if ($object instanceof Visual\Window) {
+					if ($object->hasObjectID($objectId)) {
+						return false;
+					}
 				}
 			}
+			return true;
 		}
 
 
@@ -177,7 +176,11 @@ class SystemInterface {
 				 * Ahora verificamos que no haya algún contenedor en la lista de
 				 * actualizaciones.
 				 */
-				$test = $object->getObjectByID($objectId);
+				try {
+					$test = $object->getObjectByID($objectId);
+				} catch (NotFound $e) {
+					return true;
+				}
 
 				// Si es contenedor, no es necesario notificar.
 				if ($test instanceof VisualObject) {
@@ -220,9 +223,8 @@ class SystemInterface {
 				}
 			break;
 
-			case 'updateObject':		
+			case 'updateObject':
 				if (isset($params['object'])){
-					//echo "agregando el cambio del objeto " . $params['object']->getObjectID();
 					$this->addUpdateNotification($params['object']);
 
 				}

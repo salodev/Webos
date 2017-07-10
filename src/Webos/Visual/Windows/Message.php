@@ -7,16 +7,16 @@ class Message extends Window {
 	public function initialize(array $params = array()) {
 		$this->title   = Utils::Ifnull($params['title'  ], 'Mensaje:');
 		$this->message = Utils::Ifnull($params['message'], 'Mensaje:');
-		$this->width   = Utils::Ifnull($params['width'  ], '450px'   );
-		$this->height  = Utils::Ifnull($params['height' ], '150px'   );
+		$this->width   = Utils::Ifnull($params['width'  ], 450       );
+		$this->height  = Utils::Ifnull($params['height' ], 150       );
 		$this->messageType = Utils::Ifnull($params['type']);
 
 	}
 
 	public function  getInitialAttributes() {
 		return array(
-			'height' => '100px',
-			'width'  => '200px'
+			'height' => 100,
+			'width'  => 200
 		);
 	}
 	public function  getAllowedActions() {
@@ -41,7 +41,7 @@ class Message extends Window {
 	public function render() {
 		$template = $this->_getRenderTemplate();
 
-		$content = new \Webos\String(
+		$content = new \Webos\StringChar(
 			'<div style="text-align:center;">' .
 				'<div style="margin:10px 20px 20px 20px;font-weight:bold;__MESSAGE_TYPE__">__MESSAGE__</div>' .
 				'<div>' .

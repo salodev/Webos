@@ -11,7 +11,7 @@ class DataTable extends \Webos\Visual\Control {
 		$this->columInded = null;
 	}
 
-	public function getInitialAttributes() {
+	public function getInitialAttributes(): array {
 		return array(
 			'top'        => 0,
 			'bottom'     => 0,
@@ -22,7 +22,7 @@ class DataTable extends \Webos\Visual\Control {
 		);
 	}
 
-	public function addColumn($fieldName, $label, $width='100px', $allowOrder=false, $linkable=false, $align = 'left') {
+	public function addColumn(string $fieldName, string $label, int $width=100, bool $allowOrder=false, bool $linkable=false, string $align = 'left'): Column {
 		// $column = new ColumnDataTable();
 		$column = new Column($label, $fieldName);
 		$column->width      = $width;
@@ -33,7 +33,7 @@ class DataTable extends \Webos\Visual\Control {
 		return $column;
 	}
 
-	public function getActiveRowData($fieldName = null) {
+	public function getActiveRowData(string $fieldName = null) {
 		if ($this->rowIndex !== null) {
 			$rowData = $this->getRowData($this->rowIndex/1);
 			if ($fieldName) {
@@ -47,7 +47,7 @@ class DataTable extends \Webos\Visual\Control {
 		return null;
 	}
 
-	public function getRowData($rowIndex) {
+	public function getRowData(int $rowIndex): array {
 		$i = 0;
 		foreach($this->rows as $row) {
 			if ($i==$rowIndex) {
@@ -100,7 +100,7 @@ class DataTable extends \Webos\Visual\Control {
 		$this->scrollLeft = ifempty($params['left'], 0);
 	}
 
-	public function getAllowedActions() {
+	public function getAllowedActions(): array {
 		return array(
 			'rowClick',
 			'rowDoubleClick',
@@ -108,14 +108,14 @@ class DataTable extends \Webos\Visual\Control {
 		);
 	}
 
-	public function getAvailableEvents() {
+	public function getAvailableEvents(): array {
 		return array(
 			'rowClick',
 			'rowDoubleClick',
 		);
 	}
 	
-	public function render() {
+	public function render(): string {
 		$objectID   = $this->getObjectID();
 
 		$scrollTop  = empty($this->scrollTop ) ? 0 : $this->scrollTop ;
@@ -124,20 +124,20 @@ class DataTable extends \Webos\Visual\Control {
 		$rs = $this->rows;
 		$bodyWidth = 0;
 		foreach($this->columns as $column) {
-			$bodyWidth += (str_replace('px', '', $column->width)/1)+8;
+			$bodyWidth += $column->width+8;
 		}
 		$html .= '<div class="DataTableHeaders" style="width:'.$bodyWidth.'px">';
 		if (count($this->columns)) {			
 			$html .= '<div class="DataTableRow">';
 			foreach($this->columns as $column) {
-				$html .= '<div class="DataTableCell" style="width:' . $column->width . '">' . $column->label . '</div>';
+				$html .= '<div class="DataTableCell" style="width:' . $column->width . 'px">' . $column->label . '</div>';
 			}
 			$html .= '</div>';
 		} else {
 			if (count($rs)) {
 				$html .= '<div class="DataTableRow">';
 				foreach($rs[0] as $columnName => $value) {
-					$html .= '<div class="DataTableCell" style="width:' . $column->width . '">' . $columnName . '</div>';
+					$html .= '<div class="DataTableCell" style="width:' . $column->width . 'px">' . $columnName . '</div>';
 				}
 				$html .= '</div>';
 			}
@@ -163,7 +163,7 @@ class DataTable extends \Webos\Visual\Control {
 				} else {
 					$value = $column->renderValue($row[$column->fieldName]);
 				}
-				$html .= '<div class="DataTableCell' . $linkable . '" style="width:'.$column->width.';text-align:'.$column->align.';" onclick="'.$onClick.'" ondblclick="'.$ondblClick.'">' . $value . '</div>';
+				$html .= '<div class="DataTableCell' . $linkable . '" style="width:'.$column->width.'px;text-align:'.$column->align.';" onclick="'.$onClick.'" ondblclick="'.$ondblClick.'">' . $value . '</div>';
 			}
 			$html .= '</div>'; // end DataTableRow
 		}

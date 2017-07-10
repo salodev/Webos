@@ -4,7 +4,7 @@ namespace Webos\Visual\Controls\DataTable;
 class Column {
 	public $label;
 	public $fieldName;
-	public $width         = '100px';
+	public $width         = 100;
 	public $allowOrder    = false;
 	public $linkable      = false;
 	public $align         = 'left';

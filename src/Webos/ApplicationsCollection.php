@@ -1,5 +1,6 @@
 <?php
 namespace Webos;
+use Webos\Exceptions\Collection\NotFound;
 
 class ApplicationsCollection extends Collection {
 
@@ -10,23 +11,28 @@ class ApplicationsCollection extends Collection {
 	 * @param Application $application
 	 * @return <type>
 	 */
-	public function addApplication(Application $application) {
+	public function addApplication(Application $application): self {
 		parent::add($application);
 
 		return $this;
 	}
 
-	public function getObjectById($id) {
+	public function getObjectByID($id): VisualObject {
 		foreach($this->_data as $application) {
-			$test = $application->getObjectById($id, true);
+			try {
+				$test = $application->getObjectByID($id, true);
+			} catch (NotFound $e) {
+				continue;
+			}
 
 			if ($test && $test instanceof VisualObject) {
 				return $test;
 			}
 		}
+		throw new NotFound('Object not found');
 	}
 
-	public function getObjectsByClassName($className) {
+	public function getObjectsByClassName(string $className): ObjectsCollection {
 
 		$list = new ObjectsCollection();
 		foreach($this->_data as $application) {
@@ -39,7 +45,7 @@ class ApplicationsCollection extends Collection {
 		return $list;
 	}
 
-	public function getVisualObjects() {
+	public function getVisualObjects(): ObjectsCollection {
 		$list = new ObjectsCollection();
 		foreach($this->_data as $application) {
 			$visualObjects = $application->getVisualObjects();

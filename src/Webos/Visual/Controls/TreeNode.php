@@ -9,7 +9,7 @@ class TreeNode extends \Webos\Visual\Control {
 	 * @param mixed $value
 	 * @return TreeNode
 	 */
-	public function addNode($text, $data = null) {
+	public function addNode(string $text, array $data = []): TreeNode {
 		return $this->createObject(TreeNode::class, [
 			'treeControl' => $this->treeControl,
 			'text'        => $text,
@@ -30,7 +30,7 @@ class TreeNode extends \Webos\Visual\Control {
 		throw new \Exception('Read only property');
 	}
 
-	public function getAllowedActions() {
+	public function getAllowedActions(): array {
 		return array(
 			'expand',
 			'collapse',
@@ -76,13 +76,13 @@ class TreeNode extends \Webos\Visual\Control {
 		return $this;
 	}
 	
-	public function getAvailableEvents() {
+	public function getAvailableEvents(): array {
 		return array();
 	}
 	
-	public function render() {
+	public function render(): string {
 
-		$html = new \Webos\String(
+		$html = new \Webos\StringChar(
 			'<li id="__id__" class="TreeNode"__style__ onclick="__onclick__">' .
 				'<div class="row __selected__">' . 
 					($this->hasChilds===false ? '' :

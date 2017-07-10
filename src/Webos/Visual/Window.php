@@ -8,17 +8,17 @@ class Window extends Container {
 	protected $activeControl = null;
 	public $windowStatus = 'normal';
 	
-	public function bind($eventName, $eventListener, $persistent = true) {
+	public function bind(string $eventName, $eventListener, bool $persistent = true) {
 		if ($eventName=='ready') { $persistent = false; }
 		return parent::bind($eventName, $eventListener, $persistent);
 	}
 	
 	public function preInitialize() {
-		$this->title = $this->getObjectID();
-		$this->width = '600px';
-		$this->height = '400px';
-		$this->top = '100px';
-		$this->left = '100px';
+		$this->title  = $this->getObjectID();
+		$this->width  = 600;
+		$this->height = 400;
+		$this->top    = 100;
+		$this->left   = 100;
 	}
 	
 	public function initialize() {}
@@ -27,7 +27,7 @@ class Window extends Container {
 		return $this->_childObjects;
 	}
 
-	public function getAvailableEvents(){
+	public function getAvailableEvents(): array {
 		return array(
 			'click',
 			'close',
@@ -36,7 +36,7 @@ class Window extends Container {
 		);
 	}
 
-	public function getAllowedActions() {
+	public function getAllowedActions(): array {
 		return array(
 			'move',
 			'resize',
@@ -139,7 +139,7 @@ class Window extends Container {
 	 * @param array $params
 	 * @return Window;
 	 */
-	public function openWindow($className, array $params = array()) {
+	public function openWindow(string $className, array $params = array()): Window {
 		return $this->getParentApp()->openWindow($className, $params, $this);
 	}
 	
@@ -149,7 +149,7 @@ class Window extends Container {
 	 * @param string $title
 	 * @return Window
 	 */
-	public function messageWindow($message, $title = 'Message') {
+	public function messageWindow(string $message, string $title = 'Message'): Windows\Message {
 		return $this->openWindow(Windows\Message::class, [
 			'title'   => $title,
 			'message' => $message,
@@ -163,7 +163,7 @@ class Window extends Container {
 	 * @param callable $onConfirmCallback
 	 * @return Window
 	 */
-	public function onConfirm($text, callable $onConfirmCallback) {
+	public function onConfirm(string $text, callable $onConfirmCallback): Windows\Confirm {
 		return $this->openWindow(Windows\Confirm::class, [
 			'message'=>$text
 		])->bind('confirm', $onConfirmCallback);
@@ -175,7 +175,7 @@ class Window extends Container {
 	 * @param \Webos\Visual\callable $onConfirmCallback
 	 * @return Window
 	 */
-	public function onPrompt($text, callable $onConfirmCallback) {
+	public function onPrompt(string $text, callable $onConfirmCallback): Windows\Prompt {
 		return $this->openWindow(Windows\Prompt::class, [
 			'message'=>$text
 		])->bind('confirm', $onConfirmCallback);
@@ -185,13 +185,13 @@ class Window extends Container {
 	 * 
 	 * @param string $text
 	 * @param callable $onCloseCallback
-	 * @return Window
+	 * @return Windows\Message
 	 */
-	public function onMessageWindow($text, callable $onCloseCallback) {
+	public function onMessageWindow(string $text, callable $onCloseCallback): Windows\Message {
 		return $this->messageWindow($text, 'Message')->bind('close', $onCloseCallback);
 	}
 	
-	public function render() {
+	public function render(): string {
 		$html = $this->_getRenderTemplate();
 		$content = $this->getChildObjects()->render();
 		$html->replace('__CONTENT__', $content);
@@ -200,10 +200,10 @@ class Window extends Container {
 	
 	/**
 	 * 
-	 * @return \Webos\String
+	 * @return \Webos\StringChar
 	 */
 	protected function _getRenderTemplate() {
-		$html = new \Webos\String(
+		$html = new \Webos\StringChar(
 			'<div id="__ID__" class="Window form-wrapper__ACTIVE____STATUS__" style="__STYLE__">' .
 				'<div class="form-titlebar">' .
 					'<div class="title">__TITLE__</div>' .
@@ -221,7 +221,7 @@ class Window extends Container {
 		$autofocus = '';
 		$activeControl = $this->getActiveControl();
 		if ($activeControl instanceof \Webos\Visual\Control) {
-			$autofocus = new \Webos\String(
+			$autofocus = new \Webos\StringChar(
 				'<script>' .
 					'$(function() {' .
 						'$(\'#' . $activeControl->getObjectID() .'\').focus();' .
@@ -234,7 +234,7 @@ class Window extends Container {
 		$ready = '';
 		
 		if ($this->_eventsHandler->hasListenersForEventName('ready')) {
-			$ready = new \Webos\String(
+			$ready = new \Webos\StringChar(
 				'<script>' .
 					'$(function() {' .
 						'__doAction(\'send\', {actionName:\'ready\',objectId:\''. $this->getObjectID() . '\'});' .

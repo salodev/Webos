@@ -15,19 +15,19 @@ class TabFolder extends \Webos\Visual\Control {
 		}
 	}
 
-	public function  getAllowedActions() {
+	public function  getAllowedActions(): array {
 		return array(
 			'select',
 		);
 	}
 
-	public function  getAvailableEvents() {
+	public function  getAvailableEvents(): array {
 		return array(
 			'select',
 		);
 	}
 	
-	public function render() {
+	public function render(): string {
 		$html = '<div id="' . $this->getObjectID() . '" class="TabFolder">';
 		$html .= $this->getChildObjects()->render();
 		$html .= '</div>';

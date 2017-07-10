@@ -37,7 +37,7 @@ trait FormContainer {
 	 * @param bool $attachToContainer
 	 * @return \Webos\Visual\Control
 	 */
-	public function createControl($label, $name, $className = TextBox::class, array $options = array(), $attachToContainer = true) {
+	public function createControl(string $label, string $name, string $className = TextBox::class, array $options = array(), bool $attachToContainer = true): Control {
 		if (isset($options['top'])) {
 			$this->topControl = $options['top'];
 		}
@@ -53,16 +53,18 @@ trait FormContainer {
 		}
 		$this->createObject(Label::class, array_merge(
 			$options, 
-			array('text'=>$label), array(
-			'top'   => $this->topControl        . 'px',
-			'left'  => $this->leftControl       . 'px',
-			'width' => $this->widthLabelControl . 'px',
-		)));
+			array('text'=>$label), 
+			array(
+				'top'   => $this->topControl,
+				'left'  => $this->leftControl,
+				'width' => $this->widthLabelControl,
+			)
+		));
 
 		$control = $this->createObject($className, array_merge($options, array(
-			'top'   => $this->topControl . 'px',
-			'left'  => $this->leftControl + $this->widthLabelControl + 5 . 'px',
-			'width' => $this->widthFieldControl . 'px',
+			'top'   => $this->topControl,
+			'left'  => $this->leftControl + $this->widthLabelControl + 5,
+			'width' => $this->widthFieldControl,
 			'name'  => $name,
 		)));
 		$this->topControl +=28;
@@ -84,7 +86,7 @@ trait FormContainer {
 	 * @param array $options
 	 * @return \Webos\Visual\Controls\TextBox
 	 */
-	public function createTextBox($label, $name, array $options = array()) {
+	public function createTextBox(string $label, string $name, array $options = array()): TextBox {
 		return $this->createControl($label, $name, TextBox::class, $options);
 	}
 	
@@ -95,7 +97,7 @@ trait FormContainer {
 	 * @param array $options
 	 * @return \Webos\Visual\Controls\Label
 	 */
-	public function createLabelBox($label, $name, array $options = array()) {
+	public function createLabelBox(string $label, string $name, array $options = array()): Label {
 		return $this->createControl($label, $name, Label::class, $options);
 	}
 	
@@ -105,7 +107,7 @@ trait FormContainer {
 	 * @param array $options
 	 * @return \Webos\Visual\Controls\Label
 	 */
-	public function createLabel($text, array $options = array()) {
+	public function createLabel(string $text, array $options = array()) {
 		return $this->createObject(Label::class, array_merge($options, array('text'=>$text)));
 	}
 	
@@ -116,7 +118,7 @@ trait FormContainer {
 	 * @param array $options
 	 * @return \Webos\Visual\Controls\ComboBox
 	 */
-	public function createComboBox($label, $name, array $options = array()) {
+	public function createComboBox(string $label, string $name, array $options = array()): ComboBox {
 		return $this->createControl($label, $name, ComboBox::class, $options);
 	}
 	
@@ -126,20 +128,20 @@ trait FormContainer {
 	 * @param array $options
 	 * @return \Webos\Visual\Controls\Button
 	 */
-	public function createButton($label, array $options = array()) {
+	public function createButton(string $label, array $options = array()): Button {
 		return $this->createObject(Button::class, array_merge($options, ['value'=>$label]));
 	}
 	
 	/**
 	 * @return \Webos\Visual\Controls\ToolBar
 	 */
-	public function createToolBar(array $params = []) {
+	public function createToolBar(array $params = []): ToolBar {
 		$this->topControl += 20;
 		$this->maxTopControl += 20;
 		return $this->createObject(ToolBar::class, array_merge([
-			'top' => '0',
-			'left' => '0',
-			'right' => '0',
+			'top' =>   0,
+			'left' =>  0,
+			'right' => 0,
 		],$params));
 	}
 	
@@ -147,7 +149,7 @@ trait FormContainer {
 	 * 
 	 * @return \Webos\Visual\Controls\Menu\Bar
 	 */
-	public function createMenuBar() {
+	public function createMenuBar(): Menu\Bar {
 		return $this->createObject(Controls\Menu\Bar::class);
 	}
 	
@@ -156,10 +158,10 @@ trait FormContainer {
 	 * @param type $options
 	 * @return \Webos\Visual\Controls\DataTable
 	 */
-	public function createDataTable($options = array()) {
+	public function createDataTable(array $options = array()): DataTable {
 		$initialOptions = array(
-			'top' => $this->maxTopControl . 'px',
-			'left' => $this->leftControl . 'px',
+			'top' => $this->maxTopControl,
+			'left' => $this->leftControl,
 			'right' => '0',
 			'bottom' => '0',
 		);
@@ -172,7 +174,7 @@ trait FormContainer {
 	 * @param array $options
 	 * @return Controls\Tree
 	 */
-	public function createTree(array $options = array()) {
+	public function createTree(array $options = array()): Tree {
 		return $this->createObject(Tree::class, $options);
 	}
 	
@@ -181,7 +183,7 @@ trait FormContainer {
 	 * @param array $options
 	 * @return Controls\Frame
 	 */
-	public function createFrame(array $options = array()) {
+	public function createFrame(array $options = array()): Frame {
 		return $this->createObject(Frame::class, $options);
 	}
 
@@ -192,7 +194,7 @@ trait FormContainer {
 	 * @param array $params
 	 * @return \Webos\Visual\Controls\Button
 	 */
-	public function addHorizontalButton($caption, $width = 80, array $params = array()) {
+	public function addHorizontalButton($caption, $width = 80, array $params = array()): Button {
 		if (!$this->hasHorizontalButtons) {
 			$this->hasHorizontalButtons = true;
 			$this->topHorizontalButtons = $this->maxTopControl;
@@ -208,9 +210,9 @@ trait FormContainer {
 		$left = $this->leftButton/1;
 		$width = empty($params['width']) ? $width : $params['width'];
 		$button = $this->createObject(Button::class, array_merge($params, array(
-			'top'   => $this->topHorizontalButtons . 'px',
-			'left'  => $left . 'px',
-			'width' => $width . 'px',
+			'top'   => $this->topHorizontalButtons,
+			'left'  => $left,
+			'width' => $width,
 			'value' => $caption,
 		)));
 		$this->leftButton = ($this->leftButton/1) + 10 + ($width*1); // + ($width/1) + 10;

@@ -17,13 +17,9 @@ class Confirm extends Window {
 		$this->height = '130px';
 		$this->createObject(Label::class, array(
 			'text' => $this->message,
-			'top'  => '50px',
-			'left' => '25px',
+			'top'  => 50,
+			'left' => 25,
 		));
-	}
-
-	public function  getHTMLRendererName() {
-		return 'HTMLRendererConfirmWindow';
 	}
 
 	public function getAllowedActions() {
@@ -55,7 +51,7 @@ class Confirm extends Window {
 	public function render() {
 		$template = $this->_getRenderTemplate();
 
-		$content = new \Webos\String(
+		$content = new \Webos\StringChar(
 			'<div style="text-align:center;">' .
 				'<div>MESSAGE</div>' .
 				'<div style="margin-top:20px;">' .

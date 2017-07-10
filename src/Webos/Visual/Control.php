@@ -2,8 +2,8 @@
 namespace Webos\Visual;
 abstract class Control extends \Webos\VisualObject {
 
-	final public function __construct(\Webos\VisualObject $parent, array $initialAttributes = array()) {
-		parent::__construct($initialAttributes);
+	final public function __construct(\Webos\Application $application, \Webos\VisualObject $parent, array $initialAttributes = array()) {
+		parent::__construct($application, $initialAttributes);
 
 		$this->_parentObject = $parent;
 		$parent->addChildObject($this);
@@ -30,7 +30,7 @@ abstract class Control extends \Webos\VisualObject {
 		return $this->getParentWindow()->hasFocus($this);
 	}
 	
-	public function action($name, array $params = null) {
+	public function action(string $name, array $params = []) {
 		/**
 		 * Por razones de seguridad, si el objeto está deshabilitado,
 		 * se verifica y se frena la acción.

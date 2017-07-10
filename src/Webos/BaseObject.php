@@ -56,9 +56,15 @@ class BaseObject {
 				$value = $tValue;
 			}
 		}
+		
+		$orignalValue = null;
+		if (array_key_exists($name, $this->_attributes)) {
+			$orignalValue = $this->_attributes[$name];
+		}
 
 		$this->_attributes[$name] = $value;
 
+		return $value !== $orignalValue;
 	}
 
 	/**
@@ -67,17 +73,43 @@ class BaseObject {
 	 * @param <type> $name
 	 * @return <type>
 	 */
-	public function isAttribute($name) {
+	public function isAttribute(string $name): bool {
 		if (isset($this->_attributes[$name])) return true;
 
 		return false;
 	}
-	
-	public function getAttributes() {
-		return $this->_attributes;
+
+	/**
+	 * Permite especificar sus atributos luego de haber sido construído
+	 * el objeto
+	 *
+	 * @param array Atributos de la forma attributo=>valor
+	 */
+	final public function setAttributes(array $attributes) {
+		$this->_attributes = array_merge($this->_attributes, $attributes);
 	}
 
-	public function getAttributesList() {
+	/**
+	 * Permite obtener un listado de atributos. Si se especifica el nombre
+	 * se obtiene su valor, de lo contrario un array con todos sus
+	 * atributos.
+	 *
+	 * @param string $name Nombre del atributo
+	 */
+	final public function getAttributes(string $name = null): array {
+		if ($name == null) {
+			return $this->_attributes;
+		}
+
+		$attr = &$this->_attributes[$name];
+		if (isset($attr)) {
+			return $attr;
+		}
+
+		return null;
+	}
+
+	public function getAttributesList(): array {
 		return array_keys($this->_attributes);
 	}
 

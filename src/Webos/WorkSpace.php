@@ -10,7 +10,6 @@ class WorkSpace {
 	protected $_applications = null;
 	protected $_activeApplication = null;
 	protected $_eventsHandler = null;
-	protected $_lastApplicationId = null;
 	protected $_name = null;
 
 	protected $_systemEnvironment = null;
@@ -35,7 +34,7 @@ class WorkSpace {
 		return $this->_name;
 	}
 
-	public function getApplications() {
+	public function getApplications(): ApplicationsCollection {
 		return $this->_applications;
 	}
 
@@ -53,7 +52,7 @@ class WorkSpace {
 
 		$appClassName = $name;// . 'Application';
 
-		$application = new $appClassName($this, $this->_getNewApplicationId(), $params);
+		$application = new $appClassName($this, $params);
 		
 		$this->triggerEvent('startApplication', $this, array(
 			'object' => $application,
@@ -81,7 +80,7 @@ class WorkSpace {
 	public function finishApplication(Application $application, $method = 1) {
 		$applicationKey = 0;
 		foreach($this->_applications as $test) {
-			if ($test->getApplicationID() == $application->getApplicationID()) {
+			if ($test === $application) {
 				$applicationKey = $this->_applications->key();
 				break;
 			}
@@ -155,12 +154,5 @@ class WorkSpace {
 		 **/
 		$this->getSystemEnvironment()->triggerEvent($eventName, $source, $params);		
 		return $this;
-	}
-
-	private function _getNewApplicationId() {
-		$appId = ($this->_applications->count() + 1);
-		$this->_lastApplicationId = $appId;
-
-		return $appId;
 	}
 }

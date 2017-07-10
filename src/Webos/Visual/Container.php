@@ -8,8 +8,7 @@ use Webos;
 abstract class Container extends \Webos\VisualObject {
 
 	final public function __construct(\Webos\Application $application, array $initialAttributes = array()) {
-		parent::__construct($initialAttributes);
-		$this->_parentObject = $application;
+		parent::__construct($application, $initialAttributes);
 		$application->addChildObject($this);
 		
 		$this->preInitialize();

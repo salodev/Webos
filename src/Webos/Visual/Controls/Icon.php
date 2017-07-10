@@ -10,10 +10,10 @@ class Icon extends \Webos\Visual\Control {
 		}
 	}
 	
-	public function render() {
-		$html = new \Webos\String('<div class="__class__ __icon__"></div>');
+	public function render(): string {
+		$html = new \Webos\StringChar('<div class="__class__ __icon__"></div>');
 		$html->replaces([
-			'__class__' => \Webos\String($this->getClassName())->replace('\\',' '),
+			'__class__' => \Webos\StringChar(self::class)->replace('\\',' '),
 			'__icon__'  => $this->icon,
 		]);
 		return $html;

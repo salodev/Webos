@@ -22,7 +22,7 @@ class System {
 	 * @param string $name
 	 * @return \Webos\WorkSpace
 	 */
-	public function createWorkSpace($name) {
+	public function createWorkSpace(string $name): WorkSpace {
 		$ws = new WorkSpace($name);
 		$ws->setSystemEnvironment($this);
 		$this->triggerEvent('createdWorkspace', $this, array(
@@ -32,7 +32,7 @@ class System {
 		return $ws;
 	}
 	
-	public function loadCreateWorkSpace($name) {
+	public function loadCreateWorkSpace(string $name): WorkSpace {
 		if (!$this->_workSpace) {
 			$ws = $this->createWorkSpace($name);
 			$ws->setSystemEnvironment($this);
@@ -46,7 +46,7 @@ class System {
 		return $this->_workSpace;
 	}
 	
-	public function loadWorkSpace($name) {
+	public function loadWorkSpace($name): WorkSpace {
 		$this->_workSpaceName = $name;
 
 		if ($this->_workSpace) {
@@ -104,7 +104,7 @@ class System {
 	 * @return WorkSpace
 	 * @throws \Exception
 	 */
-	public function getWorkSpace() {
+	public function getWorkSpace(): WorkSpace {
 		if ($this->_workSpace) {
 			return $this->_workSpace;
 		}

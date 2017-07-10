@@ -1,8 +1,8 @@
 <?php
 namespace Webos\Visual\Controls;
 class PasswordField extends Field {
-	public function render() {
-		$html = new \Webos\String(
+	public function render(): string {
+		$html = new \Webos\StringChar(
 			'<input class="PasswordFieldControl"__style__ type="password" name="__name__" value="__value__" />'
 		);
 

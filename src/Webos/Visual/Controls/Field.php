@@ -43,49 +43,49 @@ abstract class Field extends \Webos\Visual\Control {
 	 * @param type $width
 	 * @return \Webos\Visual\Controls\Button
 	 */
-	public function attachButton($text, $width = 50) {
+	public function attachButton(string $text, int $width = 50): Button {
 		$top = $this->top;
 		$left = $this->left + $this->width - $width;
 		//die("{$this->left} + {$this->width} - {$width} = {$left}");
-		$this->width = ($this->width - $width - 5) . 'px';
+		$this->width = $this->width - $width - 5;
 		$this->button = $this->getParentWindow()->createObject(Button::class, array(
 			'top' => $top,
-			'left' => $left . 'px',
-			'width' => $width . 'px',
+			'left' => $left,
+			'width' => $width,
 			'value' => $text,
 		));
 		return $this->button;
 	}
 	
-	public function attachLabel($name, $width = 200, $left = 10) {
+	public function attachLabel(string $name, int $width = 200, int $left = 10): Label {
 		$top = $this->top;
 		$left += $this->left;
 		if ($this->button instanceof Button) {
 			$left += $this->button->width;
 		}
 		//die("{$this->left} + {$this->width} - {$width} = {$left}");
-		$this->width = ($this->width - $width - 5) . 'px';
+		$this->width = $this->width - $width - 5;
 		$this->label = $this->getParentWindow()->createObject(Label::class, array(
 			'top'   => $top,
-			'left'  => $left . 'px',
-			'width' => $width . 'px',
+			'left'  => $left,
+			'width' => $width,
 			'name'  => $name,
 		));
 		return $this->button;
 	}
 	
-	public function onUpdateValue(callable $callback) {
+	public function onUpdateValue(callable $callback): Field {
 		$this->bind('updateValue', $callback);
 		return $this;
 	}
 
-	public function getAllowedActions() {
+	public function getAllowedActions(): array {
 		return array(
 			'setValue'
 		);
 	}
 
-	public function getAvailableEvents() {
+	public function getAvailableEvents(): array {
 		return array(
 			'updateValue',
 		);

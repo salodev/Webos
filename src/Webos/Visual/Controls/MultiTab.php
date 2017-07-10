@@ -8,12 +8,12 @@ class MultiTab extends \Webos\Visual\Control {
 		$this->_activeTab = null;
 	}
 
-	public function  getInitialAttributes() {
+	public function  getInitialAttributes(): array {
 		return array(
-			'top'    => '5px',
-			'bottom' => '5px',
-			'left'   => '5px',
-			'right'  => '5px',
+			'top'    => 5,
+			'bottom' => 5,
+			'left'   => 5,
+			'right'  => 5,
 		);
 	}
 
@@ -36,7 +36,7 @@ class MultiTab extends \Webos\Visual\Control {
 	 * @param type $title
 	 * @return TabFolder
 	 */
-	public function createTab($title) {
+	public function createTab($title): TabFolder {
 		return $this->createObject(TabFolder::class, array(
 			'title' => $title,
 		));
@@ -47,7 +47,7 @@ class MultiTab extends \Webos\Visual\Control {
 		$this->modified();
 	}
 	
-	public function render() {
+	public function render(): string {
 		$attributes = $this->getAttributes();
 
 		$activeTab = $this->getActiveTab();
@@ -56,7 +56,7 @@ class MultiTab extends \Webos\Visual\Control {
 		$content = '<div class="Tabs">';
 
 		foreach($this->getChildObjects() as $tab) {
-			$tabHTML = new \Webos\String(
+			$tabHTML = new \Webos\StringChar(
 				'<a class="tab__SELECTED__" href="#" onclick="' .
 				"__doAction('send', {actionName:'select', objectId:'" . $tab->getObjectID() ."'}); return false;" .
 				'">' . $tab->title . '</a>'

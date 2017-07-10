@@ -13,7 +13,7 @@ class Prompt extends Window {
 
 	public function initialize() {
 		$this->title = 'Confirmar';
-		$this->height = '130px';
+		$this->height = 130;
 		$this->createTextBox($this->message, 'promptText');
 	}
 
@@ -48,7 +48,7 @@ class Prompt extends Window {
 	public function render() {
 		$template = $this->_getRenderTemplate();
 
-		$content = new \Webos\String(
+		$content = new \Webos\StringChar(
 			'<div style="text-align:center;">' .
 				'<div>__CONTENT__</div>' .
 				'<div style="margin-top:20px;">' .

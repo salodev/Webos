@@ -23,14 +23,14 @@ class Bar extends \Webos\Visual\Control {
 		$this->_selectedButton = $menuButton;
 	}
 	
-	public function createButton($text) {
+	public function createButton(string $text): ListItems {
 		$menuButton = $this->createObject(Button::class, array(
 			'text' => $text,
 		));
 		return $menuButton->createObject(ListItems::class);
 	}
 	
-	public function render() {
+	public function render(): string {
 		$html  = '<div class="MenuBar">';
 		$html .= $this->getChildObjects()->render();
 		$html .= '</div>';

@@ -2,44 +2,42 @@
 namespace Webos\Visual\Controls\Menu;
 class Item extends \Webos\Visual\Control {
 
-	public function  getAllowedActions() {
+	public function  getAllowedActions(): array {
 		return array(
 			'press'
 		);
 	}
 
-	public function  getAvailableEvents() {
+	public function  getAvailableEvents(): array {
 		return array('press');
 	}
 
 	public function press() {
 		
 		if ($this->triggerEvent('press')) {
-			if ($this->getObjectsByClassName(__NAMESPACE__ . '\ListItems')->count()) {
+			if ($this->getObjectsByClassName(ListItems::class)->count()) {
 				$this->selected = true;
 			} else {
-				$parent = $this->getParentByClassName(__NAMESPACE__ . '\Button');
-				if ($parent instanceof Button) {
-					$parent->close();
+				try {
+					$this->getParentByClassName(Button::class)->close();
+				} catch (\TypeError $e) {
+					
 				}
 			}
-
-			$this->getParentByClassName(__NAMESPACE__ . '\Button')->modified();
-			
 		}
 	}
 	
-	function createItem($text, $shortCut = '', array $params = array()) {
+	function createItem(string $text, string $shortCut = '', array $params = []): Item {
 		$listItems = $this->_getListItems();
 		return $listItems->createItem($text, $shortCut, $params);
 	}
 	
-	public function createSeparator() {
+	public function createSeparator(): Separator {
 		$listItems = $this->_getListItems();
 		return $listItems->createObject(Separator::class);
 	}
 	
-	private function _getListItems() {
+	private function _getListItems():ListItems {
 		$ret = $this->getObjectsByClassName(ListItems::class);
 		if ($ret->count() != 1) {
 			$this->createObject(ListItems::class);
@@ -50,13 +48,10 @@ class Item extends \Webos\Visual\Control {
 	}
 
 	public function __get_selected() {		
-		$selected = $this->getParent()->getSelectedItem();
-		if ($selected instanceof Item) {
-			if ($selected->getObjectID() == $this->getObjectID()) {				
-				return true;
-			}
-		}		
-		return false;
+		if (!$this->getParent()->hasSelectedItem()) {
+			return false;
+		}
+		return $this->getParent()->hasSelectedItem() === $this;
 	}
 
 	public function __set_selected($value) {
@@ -69,7 +64,7 @@ class Item extends \Webos\Visual\Control {
 		}
 	}
 	
-	public function render() {
+	public function render(): string {
 		$content  = '';
 		$selected = '';
 
@@ -83,7 +78,7 @@ class Item extends \Webos\Visual\Control {
 			$arr = ($this->shortCut) ? $this->shortCut : '';
 		}
 
-		$html = new \Webos\String(
+		$html = new \Webos\StringChar(
 			'<tr id="__id__" class="MenuItem__selected__" onclick="__onclick__">' .
 				'<td class="icon__icon_class__"></td>' .
 				'<td class="text">__text__</td>' .

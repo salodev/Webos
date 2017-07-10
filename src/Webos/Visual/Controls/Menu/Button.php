@@ -1,19 +1,35 @@
 <?php
 namespace Webos\Visual\Controls\Menu;
+use Webos\Exceptions\Collection\NotFound;
 class Button extends \Webos\Visual\Control {
 
 	public function initialize() {
 		$ws = $this->getParentApp()->getWorkSpace();
-		$ws->addEventListener('actionCalled', array($this, 'onActionCalled'));
+		$ws->addEventListener('actionCalled', function ($source, $eventName, $params) {
+			if ($params['object'] === $this) {
+				return true;
+			}
+			try {
+				$parentObject = $params['object']->getParentByClassName(self::class);
+			} catch (\TypeError $e) {
+				$this->close();
+				return $this;
+			}
+			//return;
+			if ($parentObject !== $this) {
+				$this->close();
+			}
+			return true;
+		});
 	}
 
-	public function  getAllowedActions() {
+	public function  getAllowedActions(): array {
 		return array(
 			'press',
 		);
 	}
 
-	public function  getAvailableEvents() {
+	public function  getAvailableEvents(): array {
 		return array(
 			'press'
 		);
@@ -35,7 +51,7 @@ class Button extends \Webos\Visual\Control {
 		$selected = $this->selected = false;
 		// Al cerrarse el botón de menú, debe des-seleccionar todos los
 		// items de menú que hayan quedado seleccionados.
-		foreach($this->getObjectsByClassName('\Webos\Visual\Controls\Menu\Item') as $menuItem) {
+		foreach($this->getObjectsByClassName(Item::class) as $menuItem) {
 			if ($menuItem->selected) {
 				$menuItem->selected = false;
 			}
@@ -46,7 +62,7 @@ class Button extends \Webos\Visual\Control {
 	// al objeto contenedor que guarda esta información.
 	public function __get_selected() {		
 		$selected = $this->getParent()->getSelectedButton();
-		if ($selected instanceof \Webos\Visual\Controls\Menu\Button) {
+		if ($selected instanceof self) {
 			if ($selected === $this) {
 				return true;
 			}
@@ -69,37 +85,12 @@ class Button extends \Webos\Visual\Control {
 		}
 	}
 	
-	public function onActionCalled($source, $eventName, $params) {
-		//return null;
-		// Si no está seleccionado, no hay nada que hacer.
-		if (!$this->selected) { return null; }
-			
-		// Si no se proporciona objectId terminamos.
-		if (empty($params['objectId'])) { return null; }
-
-		// Si el objeto sobre el que se realiza la acción es el MenuButton
-		// activo terminamos.
-		if ($params['objectId'] == $this->getObjectID()) {
-			return null;
-		}
-
-		// Si el objeto en cuestión, es hijo del MenuButton activo, también
-		// terminamos.
-		if ($this->getObjectByID($params['objectId'])) {				
-			return null;
-		}
-
-		// Caso contrario, se ha hecho clik en un elemento fuera del menú,
-		// entonces hay que cerrarlo.
-		$this->close();
-	}
-	
-	public function render() {
+	public function render(): string {
 		$content = '';
 		
 		$selected = '';
 		$selectedButton = $this->getParent()->getSelectedButton();
-		if ($selectedButton instanceof \Webos\Visual\Controls\Menu\Button) {
+		if ($selectedButton instanceof self) {
 			if ($selectedButton->getObjectID()== $this->getObjectID()) {
 				$selected = ' selected';
 			}
@@ -108,7 +99,7 @@ class Button extends \Webos\Visual\Control {
 		if ($selected) {
 			$content .= $this->getChildObjects()->render();
 
-			foreach($this->getObjectsByClassName('\Webos\Visual\Controls\Menu\Item') as $menuItem) {
+			foreach($this->getObjectsByClassName(Item::class) as $menuItem) {
 				if ($menuItem->selected) {
 					$content .= $menuItem->getChildObjects()->render();
 				}
@@ -117,7 +108,7 @@ class Button extends \Webos\Visual\Control {
 
 		$onclick = "__doAction('send',{actionName:'press',objectId:'".$this->getObjectID()."'});";
 
-		$html = new \Webos\String(
+		$html = new \Webos\StringChar(
 			'<div id="__id__" class="MenuButton__selected__">' .
 				'<div class="text" onclick="__onclick__">__text__</div>' .
 				'<div class="container">__content__</div>' .

@@ -1,6 +1,6 @@
 <?php
 namespace Webos\Visual\Controls;
-
+use \Webos\ObjectsCollection;
 class ListBox extends Field {
 	protected $_selectedItem = null;
 
@@ -8,25 +8,25 @@ class ListBox extends Field {
 	 * 
 	 * @return \Webos\ObjectsCollection;
 	 */
-	public function items() {
+	public function items(): ObjectsCollection {
 		return $this->getChildObjects();
 	}
 
-	public function setSelectedItem(ListItem $item) {
+	public function setSelectedItem(ListItem $item): self {
 		$this->_selectedItem = $item;
 
 		$this->getParentApp()->triggerSystemEvent('updateObject', $this, array(
 			'object' => $this,
 		));
-
+		return $this;
 	}
 
 	public function getSelectedItem() {
 		return $this->_selectedItem;
 	}
 	
-	public function render() {
-		$html = new \Webos\String(
+	public function render(): string {
+		$html = new \Webos\StringChar(
 			'<div class="ListFieldControl"__style__>' .
 				'<div class="listWrapper">__content__</div>' .
 			'</div>'

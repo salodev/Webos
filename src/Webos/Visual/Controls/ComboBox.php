@@ -23,7 +23,7 @@ class ComboBox extends Field {
 		return null;
 	}
 	
-	public function setRS(array $rs, $keyID = 'id', $keyText = 'text') {
+	public function setRS(array $rs, string $keyID = 'id', string $keyText = 'text'): self {
 		$options = array();
 		foreach($rs as $row) {
 			$id = $row[$keyID];
@@ -38,7 +38,7 @@ class ComboBox extends Field {
 		return $this;
 	}
 	
-	public function render() {
+	public function render(): string {
 		$onchange = "__doAction('send',{actionName:'setValue',objectId:this.id, value:this.value});";
 		$disabled = $this->disabled ? ' disabled="disabled"' : '';
 		$html = '<select id="' . $this->getObjectID() . '" class="ComboFieldControl" onclick="onclick" onchange="'.$onchange.'" '.$this->getInlineStyle(). $disabled . '>';

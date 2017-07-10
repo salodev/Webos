@@ -1,6 +1,7 @@
 <?php
 namespace Webos;
 use Exception;
+use Webos\Exceptions\Collection\NotFound;
 /**
  * Un VisualObject es subtipo de BaseObject porque puede ser representado
  * como un objeto de datos, o puede ser una representación visual de un
@@ -11,6 +12,7 @@ abstract class VisualObject extends BaseObject {
 	protected $_objectID      = null;
 	protected $_className     = null;
 	protected $_parentObject  = null;
+	protected $_application   = null;
 	protected $_childObjects  = null;
 	protected $_events        = null;
 	/**
@@ -19,7 +21,8 @@ abstract class VisualObject extends BaseObject {
 	 */
 	protected $_eventsHandler = null;
 
-	public function __construct(array $data = array()) {
+	public function __construct(Application $application, array $data = array()) {
+		$this->_application = $application;
 
 		$initialAttributes = $this->getInitialAttributes();
 
@@ -42,8 +45,9 @@ abstract class VisualObject extends BaseObject {
 	}
 
 	final public function __set($name, $value) {
-		parent::__set($name, $value);
-		$this->modified();
+		if (parent::__set($name, $value)) {
+			$this->modified();
+		}
 	}
 
 	final public function modified() {
@@ -54,16 +58,8 @@ abstract class VisualObject extends BaseObject {
 		);
 	}
 
-	public function getChildObjects() {
+	public function getChildObjects(): ObjectsCollection {
 		return $this->_childObjects;
-	}
-
-	/**
-	 * Como es un objeto visual, necesitará de un 'renderizador'.
-	 * Por el momento sólo se aplica para HTML.
-	 */
-	public function  getHTMLRendererName() {
-		return '\Webos\Render\\' . str_replace('\\', '', get_class($this));
 	}
 
 	/**
@@ -72,7 +68,7 @@ abstract class VisualObject extends BaseObject {
 	 *
 	 * Si estos son especificados al construir el objeto, serán reemplazados.
 	 */
-	public function getInitialAttributes() {
+	public function getInitialAttributes(): array {
 		return array();
 	}
 
@@ -80,18 +76,18 @@ abstract class VisualObject extends BaseObject {
 	 * Hace posible identificar el tipo de objeto una vez exportado para conocer
 	 * cual es su aspecto visual, u objeto de representación visual asociado.
 	 **/
-	final public function getClassName(){
+	final public function getClassName(): string {
 		return get_class($this);
 	}
 	
-	public function getClassNameForRender() {
+	public function getClassNameForRender(): string {
 		return str_replace(array('\Webos\Apps\\', '\Webos\Visual\Controls\\', '\\'), array('','','-'), get_class($this));
 	}
 	
 	/**
 	 * Hace posible la identificación única en el arbol de objetos.
 	 **/
-	final public function getObjectID(){
+	final public function getObjectID(): string{
 		return $this->_objectID;
 	}
 	
@@ -99,11 +95,11 @@ abstract class VisualObject extends BaseObject {
 	 * Hace posible que su contenedor lo identifique de una manera mejor
 	 * que por sí mismo.
 	 **/
-	final public function setObjectID($id){
+	final public function setObjectID(string $id){
 		$this->_objectID = $id;
 	}
 
-	public function generateObjectID() {
+	public function generateObjectID(): string {
 		return str_replace('\\','-', $this->getClassName()) . '-' . md5(mt_rand()) . md5(microtime());
 	}
 	
@@ -113,8 +109,8 @@ abstract class VisualObject extends BaseObject {
 	 * @param array $initialAttributes
 	 * @return \Webos\VisualObject
 	 */
-	public function createObject($className, array $initialAttributes = array()) {
-		$object = new $className($this, $initialAttributes);
+	public function createObject(string $className, array $initialAttributes = array()): self {
+		$object = new $className($this->_application, $this, $initialAttributes);
 
 		$this->getParentApp()->triggerSystemEvent('createObject', $this, array(
 			'object' => $object,
@@ -124,15 +120,25 @@ abstract class VisualObject extends BaseObject {
 	}
 
 	//abstract public function getObjectByID($id);
-	final public function getObjectByID($id, $horizontal = true) {
+	final public function getObjectByID(string $id, bool $horizontal = true): self {
 		return $this->_childObjects->getObjectByID($id, $horizontal);
 	}
+	
+	final public function hasObjectID(string $id): bool {
+		try {
+			$object = $this->getObjectByID($id);
+		} catch (NotFound $e) {
+			return false;
+		}
+		
+		return $object instanceof VisualObject;
+	}
 
-	final public function getObjectsByClassName($className) {
+	final public function getObjectsByClassName($className): ObjectsCollection {
 		return $this->_childObjects->getObjectsByClassName($className);
 	}
 
-	final public function getObjectsFromAttributes($params) {
+	final public function getObjectsFromAttributes($params): ObjectsCollection {
 		return $this->_childObjects->getObjectsFromAttributes($params);
 	}
 
@@ -183,7 +189,7 @@ abstract class VisualObject extends BaseObject {
 	 * 
 	 * @return $this
 	 */
-	public function removeChilds() {
+	public function removeChilds(): self {
 		$childs = $this->getChildObjects();
 		$childsID = [];
 		foreach($childs as $child) { 
@@ -203,32 +209,39 @@ abstract class VisualObject extends BaseObject {
 	 * Permite obtener su padre o contenedor.
 	 * @return VisualObject
 	 */
-	final public function getParent() {
+	final public function getParent(): self {
 		return $this->_parentObject;
+	}
+	
+	/**
+	 * Permite obtener su padre o contenedor.
+	 * @return VisualObject
+	 */
+	final public function hasParent(): bool {
+		return $this->_parentObject instanceof self;
 	}
 
 	/**
 	 *
 	 * @return \Webos\Application 
 	 */
-	final public function getParentApp() {
-		if ($this instanceof Application) {
+	final public function getParentApp(): Application {
+		return $this->_application;
+	}
+	
+	final public function getApplication(): Application {
+		return $this->_application;
+	}
+
+	public function getParentWindow(): Visual\Window {
+		if ($this instanceof Visual\Window) {
 			return $this;
 		}
 
 		$parent = $this->getParent();
-		if ($parent instanceof Application) {
-			return $parent;
-		} else {
-			return $this->getParent()->getParentApp();
+		if (!($parent instanceof VisualObject)) {
+			return null;
 		}
-	}
-
-	public function getParentWindow() {
-		if ($this instanceof Visual\Window) return $this;
-
-		$parent = $this->getParent();
-		if (!($parent instanceof VisualObject)) return null;
 
 		if ($parent instanceof Visual\Window) {
 			return $parent;
@@ -237,9 +250,9 @@ abstract class VisualObject extends BaseObject {
 		}
 	}
 
-	public function getParentByClassName($className) {
-		$parent = $this->getParent();
-		if (!($parent instanceof VisualObject)) return null;
+	public function getParentByClassName($className): VisualObject {
+		$parent = $this->_parent;
+		if (!($this->_parent instanceof VisualObject)) return null;
 		
 		if ($parent instanceof $className) {
 			return $parent;
@@ -248,35 +261,9 @@ abstract class VisualObject extends BaseObject {
 		}
 	}
 
-	/**
-	 * Permite especificar sus atributos luego de haber sido construído
-	 * el objeto
-	 *
-	 * @param array Atributos de la forma attributo=>valor
-	 */
-	final public function setAttributes(array $attributes) {
-		$this->_attributes = array_merge($this->_attributes, $attributes);
-	}
-
-	/**
-	 * Permite obtener un listado de atributos. Si se especifica el nombre
-	 * se obtiene su valor, de lo contrario un array con todos sus
-	 * atributos.
-	 *
-	 * @param string $name Nombre del atributo
-	 */
-	final public function getAttributes($name = null) {
-		if ($name == null) return $this->_attributes;
-
-		$attr = &$this->_attributes[$name];
-		if (isset($attr)) return $attr;
-
-		return null;
-	}
-
 	/* Todos los objetos VisualObject deben implementar IActionInvoker
 	 * pero no necesariamente todos deben actuar en consecuencia. */
-	public function action($name, array $params = null) {
+	public function action(string $name, array $params = []) {
 		if (in_array($name,$this->getAllowedActions())){
 			$this->$name($params);
 		} else {
@@ -286,7 +273,7 @@ abstract class VisualObject extends BaseObject {
 	}
 
 	/* IWithEvents */
-	public function bind($eventName, $eventListener, $persistent = true) {		
+	public function bind(string $eventName, $eventListener, bool $persistent = true) {		
 		if (in_array($eventName, $this->getAvailableEvents())) {
 			$this->_eventsHandler->addListener($eventName, $eventListener, $persistent);
 		} else {
@@ -295,7 +282,7 @@ abstract class VisualObject extends BaseObject {
 		return $this;
 	}
 
-	public function unbind($eventName) {
+	public function unbind(string $eventName): self {
 		$this->_eventsHandler->removeListeners($eventName);
 		return $this;
 	}
@@ -306,7 +293,7 @@ abstract class VisualObject extends BaseObject {
 	 * @param array|null $params
 	 * @return \Webos\EventsHandler
 	 */
-	public function triggerEvent($eventName, $params = null) {
+	public function triggerEvent(string $eventName, $params = null) {
 		return $this->_eventsHandler->trigger($eventName, $this, $params);
 	}
 	
@@ -314,7 +301,7 @@ abstract class VisualObject extends BaseObject {
 	 * Método genérico de reperesentación.
 	 * @return string
 	 */
-	public function render() {
+	public function render(): string {
 		$htmlChilds = $childObjects = $this->getChildObjects()->render();
 		$html  = '';
 		$html .= '<div>';
@@ -324,7 +311,7 @@ abstract class VisualObject extends BaseObject {
 		return $html;
 	}
 	
-	public function getInlineStyle($absolutize = true) {
+	public function getInlineStyle($absolutize = true): string {
 		
 		$attrs = $this->getAttributes();
 
@@ -369,15 +356,11 @@ abstract class VisualObject extends BaseObject {
 			}
 		}
 		
-		
-		$styleStrings = array();
-		foreach($styles as $attname=>$attvalue) {
-			$styleStrings[] = "$attname:$attvalue";
-		}
+		$stylesString = self::getAsStyles($styles);
 
-		if (count($styleStrings)) {
-			$ret = new \Webos\String(' style="__style_string__"');
-			$ret->replace('__style_string__', implode(';', $styleStrings));
+		if (strlen($stylesString)) {
+			$ret = new \Webos\StringChar(' style="__style_string__"');
+			$ret->replace('__style_string__', $stylesString);
 		} else {
 			$ret = '';
 		}
@@ -385,10 +368,15 @@ abstract class VisualObject extends BaseObject {
 		return $ret;
 	}
 
-	static public function getAsStyles(array $styles) {
+	static public function getAsStyles(array $styles): string {
 		$strings = array();
 		foreach($styles as $name=>$value) {
-			$strings[] = $name . ':' . $value;
+			$unit = '';
+			if (in_array($name, ['top','bottom','left','right','width','height'])) {
+				$unit = 'px';
+			}
+			$strings[] = "{$name}:{$value}{$unit}";
+			unset($unit);
 		}
 
 		return implode(';', $strings);
@@ -397,7 +385,7 @@ abstract class VisualObject extends BaseObject {
 	/**
 	 * El objeto sólo admite un conjunto de acciones.
 	 **/
-	public function getAllowedActions() {
+	public function getAllowedActions(): array {
 		return array();
 	}
 
@@ -405,7 +393,7 @@ abstract class VisualObject extends BaseObject {
 	 * Debe definirse una lista de nombres de eventos disponibles
 	 * @return array Lista de nombres de eventos disponibles.
 	 */
-	public function getAvailableEvents() {
+	public function getAvailableEvents(): array {
 		return array();
 	}
 }

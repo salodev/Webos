@@ -1,5 +1,6 @@
 <?php
 namespace Webos;
+use \Webos\Exceptions\Collection\NotFound;
 /**
  * Cada elemento de esta colección es un objeto
  */
@@ -37,24 +38,36 @@ class ObjectsCollection extends Collection {
 		return $this;
 	}
 
-	final public function getObjectByID($id, $horizontal = true) {
+	final public function getObjectByID(string $id, bool $horizontal = true): VisualObject {
 
 		if ($horizontal) {
 			foreach($this->_data as $object) {
-				if ($object->getObjectID()==$id) return $object;
+				if ($object->getObjectID()==$id) {
+					return $object;
+				}
 			}
 		}
 
 		foreach($this->_data as $object) {
-			if (!($object instanceof VisualObject)) continue;
-			if ($object->getObjectID()==$id) return $object;
-			if ($test = $object->getObjectByID($id, $horizontal)){
-				return $test;
+			if (!($object instanceof VisualObject)) {
+				continue;
+			}
+			if ($object->getObjectID()==$id) {
+				return $object;
+			}
+			try {
+				if ($test = $object->getObjectByID($id, $horizontal)){
+					return $test;
+				}
+			} catch (NotFound $e) {
+				continue;
 			}
 		}
+		
+		throw new NotFound('Object Not Found');
 	}
 
-	function getObjectsByClassName($className, $inspector = null) {
+	function getObjectsByClassName(string $className): self {
 
 		//return $inspector->getObjectsByClassName($className, $this);
 
@@ -63,22 +76,30 @@ class ObjectsCollection extends Collection {
 			/**
 			 * Sólo VisualObjects implementan el método getClassName.
 			 **/
-			if (!($object instanceof VisualObject)) continue;
+			if (!($object instanceof VisualObject)) {
+				continue;
+			}
 
-			if ($object instanceof $className) $list->add($object);
+			if ($object instanceof $className) {
+				$list->add($object);
+			}
 
 			$list2 = $object->getObjectsByClassName($className);
-			if (!empty($list2)) $list->append($list2);
+			if (!empty($list2)) {
+				$list->append($list2);
+			}
 		}
 
 		return $list;
 	}
 
-	function getObjectsFromAttributes($params) {
+	function getObjectsFromAttributes(array $params): self {
 		$list = new ObjectsCollection();
 		foreach($this->_data as $object) {
 
-			if (!($object instanceof VisualObject)) continue;
+			if (!($object instanceof VisualObject)) {
+				continue;
+			}
 
 			foreach($params as $attName => $attValue) {
 				if ($object->$attName==$attValue) {
@@ -102,7 +123,7 @@ class ObjectsCollection extends Collection {
 	 * @param string $name Nombre del método a invocar
 	 * @param mixed $params Parámetros que se enviarán al método.
 	 */
-	function sendMessage($name, $params = null) {
+	function sendMessage(string $name, $params = null): void {
 		foreach($this->_data as $object) {
 			$object->$name($params);
 		}
@@ -112,7 +133,7 @@ class ObjectsCollection extends Collection {
 	 * Obtiene la lista de objetos renderizada.
 	 * @return string
 	 */
-	public function render() {
+	public function render(): string {
 		$ret = '';
 		foreach($this->_data as $object) {
 			$ret .= $object->render();

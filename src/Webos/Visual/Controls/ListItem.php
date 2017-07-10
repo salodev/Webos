@@ -3,13 +3,13 @@
 namespace Webos\Visual\Controls;
 class ListItem extends \Webos\Visual\Control {
 
-	public function getAllowedActions() {
+	public function getAllowedActions(): array {
 		return array(
 			'press'
 		);
 	}
 
-	public function getAvailableEvents() {
+	public function getAvailableEvents(): array {
 		return array(
 			'press'
 		);
@@ -20,14 +20,14 @@ class ListItem extends \Webos\Visual\Control {
 		$this->triggerEvent('press');
 	}
 	
-	public function render() {
-		$html = new \Webos\String(
+	public function render(): string {
+		$html = new \Webos\StringChar(
 			'<div class="ItemListFieldControl__selected__" onclick="__onclick__">' .
 			'__title__' .
 			'</div>'
 		);
 		
-		$onclick = new \Webos\String(
+		$onclick = new \Webos\StringChar(
 			"location.href='index.php?actionName=press&objectId=" .
 			$this->getObjectID() . "';"
 		);

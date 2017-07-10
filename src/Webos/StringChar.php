@@ -1,7 +1,7 @@
 <?php
 namespace Webos;
 
-class String {
+class StringChar {
 	protected $_string = '';
 
 	public function __construct($string = ''){
@@ -65,10 +65,10 @@ class String {
 	 * @return \Webos\String
 	 */
 	static public function Create($var = null) {
-		return new String($var);
+		return new StringChar($var);
 	}
 }
 
-function String($string) {
-	return new String($string);
+function StringChar($string) {
+	return new StringChar($string);
 }

@@ -16,7 +16,7 @@ class Tree extends \Webos\Visual\Control {
 	 * @param \Webos\Visual\Controls\TreeNode $treeNode
 	 * @return $this
 	 */
-	public function setSelectedNode(TreeNode $treeNode) {
+	public function setSelectedNode(TreeNode $treeNode): self {
 		$this->_selectedNode = $treeNode;
 		return $this;
 	}
@@ -29,11 +29,11 @@ class Tree extends \Webos\Visual\Control {
 		return $this->_selectedNode;
 	}
 	
-	public function getAllowedActions() {
+	public function getAllowedActions(): array {
 		return array();
 	}
 	
-	public function getAvailableEvents() {
+	public function getAvailableEvents(): array {
 		return [
 			'nodeToggled',
 			'nodeSelected',
@@ -45,7 +45,7 @@ class Tree extends \Webos\Visual\Control {
 	 * @param mixed $value
 	 * @return TreeNode
 	 */
-	public function addNode($text, $data = null) {
+	public function addNode($text, $data = null): TreeNode {
 		$newNode = $this->createObject(TreeNode::class, [
 			'treeControl' => $this,
 			'text'        => $text,
@@ -61,7 +61,7 @@ class Tree extends \Webos\Visual\Control {
 	 * @param \Webos\Visual\Controls\TreeNode $node
 	 * @return $this
 	 */
-	public function removeNode(TreeNode $node) {
+	public function removeNode(TreeNode $node): self {
 		$parent = $node->getParent();
 		$parent->removeChild($node);
 		if ($parent instanceof TreeNode) {
@@ -70,8 +70,8 @@ class Tree extends \Webos\Visual\Control {
 		return $this;
 	}
 	
-	public function render() {
-		$html = new \Webos\String('<ul id="__id__" class="Tree"__style__ >__content__</ul>');
+	public function render(): string {
+		$html = new \Webos\StringChar('<ul id="__id__" class="Tree"__style__ >__content__</ul>');
 		$onchange = "__doAction('send',{actionName:'setValue',objectId:this.id, value:this.value});";
 
 		$content = '';
@@ -98,7 +98,7 @@ class Tree extends \Webos\Visual\Control {
 	 * @param string $align
 	 * @return Column
 	 */
-	public function addColumn($fieldName, $label, $width='100px', $allowOrder=false, $linkable=false, $align = 'left') {
+	public function addColumn(string $fieldName, string $label, int $width=100, bool $allowOrder=false, bool $linkable=false, string $align = 'left'): Column {
 		// $column = new ColumnDataTable();
 		$column = new Column($label, $fieldName);
 		$column->width      = $width;
