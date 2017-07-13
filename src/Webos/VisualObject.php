@@ -251,8 +251,10 @@ abstract class VisualObject extends BaseObject {
 	}
 
 	public function getParentByClassName($className): VisualObject {
-		$parent = $this->_parent;
-		if (!($this->_parent instanceof VisualObject)) return null;
+		$parent = $this->_parentObject;
+		if (!($parent instanceof VisualObject)) {
+			return null;
+		}
 		
 		if ($parent instanceof $className) {
 			return $parent;

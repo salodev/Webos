@@ -51,17 +51,19 @@ class Item extends \Webos\Visual\Control {
 		if (!$this->getParent()->hasSelectedItem()) {
 			return false;
 		}
-		return $this->getParent()->hasSelectedItem() === $this;
+		return $this->getParent()->getSelectedItem() === $this;
 	}
 
 	public function __set_selected($value) {
+		$currentValue = $this->selected;
+		if ($value === $currentValue) {
+			return;
+		}
 		if ($value) {
 			$this->getParent()->setSelectedItem($this);
 		} else {
-			if ($this->selected) {
-				$this->getParent()->setSelectedItem(null);
-			}
-		}
+			$this->getParent()->unselectItem();
+		};
 	}
 	
 	public function render(): string {

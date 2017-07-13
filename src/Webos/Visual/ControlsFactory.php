@@ -12,7 +12,7 @@ trait ControlsFactory {
 	 * @return Controls\TextBox
 	 */
 	public function createTextBox(array $params = []) {
-		return $this->createObject(__NAMESPACE__ . '\\Controls\TextBox', $params);
+		return $this->createObject(Controls\TextBox::class, $params);
 	}
 	
 	/**
@@ -21,7 +21,7 @@ trait ControlsFactory {
 	 * @return Controls\Button
 	 */
 	public function createButton(array $params = []) {
-		return $this->createObject(__NAMESPACE__ . '\\Controls\Button', $params);
+		return $this->createObject(Controls\Button::class, $params);
 	}
 }
 

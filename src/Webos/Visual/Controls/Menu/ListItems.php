@@ -24,6 +24,10 @@ class ListItems extends \Webos\Visual\Control {
 		$this->_selectedItem = $menuItem;
 	}
 	
+	public function unselectItem() {
+		$this->_selectedItem = null;
+	}
+	
 	public function createItem($text, $shortCut = '', array $params = array()): Item {
 		return $this->createObject(Item::class, array_merge($params, array(
 			'text' => $text,

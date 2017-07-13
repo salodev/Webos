@@ -5,20 +5,20 @@ class Button extends \Webos\Visual\Control {
 
 	public function initialize() {
 		$this->getApplication()->getWorkSpace()->addEventListener('actionCalled', function ($source, $eventName, $params) {
-			if ($params['object'] === $this) {
-				return true;
+			$selected = $this->selected;
+			if (!$selected || $params['object'] === $this) {
+				return;
 			}
 			try {
-				$parentObject = $params['object']->getParentByClassName(self::class);
+				$parentObject = $params['object']->getParentByClassName(Button::class);
 			} catch (\TypeError $e) {
 				$this->close();
 				return true;
 			}
-			//return;
+			
 			if ($parentObject !== $this) {
 				$this->close();
 			}
-			return true;
 		});
 	}
 

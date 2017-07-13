@@ -2,7 +2,15 @@
 
 namespace Webos;
 /**
- * ESTO SI QUE ME HA HECHO PARIR!!!!!
+ * Dirty solution for serializing closures.
+ * Useful for event driven development. 
+ * 
+ * It works stroring source code into local property and evaluating at invoke.
+ * 
+ * Currently is not supporting 'use( ... )' sintax. If present, variables
+ * will not be filled, because original scope values are lost.
+ * 
+ * Neverthless $this scope is available. 
  */
 class Closure {
 	
