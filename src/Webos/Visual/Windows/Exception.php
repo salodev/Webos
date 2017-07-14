@@ -8,14 +8,10 @@ class Exception extends Window {
 		$this->title  = 'Exception trown';
 		$this->width  = 800;
 		$this->height = 500;
-		if (!$params['e'] || !($params['e'] instanceof \Exception)) {
-			throw new \Exception('ExceptionWindow must be open with exception parameter');
-		}
 		
 		// $e = $this->exception = $params['e'];
-		$e = $params['e'];
-		$this->title = get_class($e) . ' thrown:';
-		$this->createLabel("'{$e->getMessage()}' in file {$e->getFile()} ({$e->getLine()})",[
+		$this->title = $params['class'] . ' thrown:';
+		$this->createLabel($params['message'],[
 			'top'   => 0,
 			'left'  => 0,
 			'right' => 0,
@@ -30,7 +26,28 @@ class Exception extends Window {
 		$this->callStack->addColumn('id', '#', 30, false, false, 'right');
 		$this->callStack->addColumn('function', 'Function', 500);
 		$this->callStack->addColumn('location', 'Location', 300);
-		$rows = array();
+		
+		$this->callStack->rows = $params['rsTrace'];
+		$this->callStack->bind('rowClick', [$this, 'onCallStackRowclick']);
+		$this->widthFieldControl = 400;
+		$this->widthLabelControl = 90;
+		$this->topControl = 368;
+		$this->createTextBox('File', 'file');
+		$this->createTextBox('Line', 'line');
+		$this->createTextBox('Function', 'function');
+		$this->disableForm();
+	}
+	
+	/**
+	 * To avoid cause Closure serialize error.
+	 * 
+	 * @param \Exception $e
+	 * @return array
+	 */
+	static public function ParseException(\Exception $e): array {
+		$class = get_class($e);
+		$message = "'{$e->getMessage()}' in file {$e->getFile()} ({$e->getLine()})";
+		$rsTrace = [];
 		foreach($e->getTrace() as $k => $info) {
 			$class = &$info['class'];
 			$type = &$info['type'];
@@ -58,7 +75,7 @@ class Exception extends Window {
 			}
 			$file = &$info['file'];
 			$line = &$info['line'];
-			$rows[] = [
+			$rsTrace[] = [
 				'id' => "$k ",
 				'function' => $class . $type . $info['function'] . '(' . $argumentsString . ')',
 				'location' => '../' . basename($file) . ' (' . $line . ')',
@@ -67,18 +84,16 @@ class Exception extends Window {
 				'args' => '', //&$info['args'],
 			];
 		}
-		$this->callStack->rows = $rows;
-		$this->callStack->bind('rowClick', [$this, 'onCallStackRowclick']);
-		$this->widthFieldControl = 400;
-		$this->widthLabelControl = 90;
-		$this->topControl = 368;
-		$this->createTextBox('File', 'file');
-		$this->createTextBox('Line', 'line');
-		$this->createTextBox('Function', 'function');
-		$this->disableForm();
+		
+		return [
+			'class'   => $class,
+			'message' => $message,
+			'rsTrace' => $rsTrace,
+		];
 	}
 
 	public function onCallStackRowclick() {
+		
 		$row = $this->callStack->getActiveRowData();
 		if ($row) {
 			$this->setFormData($row);

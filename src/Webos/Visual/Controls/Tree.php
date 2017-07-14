@@ -25,8 +25,12 @@ class Tree extends \Webos\Visual\Control {
 	 * 
 	 * @return TreeNode;
 	 */
-	public function getSelectedNode() {
+	public function getSelectedNode(): TreeNode {
 		return $this->_selectedNode;
+	}
+	
+	public function hasSelectedNode(): bool {
+		return $this->_selectedNode instanceof TreeNode;
 	}
 	
 	public function getAllowedActions(): array {

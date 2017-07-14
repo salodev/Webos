@@ -81,11 +81,11 @@ abstract class Application {
 	 */
 	public function openWindow(string $windowName = null, array $params = array(), $relativeTo = null): Visual\Window {
 		if ($windowName===null) {
-			$windowName = 'Webos\Visual\Window';
+			$windowName = Window::class;
 		}
 		$window = new $windowName($this, $params);
 		$this->setActiveWindow($window);
-		if ($relativeTo instanceof Visual\Window) {
+		if ($relativeTo instanceof Window) {
 			$window->top  = $relativeTo->top  + 100;
 			$window->left = $relativeTo->left + 100;
 		}
@@ -99,9 +99,8 @@ abstract class Application {
 	 * @return Visual\ExceptionWindow
 	 */
 	public function openExceptionWindow(\Exception $e): Visual\Windows\Exception {
-		return $this->openWindow(Visual\Windows\Exception::class, [
-			'e' => $e,
-		], $this);
+		$params = Visual\Windows\Exception::ParseException($e);
+		return $this->openWindow(Visual\Windows\Exception::class, $params, $this);
 	}
 
 	/**
