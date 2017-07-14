@@ -75,7 +75,11 @@ class Tree extends \Webos\Visual\Control {
 	}
 	
 	public function render(): string {
-		$html = new \Webos\StringChar('<ul id="__id__" class="Tree"__style__ >__content__</ul>');
+		$html = new \Webos\StringChar(
+			'<ul id="__id__" class="Tree container"__style__ >' .
+				'__content__' . 
+			'</ul>'
+		);
 		$onchange = "__doAction('send',{actionName:'setValue',objectId:this.id, value:this.value});";
 
 		$content = '';

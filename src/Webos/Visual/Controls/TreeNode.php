@@ -93,7 +93,7 @@ class		TreeNode extends \Webos\Visual\Control {
 					'<div class="title">__text__</div>'.
 					'__columns__' .
 				'</div>'.
-				'<ul>__content__</ul>'.
+				'<ul class="container">__content__</ul>'.
 			'</li>'
 		);
 		$onclick = "__doAction('send',{actionName:'select',objectId:this.id});event.cancelBubble=true;event.stopPropagation();";
