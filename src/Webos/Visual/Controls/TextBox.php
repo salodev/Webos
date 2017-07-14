@@ -40,8 +40,11 @@ class TextBox extends Field {
 		return $html;
 	}
 	
-	public function leaveTyping(string $value) {
-		$this->setValue($value);
+	public function leaveTyping(array $params) {
+		if (empty($params['value'])) {
+			return;
+		}
+		$this->setValue($params['value']);
 		$this->triggerEvent('leaveTyping');
 	}
 	

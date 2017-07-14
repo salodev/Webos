@@ -112,4 +112,14 @@ class Tree extends \Webos\Visual\Control {
 		$this->columns->add($column);
 		return $column;
 	}
+	
+	public function onNodeToggled(callable $fn) {
+		$this->bind('nodeToggled', $fn);
+		return $this;
+	}
+	
+	public function onNodeSelected(callable $fn) {
+		$this->bind('nodeSelected', $fn);
+		return $this;
+	}
 }

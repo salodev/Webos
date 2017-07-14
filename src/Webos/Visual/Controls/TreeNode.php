@@ -1,7 +1,7 @@
 <?php
 namespace Webos\Visual\Controls;
 
-class TreeNode extends \Webos\Visual\Control {
+class		TreeNode extends \Webos\Visual\Control {
 	
 	/**
 	 * 
@@ -18,6 +18,9 @@ class TreeNode extends \Webos\Visual\Control {
 	}
 
 	public function __get_selected() {
+		if (!$this->treeControl->hasSelectedNode()) {
+			return false;
+		}
 		$test = $this->treeControl->getSelectedNode();
 		if ($test===$this) {
 			return true;
