@@ -80,7 +80,6 @@ class Tree extends \Webos\Visual\Control {
 				'__content__' . 
 			'</ul>'
 		);
-		$onchange = "__doAction('send',{actionName:'setValue',objectId:this.id, value:this.value});";
 
 		$content = '';
 		foreach($this->getChildObjects() as $child) {
