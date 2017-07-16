@@ -21,7 +21,7 @@ class Window extends Container {
 		$this->left   = 100;
 	}
 	
-	public function initialize() {}
+	public function initialize(array $params = []) {}
 
 	public function controls() {
 		return $this->_childObjects;
@@ -137,7 +137,7 @@ class Window extends Container {
 	 * @param array $params
 	 * @return Window;
 	 */
-	public function openWindow(string $className, array $params = array()): Window {
+	public function openWindow(string $className = null, array $params = array()): Window {
 		return $this->getApplication()->openWindow($className, $params, $this);
 	}
 	
