@@ -1,5 +1,6 @@
 <?php
 namespace Webos;
+use Exception;
 class System {
 
 	private $_eventsHandler  = null;
@@ -86,17 +87,20 @@ class System {
 		return $ws;
 	}
 	
-	public function removeWorkSpace() {
+	public function removeWorkSpace(): self {
 		$wsFileName = $this->getConfig('path/workspaces') . $this->_workSpaceName;
 		unlink($wsFileName);
+		return $this;
 	}
 	
-	public function storeWorkSpace() {
+	public function storeWorkSpace(): self {
 		if (!$this->_workSpaceName || !($this->_workSpace instanceof WorkSpace)) {
-			return;
+			throw new Exception('No workspace');
 		}
 		$wsFileName = $this->getConfig('path/workspaces') . $this->_workSpaceName;
 		file_put_contents($wsFileName, serialize($this->_workSpace), FILE_IGNORE_NEW_LINES);
+		
+		return $this;
 	}
 
 	/**
@@ -111,18 +115,19 @@ class System {
 		throw new \Exception('No workspace loaded');
 	}
 
-	public function addEventListener($eventName, $eventListener, $persistent = true) {
-		$this->_eventsHandler->addListener($eventName, $eventListener, $persistent);
+	public function addEventListener($eventName, $eventListener, $persistent = true,  array $contextData = []): self {
+		$this->_eventsHandler->addListener($eventName, $eventListener, $persistent, $contextData);
 		return $this;
 	}
 
-	public function triggerEvent($eventName, $source, $params = null) {
+	public function triggerEvent($eventName, $source, $params = null): self {
 		$this->_eventsHandler->trigger($eventName, $source, $params);
 		return $this;
 	}
 
-	public function setConfig($name, $value) {
+	public function setConfig($name, $value): self {
 		$this->_config[$name] = $value;
+		return $this;
 	}
 
 	public function getConfig($name) {
@@ -132,7 +137,7 @@ class System {
 		return null;
 	}
 
-	public function getAllConfig() {
+	public function getAllConfig(): array {
 		return $this->_config;
 	}
 

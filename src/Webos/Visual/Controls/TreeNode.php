@@ -1,7 +1,7 @@
 <?php
 namespace Webos\Visual\Controls;
 
-class		TreeNode extends \Webos\Visual\Control {
+class TreeNode extends \Webos\Visual\Control {
 	
 	/**
 	 * 
@@ -88,8 +88,9 @@ class		TreeNode extends \Webos\Visual\Control {
 		$html = new \Webos\StringChar(
 			'<li id="__id__" class="TreeNode"__style__ onclick="__onclick__">' .
 				'<div class="row __selected__">' . 
-					($this->hasChilds===false ? '' :
-					'<span class="toggle __toggleClass__" onclick="__onclickToggle__"></span>' ).
+					// ($this->hasChilds===false ? '' :
+					'<span class="toggle __toggleClass__" onclick="__onclickToggle__"></span>' .
+					// ).
 					'<div class="title">__text__</div>'.
 					'__columns__' .
 				'</div>'.
@@ -100,7 +101,13 @@ class		TreeNode extends \Webos\Visual\Control {
 		$ondblclick = "__doAction('send',{actionName:'doubleclick',objectId:this.id});event.cancelBubble=true;event.stopPropagation();";
 
 		$onclickToggle = "__doAction('send',{actionName:'toggle',objectId:'__id__'});event.cancelBubble=true;event.stopPropagation();";
+		if ($this->hasChilds === false) {
+			$onclickToggle = '';
+		}
 		
+		if ($this->hasChild !== false) {
+			
+		}
 		$content  = '';
 		$expand   = " + ";
 		$collapse = " - ";
@@ -112,6 +119,10 @@ class		TreeNode extends \Webos\Visual\Control {
 		// if ($this->getChildObjects()->length()) {
 			$toggleClass = $this->expanded ? 'collapse' : 'expand';
 		// }
+			
+		if ($this->hasChilds === false) {
+			$toggleClass = 'none';
+		}
 
 		$html->replaces(array(
 			'__id__'            => $this->getObjectID(),

@@ -40,6 +40,11 @@ class TextBox extends Field {
 		return $html;
 	}
 	
+	public function setValue($mixed) {
+		if ($this->disabled) { return; }
+		parent::setValue($mixed);
+	}
+	
 	public function leaveTyping(array $params) {
 		if (empty($params['value'])) {
 			return;

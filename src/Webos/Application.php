@@ -44,8 +44,8 @@ abstract class Application {
 		return $this->_workSpace;
 	}
 
-	public function addEventListener(string $eventName, callback $eventListener, bool $persistent = true): self {
-		$this->_eventsHandler->addListener($eventName, $eventListener, $persistent);
+	public function addEventListener(string $eventName, callback $eventListener, bool $persistent = true,  array $contextData = []): self {
+		$this->_eventsHandler->addListener($eventName, $eventListener, $persistent, $contextData);
 		return $this;
 	}
 
@@ -54,9 +54,9 @@ abstract class Application {
 		return $this;
 	}
 
-	public function addSystemEventListener(string $eventName, callback $eventListener, bool $persistent = true): self {
+	public function addSystemEventListener(string $eventName, callback $eventListener, bool $persistent = true,  array $contextData = []): self {
 		//$this->getWorkSpace()->addEventListener($eventName, $eventListener, $persistent);
-		$this->_systemEventsHandler->addListener($eventName, $eventListener, $persistent);
+		$this->_systemEventsHandler->addListener($eventName, $eventListener, $persistent, $contextData);
 		return $this;
 	}
 

@@ -275,9 +275,9 @@ abstract class VisualObject extends BaseObject {
 	}
 
 	/* IWithEvents */
-	public function bind(string $eventName, $eventListener, bool $persistent = true) {		
+	public function bind(string $eventName, $eventListener, bool $persistent = true, array $contextData = []) {
 		if (in_array($eventName, $this->getAvailableEvents())) {
-			$this->_eventsHandler->addListener($eventName, $eventListener, $persistent);
+			$this->_eventsHandler->addListener($eventName, $eventListener, $persistent, $contextData);
 		} else {
 			throw new \Exception("Event $eventName not available in " . get_class($this) . " object.");
 		}

@@ -115,6 +115,14 @@ class DataTable extends \Webos\Visual\Control {
 		);
 	}
 	
+	public function onRowClick(callable $eventListener, bool $persistent = true, array $contextData = []) {
+		$this->bind('rowClick', $eventListener, $persistent, $contextData);
+	}
+	
+	public function onRowDoubleClick(callable $eventListener, bool $persistent = true, array $contextData = []) {
+		$this->bind('rowDoubleClick', $eventListener, $persistent, $contextData);
+	}
+	
 	public function render(): string {
 		$objectID   = $this->getObjectID();
 

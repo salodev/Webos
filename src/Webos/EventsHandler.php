@@ -13,7 +13,7 @@ class EventsHandler {
 		$this->useAvailableEvents = false;
 	}
 
-	public function addListener(string $eventName, callable $eventListener, bool $persistent = true): self {
+	public function addListener(string $eventName, callable $eventListener, bool $persistent = true, array $contextData = []): self {
 
 		$this->checkAvailableEvent($eventName);
 
@@ -21,13 +21,17 @@ class EventsHandler {
 			throw new \Exception('eventListener must be a function or an Closure instance');
 		}
 		
+		$dependenciesList = $this->_getDependenciesList($eventListener);
+		
 		if ($eventListener instanceof \Closure) {
 			$eventListener = new Closure($eventListener);
 		}
 		
 		$evData = new \stdClass();
-		$evData->eventListener = $eventListener;
-		$evData->persistent    = (bool) $persistent;
+		$evData->eventListener    = $eventListener;
+		$evData->persistent       = (bool) $persistent;
+		$evData->contextData      = $contextData;
+		$evData->dependenciesList = $dependenciesList;
 
 		$this->events[$eventName][] = $evData;
 
@@ -48,7 +52,17 @@ class EventsHandler {
 				if (!$evData->persistent) {
 					unset($this->events[$eventName][$k]);
 				}
-				$return = $this->call($evData->eventListener, $source, $eventName, $params);
+				
+				$dependencies = $this->_buildDependenciesArray($evData->dependenciesList, [
+					'source'      => $source,
+					'eventName'   => $eventName,
+					'params'      => $params,
+					'parameters'  => $params,
+					'data'        => $params,
+					'contextData' => $evData->contextData,
+				]);
+				
+				$return = call_user_func_array($evData->eventListener, $dependencies);
 
 				// Si un eventListener response con FALSE, significa que está solicitando
 				// la detención de ejecución de los eventos, y dicho valor será entregado
@@ -71,21 +85,6 @@ class EventsHandler {
 		}
 	}
 
-	private function call(callable $eventListener, $source, $eventName, $params) {
-		if (is_array($eventListener)) {
-			if (isset($eventListener[0], $eventListener[1])) {
-				$object = $eventListener[0];
-				$method = $eventListener[1];
-
-				return $object->$method($source, $eventName, $params);
-			}
-		}
-
-		if (is_callable($eventListener)) {
-			return $eventListener($source, $eventName, $params);
-		}
-	}
-
 	public function setAvailableEvents(array $eventsList){
 		$this->availableEvents = array_merge($this->availableEvents, $eventsList);
 		$this->useAvailableEvents = true;
@@ -100,5 +99,15 @@ class EventsHandler {
 			return false;
 		}
 		return count($this->events[$eventName])>0;
+	}
+	
+	private function _getDependenciesList(callable $fn) {
+		$di = new DependencyInjector();
+		return $di->getDependenciesList($fn);
+	}
+	
+	private function _buildDependenciesArray(array $list, array $dependencies): array {
+		$di = new DependencyInjector();
+		return $di->buildDependenciesFromArray($list, $dependencies);
 	}
 }

@@ -92,19 +92,25 @@ class WorkSpace {
 		return $this;
 	}
 
-	public function setActiveApplication($application) {
+	public function setActiveApplication(Application $application): self {
 		$this->_activeApplication = $application;
 
 		$this->triggerEvent('activeApplication', $this, array(
 			'object' => $application,
 		));
+		
+		return $this;
 	}
 
-	public function getActiveApplication() {
+	public function hasActiveApplication(): bool {
+		return $this->_activeApplication instanceof Application;
+	}
+
+	public function getActiveApplication(): Application {
 		return $this->_activeApplication;
 	}
 
-	public function setSystemEnvironment($system) {
+	public function setSystemEnvironment($system): void {
 		$this->_systemEnvironment = $system;
 	}
 
@@ -112,16 +118,16 @@ class WorkSpace {
 	 * 
 	 * @return \Webos\System;
 	 */
-	public function getSystemEnvironment() {
+	public function getSystemEnvironment(): System {
 		return $this->_systemEnvironment;
 	}
 
-	public function addEventListener($eventName, $eventListener, $persistent = true) {
-		$this->_eventsHandler->addListener($eventName, $eventListener, $persistent);
+	public function addEventListener($eventName, $eventListener, $persistent = true,  array $contextData = []): self {
+		$this->_eventsHandler->addListener($eventName, $eventListener, $persistent, $contextData);
 		return $this;
 	}
 
-	public function triggerEvent($eventName, $source, $params = null){
+	public function triggerEvent($eventName, $source, $params = null): self {
 		$this->_eventsHandler->trigger($eventName, $source, $params);
 
 		/**

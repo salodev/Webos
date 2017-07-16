@@ -8,9 +8,9 @@ class Window extends Container {
 	protected $activeControl = null;
 	public $windowStatus = 'normal';
 	
-	public function bind(string $eventName, $eventListener, bool $persistent = true) {
+	public function bind(string $eventName, $eventListener, bool $persistent = true, array $contextData = []) {
 		if ($eventName=='ready') { $persistent = false; }
-		return parent::bind($eventName, $eventListener, $persistent);
+		return parent::bind($eventName, $eventListener, $persistent, $contextData);
 	}
 	
 	public function preInitialize() {
