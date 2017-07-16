@@ -26,7 +26,7 @@ class ToolBar extends \Webos\Visual\Control {
 	public function addButton($title, array $options = array()): Button {
 		return $this->createObject(Button::class, array_merge(array(
 			'value' => $title,
-			'left'  => 5,
+			// 'left'  => 5,
 		),  $options));
 	}
 	

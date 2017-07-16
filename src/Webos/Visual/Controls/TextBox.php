@@ -47,7 +47,7 @@ class TextBox extends Field {
 	
 	public function leaveTyping(array $params) {
 		if (empty($params['value'])) {
-			return;
+			// return;
 		}
 		$this->setValue($params['value']);
 		$this->triggerEvent('leaveTyping');

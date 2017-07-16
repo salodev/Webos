@@ -15,7 +15,7 @@ trait ControlsFactory {
 	 * @param array $params
 	 * @return Controls\TextBox
 	 */
-	public function createTextBox(array $params = []) {
+	public function createTextBox(array $params = []): TextBox {
 		return $this->createObject(TextBox::class, $params);
 	}
 	
