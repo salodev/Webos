@@ -38,6 +38,8 @@ abstract class VisualObject extends BaseObject {
 		$this->_objectID = $this->generateObjectID();
 		$this->_eventsHandler = new EventsHandler();
 		$this->_childObjects = new ObjectsCollection();
+		
+		$this->_eventsHandler->setAvailableEvents($this->getAvailableEvents());
 	}
 
 	final public function __get($name) {
@@ -276,7 +278,7 @@ abstract class VisualObject extends BaseObject {
 
 	/* IWithEvents */
 	public function bind(string $eventName, $eventListener, bool $persistent = true, array $contextData = []) {
-		if (in_array($eventName, $this->getAvailableEvents())) {
+		if ($this->_eventsHandler->isAvailable($eventName)) {
 			$this->_eventsHandler->addListener($eventName, $eventListener, $persistent, $contextData);
 		} else {
 			throw new \Exception("Event $eventName not available in " . get_class($this) . " object.");
@@ -297,6 +299,11 @@ abstract class VisualObject extends BaseObject {
 	 */
 	public function triggerEvent(string $eventName, $params = null) {
 		return $this->_eventsHandler->trigger($eventName, $this, $params);
+	}
+	
+	public function enableEvent(string $eventName): self {
+		$this->_eventsHandler->enableEvent($eventName);
+		return $this;
 	}
 	
 	/**
