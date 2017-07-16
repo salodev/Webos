@@ -16,5 +16,5 @@ abstract class Container extends \Webos\VisualObject {
 		$this->initialize($initialAttributes);
 	}
 	public function preInitialize() {}
-	public function initialize() {}
+	public function initialize(array $params = []) {}
 }
