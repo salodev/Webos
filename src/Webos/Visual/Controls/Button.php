@@ -48,8 +48,8 @@ class Button extends \Webos\Visual\Control {
 	 * @param \Webos\Visual\Controls\callable $eventListener
 	 * @return $this
 	 */
-	public function onPress(callable $eventListener): self {
-		$this->bind('press', $eventListener);
+	public function onPress(callable $eventListener, array $contextData = []): self {
+		$this->bind('press', $eventListener, true, $contextData);
 		return $this;
 	}
 	
