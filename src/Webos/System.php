@@ -142,7 +142,11 @@ class System {
 	}
 
 	public function __destruct() {
-		$this->storeWorkSpace();
+		try {
+			$this->storeWorkSpace();
+		} catch (Exception $e) {
+			
+		}
 	}
 
 }

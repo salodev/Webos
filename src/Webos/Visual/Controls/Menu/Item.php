@@ -17,6 +17,7 @@ class Item extends \Webos\Visual\Control {
 		if ($this->triggerEvent('press')) {
 			if ($this->getObjectsByClassName(ListItems::class)->count()) {
 				$this->selected = true;
+				$this->getParentByClassName(Button::class)->modified();
 			} else {
 				try {
 					$this->getParentByClassName(Button::class)->close();
