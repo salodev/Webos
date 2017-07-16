@@ -60,6 +60,7 @@ class EventsHandler {
 					'parameters'  => $params,
 					'data'        => $params,
 					'contextData' => $evData->contextData,
+					'context'     => $evData->contextData,
 				]);
 				
 				$return = call_user_func_array($evData->eventListener, $dependencies);
@@ -76,18 +77,31 @@ class EventsHandler {
 		
 		return true;
 	}
-
-	private function checkAvailableEvent(string $eventName) {
+	
+	public function isAvailable(string $eventName): bool {
 		if ($this->useAvailableEvents) {
 			if (!in_array($eventName, $this->availableEvents)) {
-			 throw new \Exception("Unavailable {$eventName} event.");
+				return false;
 			}
+		}
+		return true;
+	}
+
+	private function checkAvailableEvent(string $eventName) {
+		if (!$this->isAvailable($eventName)) {
+			throw new \Exception("Unavailable {$eventName} event.");
 		}
 	}
 
 	public function setAvailableEvents(array $eventsList){
 		$this->availableEvents = array_merge($this->availableEvents, $eventsList);
 		$this->useAvailableEvents = true;
+	}
+	
+	public function enableEvent(string $eventName) {
+		if (!in_array($eventName, $this->availableEvents)) {
+			$this->availableEvents[] = $eventName;
+		}
 	}
 
 	public function getAvailableEvents(): array {
