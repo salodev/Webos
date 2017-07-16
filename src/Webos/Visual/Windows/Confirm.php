@@ -12,9 +12,9 @@ class Confirm extends Window {
 		));
 	}
 
-	public function initialize() {
+	public function initialize(array $params = []) {
 		$this->title = 'Confirmar';
-		$this->height = '130px';
+		$this->height = 130;
 		$this->createObject(Label::class, array(
 			'text' => $this->message,
 			'top'  => 50,
