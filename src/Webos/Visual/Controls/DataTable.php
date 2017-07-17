@@ -32,6 +32,10 @@ class DataTable extends \Webos\Visual\Control {
 		$this->columns->add($column);
 		return $column;
 	}
+	
+	public function hasSelectedRow(): bool {
+		return $this->rowIndex !== null;
+	}
 
 	public function getActiveRowData(string $fieldName = null) {
 		if ($this->rowIndex !== null) {

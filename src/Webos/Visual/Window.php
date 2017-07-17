@@ -173,9 +173,10 @@ class Window extends Container {
 	 * @param \Webos\Visual\callable $onConfirmCallback
 	 * @return Window
 	 */
-	public function onPrompt(string $text, callable $onConfirmCallback): Windows\Prompt {
+	public function onPrompt(string $text, callable $onConfirmCallback, string $defaultValue = null): Windows\Prompt {
 		return $this->openWindow(Windows\Prompt::class, [
-			'message'=>$text
+			'message'      => $text,
+			'defaultValue' => $defaultValue,
 		])->bind('confirm', $onConfirmCallback);
 	}
 	

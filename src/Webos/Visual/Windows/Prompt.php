@@ -14,7 +14,10 @@ class Prompt extends Window {
 	public function initialize(array $params = []) {
 		$this->title = 'Confirmar';
 		$this->height = 130;
-		$this->createTextBox($this->message, 'promptText');
+		$t = $this->createTextBox($this->message, 'promptText');
+		if (!empty($params['defaultValue'])) {
+			$t->value = $params['defaultValue'];
+		}
 	}
 
 	public function getAllowedActions(): array {
