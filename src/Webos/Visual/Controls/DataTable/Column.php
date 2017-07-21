@@ -48,10 +48,13 @@ class Column {
 		$this->decimals = $decimals;
 		$this->decimalsGlue = $decimalsGlue;
 		$this->thousandsGlue = $thousandsGlue;
+		$this->align = 'right';
+		return $this;
 	}
 	
 	public function dateFormat($format) {
 		$this->dateFormat = $format;
+		return $this;
 	}
 	
 	public function renderValue($value) {

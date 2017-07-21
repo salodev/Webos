@@ -25,6 +25,9 @@ class ComboBox extends Field {
 	
 	public function setRS(array $rs, string $keyID = 'id', string $keyText = 'text'): self {
 		$options = array();
+		if ($this->placeholder) {
+			$options[''] = $this->placeholder;
+		}
 		foreach($rs as $row) {
 			$id = $row[$keyID];
 			$text = $row[$keyText];
@@ -34,6 +37,9 @@ class ComboBox extends Field {
 		$this->assoc = true;
 		if (count($rs)) {
 			$this->value = $rs[0][$keyID];
+		}
+		if ($this->placeholder) {
+			$this->value = null;
 		}
 		return $this;
 	}

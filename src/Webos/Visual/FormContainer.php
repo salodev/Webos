@@ -55,6 +55,7 @@ trait FormContainer {
 			$options, 
 			array('text'=>$label), 
 			array(
+				'text-align' => 'left',
 				'top'   => $this->topControl,
 				'left'  => $this->leftControl,
 				'width' => $this->widthLabelControl,
