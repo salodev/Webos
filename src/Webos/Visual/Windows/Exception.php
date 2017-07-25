@@ -45,7 +45,7 @@ class Exception extends Window {
 	 * @return array
 	 */
 	static public function ParseException(\Exception $e): array {
-		$class = get_class($e);
+		$exceptionClass = get_class($e);
 		$message = "'{$e->getMessage()}' in file {$e->getFile()} ({$e->getLine()})";
 		$rsTrace = [];
 		foreach($e->getTrace() as $k => $info) {
@@ -86,7 +86,7 @@ class Exception extends Window {
 		}
 		
 		return [
-			'class'   => $class,
+			'class'   => $exceptionClass,
 			'message' => $message,
 			'rsTrace' => $rsTrace,
 		];
