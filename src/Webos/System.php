@@ -79,6 +79,7 @@ class System {
 		 **/ 
 		$ws->setSystemEnvironment($this);
 		$this->_workSpace = $ws;
+		WorkSpace::SetCurrent($ws);
 
 		$this->triggerEvent('loadedWorkSpace', $this, array(
 			'workspace'=>$ws

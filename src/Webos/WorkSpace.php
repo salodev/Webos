@@ -11,8 +11,31 @@ class WorkSpace {
 	protected $_activeApplication = null;
 	protected $_eventsHandler = null;
 	protected $_name = null;
+	protected $_info = [];
 
 	protected $_systemEnvironment = null;
+	
+	protected static $_current = null;
+	
+	static public function SetCurrent(self $workSpace) {
+		self::$_current = $workSpace;
+	}
+	
+	static public function Info(string $name, $value = null) {
+		if ($value ===null) {
+			return self::$_current->getInfo($name, $value);
+		} else {
+			self::$_current->setInfo($name, $value);
+		}
+	}
+	
+	public function setInfo($name, $value) {
+		$this->_info[$name] = $value;
+	}
+	
+	public function getInfo($name) {
+		return $this->_info[$name];
+	}
 	
 	/**
 	 * @returns WorkSpace;
