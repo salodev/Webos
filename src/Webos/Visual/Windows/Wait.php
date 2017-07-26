@@ -1,0 +1,57 @@
+<?php
+namespace Webos\Visual\Windows;
+use \Webos\Visual\Window;
+use \salodev\Utils;
+use \Exception;
+class Wait extends Window {
+
+	public function initialize(array $params = array()) {
+		$this->title   = Utils::Ifnull($params['title'  ], '');
+		$this->message = Utils::Ifnull($params['message'], 'Please, wait a moment...');
+		$this->width   = Utils::Ifnull($params['width'  ], 350);
+		$this->height  = Utils::Ifnull($params['height' ], 130);
+		$this->showTitle = false;
+
+	}
+
+	public function  getInitialAttributes(): array {
+		return array(
+			'height' => 100,
+			'width'  => 200
+		);
+	}
+	
+	/**
+	 * Because the Wait Window is not closable by user,
+	 * is necessary close when Exceptions take place.
+	 * @throws Exception
+	 */
+	public function ready() {
+		try {
+			parent::ready();
+		} catch (Exception $e) {
+			$this->close();
+			throw $e;
+		}
+	}
+	
+	public function render(): string {
+		$template = $this->_getRenderTemplate();
+
+		$content = new \Webos\StringChar(
+			'<div style="text-align:center;">' .
+				'<div style="margin:20px;font-weight:bold;">__MESSAGE__</div>' .
+			'</div>'
+		);
+		
+		$onClick = "__doAction('send',{actionName:'close', objectId:'__OBJECTID__'});";
+		$content->replace('__MESSAGE__',      $this->message      );
+		$content->replace('__ONCLICK__',      $onClick            );
+		$content->replace('__OBJECTID__',     $this->getObjectID());
+		
+		$template->replace('__TITLE__',       $this->title        );
+		$template->replace('__CONTENT__',     $content            );
+		
+		return $template;
+	}
+}

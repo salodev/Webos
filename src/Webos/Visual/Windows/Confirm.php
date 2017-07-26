@@ -13,6 +13,7 @@ class Confirm extends Window {
 	}
 
 	public function initialize(array $params = []) {
+		$this->enableEvent('confirm');
 		$this->title = 'Confirmar';
 		$this->height = 130;
 		$this->createObject(Label::class, array(
@@ -30,22 +31,9 @@ class Confirm extends Window {
 		);
 	}
 
-	public function  getAvailableEvents(): array {
-		return array(
-			'confirm',
-			'close',
-			'move',
-		);
-	}
-
 	public function confirm() {
 		$this->triggerEvent('confirm');
 		$this->close();
-	}
-
-	public function close() {
-		$this->triggerEvent('close');
-		$this->getApplication()->closeWindow($this);
 	}
 	
 	public function render(): string {

@@ -19,24 +19,6 @@ class Message extends Window {
 			'width'  => 200
 		);
 	}
-	public function  getAllowedActions(): array {
-		return array(
-			'close',
-			'move'
-		);
-	}
-
-	public function  getAvailableEvents(): array {
-		return array(
-			'close',
-			'move'
-		);
-	}
-
-	public function close() {
-		$this->triggerEvent('close');
-		$this->getApplication()->closeWindow($this);
-	}
 	
 	public function render(): string {
 		$template = $this->_getRenderTemplate();

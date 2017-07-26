@@ -1,5 +1,9 @@
 <?php
 namespace Webos\Visual;
+use \Webos\Visual\Windows\Wait;
+use \Webos\Visual\Windows\Message;
+use \Webos\Visual\Windows\Prompt;
+use \Webos\Visual\Windows\Confirm;
 class Window extends Container {
 	use FormContainer;
 
@@ -19,6 +23,8 @@ class Window extends Container {
 		$this->height = 400;
 		$this->top    = 100;
 		$this->left   = 100;
+		$this->showTitle = true;
+		$this->showControls = true;
 	}
 	
 	public function initialize(array $params = []) {}
@@ -29,6 +35,7 @@ class Window extends Container {
 
 	public function getAvailableEvents(): array {
 		return array(
+			'move',
 			'click',
 			'close',
 			'ready',
@@ -147,12 +154,18 @@ class Window extends Container {
 	 * @param string $title
 	 * @return Window
 	 */
-	public function messageWindow(string $message, string $title = 'Message'): Windows\Message {
-		return $this->openWindow(Windows\Message::class, [
+	public function messageWindow(string $message, string $title = 'Message'): Message {
+		return $this->openWindow(Message::class, [
 			'title'   => $title,
 			'message' => $message,
 			'type'    => 'info',
 		]);
+	}
+	
+	public function waitWindow(string $message, callable $callback): Wait {
+		return $this->openWindow(Wait::class, [
+			'message' => $message
+		])->onReady($callback);
 	}
 	
 	/**
@@ -161,8 +174,8 @@ class Window extends Container {
 	 * @param callable $onConfirmCallback
 	 * @return Window
 	 */
-	public function onConfirm(string $text, callable $onConfirmCallback): Windows\Confirm {
-		return $this->openWindow(Windows\Confirm::class, [
+	public function onConfirm(string $text, callable $onConfirmCallback): Confirm {
+		return $this->openWindow(Confirm::class, [
 			'message'=>$text
 		])->bind('confirm', $onConfirmCallback);
 	}
@@ -173,8 +186,8 @@ class Window extends Container {
 	 * @param \Webos\Visual\callable $onConfirmCallback
 	 * @return Window
 	 */
-	public function onPrompt(string $text, callable $onConfirmCallback, string $defaultValue = null): Windows\Prompt {
-		return $this->openWindow(Windows\Prompt::class, [
+	public function onPrompt(string $text, callable $onConfirmCallback, string $defaultValue = null): Prompt {
+		return $this->openWindow(Prompt::class, [
 			'message'      => $text,
 			'defaultValue' => $defaultValue,
 		])->bind('confirm', $onConfirmCallback);
@@ -186,8 +199,13 @@ class Window extends Container {
 	 * @param callable $onCloseCallback
 	 * @return Windows\Message
 	 */
-	public function onMessageWindow(string $text, callable $onCloseCallback): Windows\Message {
+	public function onMessageWindow(string $text, callable $onCloseCallback): Message {
 		return $this->messageWindow($text, 'Message')->bind('close', $onCloseCallback);
+	}
+	
+	public function onReady(callable $onReadyCB): self {
+		$this->bind('ready', $onReadyCB);
+		return $this;
 	}
 	
 	public function render(): string {
@@ -205,12 +223,16 @@ class Window extends Container {
 		$html = new \Webos\StringChar(
 			'<div id="__ID__" class="Window form-wrapper__ACTIVE____STATUS__" style="__STYLE__">' .
 				'<div class="form-titlebar">' .
-					'<div class="title">__TITLE__</div>' .
-					'<div class="controls">' .
-						'<a class="small-control restore" href="#" onclick="__doAction(\'send\', {actionName:\'restore\',objectId:\'__ID__\'});return false;"></a>' .
-						'<a class="small-control maximize" href="#" onclick="__doAction(\'send\', {actionName:\'maximize\',objectId:\'__ID__\'});return false;"></a>' .
-						'<a class="small-control close" href="#" onclick="__doAction(\'send\', {actionName:\'close\',objectId:\'__ID__\'});return false;"></a>' .
-					'</div>' .
+					($this->showTitle ?
+						'<div class="title">__TITLE__</div>' .
+						($this->showControls ?
+							'<div class="controls">' .
+								'<a class="small-control restore" href="#" onclick="__doAction(\'send\', {actionName:\'restore\',objectId:\'__ID__\'});return false;"></a>' .
+								'<a class="small-control maximize" href="#" onclick="__doAction(\'send\', {actionName:\'maximize\',objectId:\'__ID__\'});return false;"></a>' .
+								'<a class="small-control close" href="#" onclick="__doAction(\'send\', {actionName:\'close\',objectId:\'__ID__\'});return false;"></a>' .
+							'</div>' : ''
+						) : '' 
+					) .
 				'</div>' .
 				'<div class="form-content">__CONTENT__</div>' .
 				'__AUTOFOCUS__' . '__READY__' .

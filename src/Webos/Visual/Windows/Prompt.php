@@ -12,6 +12,7 @@ class Prompt extends Window {
 	}
 
 	public function initialize(array $params = []) {
+		$this->enableEvent('confirm');
 		$this->title = 'Confirmar';
 		$this->height = 130;
 		$t = $this->createTextBox($this->message, 'promptText');
@@ -28,24 +29,11 @@ class Prompt extends Window {
 		);
 	}
 
-	public function  getAvailableEvents(): array {
-		return array(
-			'confirm',
-			'close',
-			'move',
-		);
-	}
-
 	public function confirm() {
 		$this->triggerEvent('confirm', [
 			'value' => $this->promptText->value,
 		]);
 		$this->close();
-	}
-
-	public function close() {
-		$this->triggerEvent('close');
-		$this->getApplication()->closeWindow($this);
 	}
 	
 	public function render(): string {
