@@ -148,13 +148,14 @@ abstract class VisualObject extends BaseObject {
 	 * Permite definir quién es su padre o contenedor.
 	 * @param VisualObject $object
 	 **/
-	final public function setParentObject(VisualObject $object) {
+	final public function setParentObject(VisualObject $object): self {
 		$this->_parentObject = $object;
 
 		$object->addChildObject($this);
+		return $this;
 	}
 
-	public function addChildObject(VisualObject $child) {
+	public function addChildObject(VisualObject $child): self {
 		$parent = $child->getParent();
 		if (!($parent instanceof VisualObject)) {
 			throw new Exception('Trying to add a child object without parent to ' . $this->getObjectID());
@@ -170,6 +171,7 @@ abstract class VisualObject extends BaseObject {
 		}
 		//echo 'Agregando ' . get_class($child) . ' a ' . get_class($this) . '<br />';
 		$this->_childObjects->add($child);
+		return $this;
 	}
 	
 	/**
@@ -177,7 +179,7 @@ abstract class VisualObject extends BaseObject {
 	 * @param \Webos\VisualObject $child
 	 * @return $this
 	 */
-	public function removeChild(VisualObject $child){
+	public function removeChild(VisualObject $child): self {
 		$objectID = $child->getObjectID();
 		$childs = $this->getChildObjects();
 		$childs->removeObject($child);
@@ -273,11 +275,10 @@ abstract class VisualObject extends BaseObject {
 		} else {
 			throw new \Exception("Action $name not allowed by " . get_class($this) . " object.");
 		}
-		/*  */
 	}
 
 	/* IWithEvents */
-	public function bind(string $eventName, $eventListener, bool $persistent = true, array $contextData = []) {
+	public function bind(string $eventName, $eventListener, bool $persistent = true, array $contextData = []): self {
 		if ($this->_eventsHandler->isAvailable($eventName)) {
 			$this->_eventsHandler->addListener($eventName, $eventListener, $persistent, $contextData);
 		} else {

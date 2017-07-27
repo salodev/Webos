@@ -1,5 +1,6 @@
 <?php
 namespace Webos\Visual;
+use \Webos\VisualObject;
 use \Webos\Visual\Windows\Wait;
 use \Webos\Visual\Windows\Message;
 use \Webos\Visual\Windows\Prompt;
@@ -12,7 +13,7 @@ class Window extends Container {
 	protected $activeControl = null;
 	public $windowStatus = 'normal';
 	
-	public function bind(string $eventName, $eventListener, bool $persistent = true, array $contextData = []) {
+	public function bind(string $eventName, $eventListener, bool $persistent = true, array $contextData = []): VisualObject {
 		if ($eventName=='ready') { $persistent = false; }
 		return parent::bind($eventName, $eventListener, $persistent, $contextData);
 	}

@@ -1,5 +1,6 @@
 <?php
 namespace Webos;
+use Webos\Visual\Window;
 /**
  * El WorkSpace es el entorno donde se ejecutarán todas las posibles
  * aplicaciones.
@@ -100,7 +101,7 @@ class WorkSpace {
 		
 		$application->signalFinish();
 
-		$windows = $application->getObjectsByClassName(\Webos\Visual\Window::class);
+		$windows = $application->getObjectsByClassName(Window::class);
 		
 		foreach($windows as $window) {
 			$application->closeWindow($window);

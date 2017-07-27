@@ -6,12 +6,10 @@ use \Exception;
 class Wait extends Window {
 
 	public function initialize(array $params = array()) {
-		$this->title   = Utils::Ifnull($params['title'  ], '');
 		$this->message = Utils::Ifnull($params['message'], 'Please, wait a moment...');
 		$this->width   = Utils::Ifnull($params['width'  ], 350);
 		$this->height  = Utils::Ifnull($params['height' ], 130);
 		$this->showTitle = false;
-
 	}
 
 	public function  getInitialAttributes(): array {
@@ -22,8 +20,10 @@ class Wait extends Window {
 	}
 	
 	/**
-	 * Because the Wait Window is not closable by user,
-	 * is necessary close when Exceptions take place.
+	 * Wait Window is an special case, because is both
+	 * not closable by user and is auto closed once
+	 * attached proccess finishes.
+	 * Also is closed when Exceptions take place.
 	 * @throws Exception
 	 */
 	public function ready() {
@@ -33,6 +33,7 @@ class Wait extends Window {
 			$this->close();
 			throw $e;
 		}
+		$this->close();
 	}
 	
 	public function render(): string {
