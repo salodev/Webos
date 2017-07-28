@@ -24,7 +24,8 @@ trait ControlsFactory {
 	 * @param array $params
 	 * @return Controls\Button
 	 */
-	public function createButton(array $params = []): Button {
+	public function createButton(string $text = 'Button', array $params = []): Button {
+		$params['value'] = $params['value'] ?? $text;
 		return $this->createObject(Button::class, $params);
 	}
 	

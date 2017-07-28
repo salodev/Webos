@@ -5,7 +5,7 @@ use \Exception;
 use \Webos\Visual\Controls\DataTable\Column;
 use \Webos\Exceptions\Alert;
 class DataTable extends \Webos\Visual\Control {
-	public $rowIndex = null;
+	// public $rowIndex = null;
 	public function initialize() {
 		$this->rows = array();
 		$this->columns = new \Webos\Collection();
