@@ -1,7 +1,9 @@
 <?php
 namespace Webos\Visual\Controls;
+use \salodev\Utils;
 use \Exception;
 use \Webos\Visual\Controls\DataTable\Column;
+use \Webos\Exceptions\Alert;
 class DataTable extends \Webos\Visual\Control {
 	public $rowIndex = null;
 	public function initialize() {
@@ -36,13 +38,19 @@ class DataTable extends \Webos\Visual\Control {
 	public function hasSelectedRow(): bool {
 		return $this->rowIndex !== null;
 	}
+	
+	public function checkSelectedRow(string $messageOnError = 'No selected row!'): void {
+		if (!$this->hasSelectedRow()) {
+			throw new Alert($messageOnError);
+		}
+	}
 
-	public function getActiveRowData(string $fieldName = null) {
+	public function getSelectedRowData(string $fieldName = null) {
 		if ($this->rowIndex !== null) {
 			$rowData = $this->getRowData($this->rowIndex/1);
 			if ($fieldName) {
 				if (!array_key_exists($fieldName, $rowData)) {
-					throw new \Exception("The '{$fieldName}' field does not exist.");
+					throw new Alert("The '{$fieldName}' field does not exist.");
 				}
 				return $rowData[$fieldName];
 			}
@@ -100,8 +108,8 @@ class DataTable extends \Webos\Visual\Control {
 
 	public function scroll(array $params = array()) {
 		//echo "hola";
-		$this->scrollTop  = ifempty($params['top'], 0);
-		$this->scrollLeft = ifempty($params['left'], 0);
+		$this->scrollTop  = $params['top' ] ?? 0;
+		$this->scrollLeft = $params['left'] ?? 0;
 	}
 
 	public function getAllowedActions(): array {
@@ -130,8 +138,8 @@ class DataTable extends \Webos\Visual\Control {
 	public function render(): string {
 		$objectID   = $this->getObjectID();
 
-		$scrollTop  = empty($this->scrollTop ) ? 0 : $this->scrollTop ;
-		$scrollLeft = empty($this->scrollLeft) ? 0 : $this->scrollLeft;
+		$scrollTop  = $this->scrollTop  ?? 0;
+		$scrollLeft = $this->scrollLeft ?? 0;
 		$html = '<div id="'.$this->getObjectID().'" class="DataTable" '. $this->getInlineStyle() .'>';
 		$rs = $this->rows;
 		$bodyWidth = 0;

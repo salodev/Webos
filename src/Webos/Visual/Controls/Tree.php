@@ -2,13 +2,15 @@
 namespace Webos\Visual\Controls;
 use \Exception;
 use \Webos\Visual\Controls\DataTable\Column;
+use \Webos\Visual\Control;
+use \Webos\Collection;
 
-class Tree extends \Webos\Visual\Control {
+class Tree extends Control {
 
 	// private $_selectedNode = null;
 	
 	public function initialize() {
-		$this->columns = new \Webos\Collection();
+		$this->columns = new Collection();
 	}
 
 	/**
@@ -33,8 +35,14 @@ class Tree extends \Webos\Visual\Control {
 		return $this->_selectedNode instanceof TreeNode;
 	}
 	
+	public function scroll(array $params = array()) {
+		//echo "hola";
+		$this->scrollTop  = $params['top' ] ?? 0;
+		$this->scrollLeft = $params['left'] ?? 0;
+	}
+	
 	public function getAllowedActions(): array {
-		return array();
+		return array('scroll');
 	}
 	
 	public function getAvailableEvents(): array {
@@ -74,27 +82,6 @@ class Tree extends \Webos\Visual\Control {
 		return $this;
 	}
 	
-	public function render(): string {
-		$html = new \Webos\StringChar(
-			'<ul id="__id__" class="Tree container"__style__ >' .
-				'__content__' . 
-			'</ul>'
-		);
-
-		$content = '';
-		foreach($this->getChildObjects() as $child) {
-			$content .= $child->render();
-		}
-
-		$html->replaces(array(
-			'__id__'      => $this->getObjectID(),
-			'__style__'   => $this->getInlineStyle(true),
-			'__content__' => $content,
-		));
-
-		return $html;
-	}
-	
 	/**
 	 * 
 	 * @param string $fieldName
@@ -124,5 +111,39 @@ class Tree extends \Webos\Visual\Control {
 	public function onNodeSelected(callable $fn) {
 		$this->bind('nodeSelected', $fn);
 		return $this;
+	}
+	
+	public function render(): string {
+		$scrollTop  = $this->scrollTop  ?? 0;
+		$scrollLeft = $this->scrollLeft ?? 0;
+		$html = new \Webos\StringChar(
+			'<ul id="__id__" class="Tree container"__style__ >' .
+				'__content__' . 
+			'</ul>' .
+			'<script type="text/javascript">' .
+				'$(function() {' .
+					'var $obj = $(\'#__id__\');' .
+					'$obj.attr(\'disable-scroll-event\', \'yes\');' .
+					'$obj.scrollTop(' . $scrollTop . ');' .
+					'$obj.scrollLeft(' . $scrollLeft . ');' .
+					'setTimeout(function() {' .
+						'$obj.attr(\'disable-scroll-event\', \'NO\');' .
+					'}, 600); /* nunca entendí porqué hace falta esto... */' .
+				'});' .
+			'</script>'
+		);
+
+		$content = '';
+		foreach($this->getChildObjects() as $child) {
+			$content .= $child->render();
+		}
+
+		$html->replaces(array(
+			'__id__'      => $this->getObjectID(),
+			'__style__'   => $this->getInlineStyle(true),
+			'__content__' => $content,
+		));
+
+		return $html;
 	}
 }

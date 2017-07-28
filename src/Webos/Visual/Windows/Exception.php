@@ -94,7 +94,7 @@ class Exception extends Window {
 
 	public function onCallStackRowclick() {
 		
-		$row = $this->callStack->getActiveRowData();
+		$row = $this->callStack->getSelectedRowData();
 		if ($row) {
 			$this->setFormData($row);
 		}
