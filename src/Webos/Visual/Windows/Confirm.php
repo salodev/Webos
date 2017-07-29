@@ -16,11 +16,6 @@ class Confirm extends Window {
 		$this->enableEvent('confirm');
 		$this->title = 'Confirmar';
 		$this->height = 130;
-		$this->createObject(Label::class, array(
-			'text' => $this->message,
-			'top'  => 50,
-			'left' => 25,
-		));
 	}
 
 	public function getAllowedActions(): array {
@@ -40,7 +35,7 @@ class Confirm extends Window {
 		$template = $this->_getRenderTemplate();
 
 		$content = new \Webos\StringChar(
-			'<div style="text-align:center;">' .
+			'<div __ALIGN__>' .
 				'<div>MESSAGE</div>' .
 				'<div style="margin-top:20px;">' .
 					'<input type="button" value="Sí" onclick="CLICK_YES" />'.
@@ -49,7 +44,12 @@ class Confirm extends Window {
 			'</div>'
 		);
 
-		$content->replace('MESSAGE',   $this->message);
+		$align = 'style="text-align:center;"';
+		if ($this->textAlign) {
+			$align = 'style="text-align:'.$this->textAlign.';"';
+		}
+		$content->replace('__ALIGN__', $align);
+		$content->replace('MESSAGE',   nl2br($this->message));
 		$content->replace('CLICK_YES', "__doAction('send',{actionName:'confirm', objectId:'OBJECTID'});");
 		$content->replace('CLICK_NO',  "__doAction('send',{actionName:'close', objectId:'OBJECTID'});");
 		$content->replace('OBJECTID',  $this->getObjectID());

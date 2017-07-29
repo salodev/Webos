@@ -200,12 +200,17 @@ class Window extends Container {
 	 * @param callable $onCloseCallback
 	 * @return Windows\Message
 	 */
-	public function onMessageWindow(string $text, callable $onCloseCallback): Message {
-		return $this->messageWindow($text, 'Message')->bind('close', $onCloseCallback);
+	public function onMessageWindow(string $text, callable $cb): Message {
+		return $this->messageWindow($text, 'Message')->onClose($cb);
 	}
 	
-	public function onReady(callable $onReadyCB): self {
-		$this->bind('ready', $onReadyCB);
+	public function onReady(callable $cb): self {
+		$this->bind('ready', $cb);
+		return $this;
+	}
+	
+	public function onClose(callable $cb): self {
+		$this->bind('close', $cb);
 		return $this;
 	}
 	

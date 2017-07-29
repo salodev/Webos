@@ -1,9 +1,10 @@
 <?php
 namespace Webos\Visual\Controls\Menu;
+use \Webos\Visual\Control;
 /**
  * Barra de menús. Contenedora de MenuButtons.
  */
-class Bar extends \Webos\Visual\Control {
+class Bar extends Control {
 
 	protected $_selectedButton = null;
 
@@ -31,7 +32,7 @@ class Bar extends \Webos\Visual\Control {
 	}
 	
 	public function render(): string {
-		$html  = '<div class="MenuBar">';
+		$html  = '<div id="'.$this->getObjectID().'" class="MenuBar container">';
 		$html .= $this->getChildObjects()->render();
 		$html .= '</div>';
 		return $html;

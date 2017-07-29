@@ -40,4 +40,19 @@ abstract class Control extends \Webos\VisualObject {
 		}
 		return parent::action($name, $params);
 	}
+	
+	/**
+	 * 
+	 * @param $eventListener
+	 * @return $this
+	 */
+	public function onPress(callable $eventListener, array $contextData = []): self {
+		$this->bind('press', $eventListener, true, $contextData);
+		return $this;
+	}
+	
+	public function onFocus(callable $eventListener, array $contextData = []): self {
+		$this->bind('foucs', $eventListener, true, $contextData);
+		return $this;
+	}
 }

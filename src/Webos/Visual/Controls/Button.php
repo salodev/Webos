@@ -43,16 +43,6 @@ class Button extends \Webos\Visual\Control {
 		return $this;
 	}
 	
-	/**
-	 * 
-	 * @param \Webos\Visual\Controls\callable $eventListener
-	 * @return $this
-	 */
-	public function onPress(callable $eventListener, array $contextData = []): self {
-		$this->bind('press', $eventListener, true, $contextData);
-		return $this;
-	}
-	
 	public function render(): string {
 		$html = new \Webos\StringChar(
 			'<button id="__id__" class="__class__" type="button" name="__name__" onclick="__onclick__"__style____disabled__>__value__</button>'

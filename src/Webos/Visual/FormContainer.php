@@ -68,7 +68,7 @@ trait FormContainer {
 			'width' => $this->widthFieldControl,
 			'name'  => $name,
 		)));
-		$this->topControl +=28;
+		$this->topControl += ($options['height'] ?? 23) + 5;
 		if ($this->topControl > $this->maxTopControl) {
 			$this->maxTopControl = $this->topControl;
 		}
