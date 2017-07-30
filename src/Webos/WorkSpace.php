@@ -102,6 +102,7 @@ class WorkSpace {
 		$application->signalFinish();
 
 		$windows = $application->getObjectsByClassName(Window::class);
+		// $windows = $application->getVisualObjects();
 		
 		foreach($windows as $window) {
 			$application->closeWindow($window);

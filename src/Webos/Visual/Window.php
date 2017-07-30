@@ -5,6 +5,7 @@ use \Webos\Visual\Windows\Wait;
 use \Webos\Visual\Windows\Message;
 use \Webos\Visual\Windows\Prompt;
 use \Webos\Visual\Windows\Confirm;
+use \Webos\Exceptions\Collection\NotFound;
 class Window extends Container {
 	use FormContainer;
 
@@ -107,7 +108,11 @@ class Window extends Container {
 	public function isActive() {
 		$ws   = $this->getApplication()->getWorkSpace();
 		$app  = $ws->getActiveApplication();
-		$test = $app->getObjectByID($this->getObjectID());
+		try {
+			$test = $app->getObjectByID($this->getObjectID());
+		} catch(NotFound $e) {
+			return false;
+		}
 
 		if ($test instanceof \Webos\Visual\Window) {
 			if ($test->active) {
