@@ -1,6 +1,7 @@
 <?php
 namespace Webos;
 use \Webos\Exceptions\Collection\NotFound;
+use \Webos\Application;
 
 class SystemInterface {
 	private   $_sessionId         = null;
@@ -77,7 +78,7 @@ class SystemInterface {
 		$object->action($actionName, $parameters);
 	}
 
-	public function getActiveApplication() {
+	public function getActiveApplication(): Application {
 		return $this->_system->getWorkspace($this->getSessionId())->getActiveApplication();
 	}
 
