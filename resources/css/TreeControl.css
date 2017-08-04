@@ -1,0 +1,73 @@
+.Tree {
+	border: solid 1px #ccc;
+    margin: 0;
+	padding: 0;
+    position: absolute !important;
+    background: #fff;
+	overflow-x:auto;
+}
+
+.TreeNode {
+	position:relative !important;
+	list-style:none;
+	/*height:25px;*/
+	line-height: 25px;
+	cursor:default;
+}
+.TreeNode > .row {
+	overflow:auto;
+}
+.TreeNode > .row:hover {
+	background: #efefef;
+	cursor: pointer;
+}
+.TreeNode > .row.selected {
+	background: #999;
+	color:#fff;
+}
+.TreeNode > .row .title {
+	float:left;
+}
+.TreeNode > .row .columns {
+    overflow: auto;
+    float: right;
+}
+.TreeNode > .row .column {
+	float:left;
+	padding: 0 5px;
+}
+.TreeNode > .row > .toggle {
+    cursor: pointer;
+    background: #fff;
+    display: block;
+    float: left;
+    height: 13px;
+    width: 13px;
+    border: solid 1px #ccc;
+    text-align: center;
+    padding: 0 !important;
+    line-height: 11px;
+    margin: 5px;
+    color: #999;
+    border-radius: 2px;
+    font-size: 7px;
+	font-family:'Glyphicons Halflings'
+}
+
+.TreeNode > .row > .toggle.none {
+	background:none;
+	border:none;
+	width: 7px;
+}
+
+.TreeNode > .row > .toggle.expand:before {
+	content:"\002b";
+}
+.TreeNode > .row > .toggle.collapse:before {
+	content:"\2212";
+}
+
+.TreeNode ul {
+	padding: 0 !important;
+	margin: 0 0 0 18px;
+}

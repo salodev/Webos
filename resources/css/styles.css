@@ -1,0 +1,94 @@
+@font-face{
+		font-family:'Glyphicons Halflings';
+		src:url('../fonts/glyphicons-halflings-regular.eot');
+		src:url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
+			url('../fonts/glyphicons-halflings-regular.woff') format('woff'),
+			url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+			url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg')
+}
+@font-face{
+		font-family:'Glyphicons Regular';
+		src:url('../fonts/glyphicons-regular.eot');
+		src:url('../fonts/glyphicons-regular.eot?#iefix') format('embedded-opentype'),
+			url('../fonts/glyphicons-regular.woff') format('woff'),
+			url('../fonts/glyphicons-regular.ttf') format('truetype'),
+			url('../fonts/glyphicons-regular.svg#glyphiconsregular') format('svg');
+		font-weight:normal;
+		font-style:normal
+}
+* {
+	box-sizing:border-box !important;
+}
+body{
+    background:#f6f6f6;
+    font-family:Helvetica;
+    font-size:14px;
+    margin:0;
+}
+
+.task-bar-wrapper {
+    margin-bottom:10px;
+}
+.task-bar {
+  background: #efefef;
+  position: relative;
+  box-shadow: 0 0 10px 1px #ddd;
+  overflow: auto;
+  border-bottom: solid 1px #ccc;
+}
+
+.task-bar .button {
+	display: table;
+	float: left;
+}
+.task-bar .button:hover {
+	background:#f6f6f6;
+}
+
+.task-bar .separator{
+    /*border-right:solid 1px #ccc;*/
+}
+
+/*
+.starter-button {
+    background:url(../img/bg-start.png) no-repeat;
+    width:46px;
+    height:46px;
+    margin:3px;
+}
+*/
+.starter-button {
+  color: #666;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  padding: 8px;
+  border-right: solid 1px #ccc;
+}
+
+.task-button {
+  height: 24px;
+  padding: 5px 10px;
+  color: #666;
+  text-decoration: none;
+  font-weight: bold;
+  line-height: 24px;
+  border-right: solid 1px #ccc;
+}
+
+.app-title{
+    font-size:35px;
+    color:#999;
+    padding:0 10px;
+}
+
+.Controls.Icon {
+	font-family:'Glyphicons Halflings';
+}
+.Controls.Icon.refresh:before {
+	content: '\E031';
+}
+
+input[type=button],button {
+	overflow:hidden;
+}

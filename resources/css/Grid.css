@@ -1,0 +1,57 @@
+.GridWrapper {
+    border: solid 1px #CCC;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    width: 100%;
+    height:200px;
+    overflow:hidden;
+}
+.GridWrapper .Row {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.GridBodyCanvas{
+    overflow:scroll;
+}
+.GridControl .Row {
+    padding:0 5px;
+}
+.GridHeaderCanvas{
+    border-radius:5px 5px 0 0;
+    overflow:hidden;
+}
+
+.GridHeaderWrapper{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.GridColumnHeader,.GridRowField{
+    float:left;
+    display:block;
+    height:25px;
+    overflow:hidden;
+}
+.GridColumnHeader.short,.GridRowField.short{
+    width:50px;
+}
+
+.GridColumnHeader.large,.GridRowField.large{
+    width:200px;
+}
+
+.GridHeaderWrapper{
+    overflow:auto;
+    height:25px;
+    line-height:25px;
+    background:#ccc;
+}
+.GridRow {
+    overflow:auto;
+}
+.GridRow:hover {
+    background:#f6f6f6;
+}
+.GridRow.selected,.GridRow.selected:hover {
+    background:#00f;
+}

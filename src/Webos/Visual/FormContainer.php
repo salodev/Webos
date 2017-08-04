@@ -1,6 +1,7 @@
 <?php
 namespace Webos\Visual;
 use \Webos\Visual\Controls\TextBox;
+use \Webos\Visual\Controls\PasswordBox;
 use \Webos\Visual\Controls\Label;
 use \Webos\Visual\Controls\Button;
 use \Webos\Visual\Controls\ComboBox;
@@ -89,6 +90,10 @@ trait FormContainer {
 	 */
 	public function createTextBox(string $label, string $name, array $options = array()): TextBox {
 		return $this->createControl($label, $name, TextBox::class, $options);
+	}
+	
+	public function createPasswordBox(string $label, string $name, array $options = []): PasswordBox {
+		return $this->createControl($label, $name, PasswordBox::class, $options);
 	}
 	
 	/**

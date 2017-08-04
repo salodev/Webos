@@ -1,0 +1,110 @@
+.Window {
+    /*-webkit-border-radius:7px;
+    -moz-border-radius:7px;
+    border-radius:7px;*/
+    background: #efefef;
+    -webkit-box-shadow:0 0 5px #eee;
+    -moz-box-shadow:0 0 5px #eee;
+    box-shadow:0 0 5px #eee;
+	border: solid 1px #ccc;
+    width:450px;
+    /*margin:0 auto;*/
+    position:absolute;
+}
+
+.Window.active {
+    -webkit-box-shadow:0 0 10px #ddd;
+    -moz-box-shadow:0 0 10px #ddd;
+    box-shadow:0 0 10px #ddd;
+}
+
+.Window .form-titlebar{
+	position:absolute;
+    height:35px;
+	top:0px;left:0px;right:0px;
+}
+
+.Window .form-titlebar .controls a:hover{
+	color:#666;
+}
+
+.Window .form-titlebar .title{
+    color:#666;
+    font-size:16px;
+    font-weight:bold;
+	position:absolute;
+	top:10px;left:10px;right:10px;
+}
+
+.form-titlebar .controls{
+	font-family:'Glyphicons Halflings';
+	/*display:none;*/
+	position:absolute;
+	top:10px;
+	right:10px;
+	cursor:pointer;
+}
+.form-titlebar .controls a {
+	text-decoration:none !important;
+	color:#999;
+	margin-left:5px;
+}
+.form-titlebar .controls .maximize:before {
+	content: "\E074";
+}
+.form-titlebar .controls .restore {
+	display:none;
+}
+.form-titlebar .controls .restore:before {
+	content: "\E097";
+}
+.form-titlebar .controls .close:before {
+	content: "\E014";
+}
+
+.titlebar-controls{
+    display:block;
+    width:25px;
+    height:18px;
+    -webkit-border-radius:3px;
+    -moz-border-radius:3px;
+    border-radius:3px;
+}
+.titlebar-controls.close {
+    background:#f00;
+    z-index:10;
+}
+.Window .form-content {
+	position:absolute;
+	/*background:#fff;
+	border:solid 1px #d6d6d6;*/
+	overflow:hidden;
+	top:35px;
+	bottom:10px;
+	left:10px;
+	right:10px;
+}
+.Window.maximized .form-titlebar .controls .restore {display:inline !important;}
+.Window.maximized .form-titlebar .controls .maximize {display:none !important;}
+.Window.maximized .resize-handler { display:none; }
+.Window.minimized .resize-handler { display:none; }
+.resize-handler              { position:absolute; display:block; }
+.resize-handler.top          { top:0; left:10px; right:10px; height:5px; cursor:ns-resize; }
+.resize-handler.top-right    { top:0; right:0; width:10px; height:10px; cursor:sw-resize; }
+.resize-handler.right        { right:0; top:10px; bottom:10px; width:5px; cursor:ew-resize; }
+.resize-handler.bottom-right { bottom:0; right:0; height:10px; width:10px; cursor:se-resize; }
+.resize-handler.bottom       { bottom:0; left:10px; right:10px; height:5px; cursor:ns-resize; }
+.resize-handler.bottom-left  { bottom:0; left:0; height:10px; width:10px; cursor:sw-resize; }
+.resize-handler.left         { left:0; top:10px; bottom:10px; width:5px; cursor:ew-resize; }
+.resize-handler.left-top     { left:0; top:0; width:10px; height:10px; cursor:se-resize; }
+
+.Window.maximized {
+	border:none;
+    top:0 !important;
+    left:0 !important;
+    right:0 !important;
+    width:auto !important;
+    bottom:0 !important;
+	height:auto !important;
+	position:fixed !important;
+}
