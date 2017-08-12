@@ -27,7 +27,7 @@ class Message extends Window {
 			'<div style="text-align:center;">' .
 				'<div style="margin:10px 20px 20px 20px;font-weight:bold;__MESSAGE_TYPE__">__MESSAGE__</div>' .
 				'<div>' .
-					'<input type="button" value="Cerrar" onclick="__ONCLICK__" />'.
+					'<input type="button" value="Cerrar" webos action="close" />'.
 				'</div>' .
 			'</div>'
 		);
@@ -40,10 +40,8 @@ class Message extends Window {
 			$messageType = 'color:red;';
 		}
 		
-		$onClick = "__doAction('send',{actionName:'close', objectId:'__OBJECTID__'});";
 		$content->replace('__MESSAGE__',      $this->message      );
 		$content->replace('__MESSAGE_TYPE__', $messageType        );
-		$content->replace('__ONCLICK__',      $onClick            );
 		$content->replace('__OBJECTID__',     $this->getObjectID());
 		
 		$template->replace('__TITLE__',       $this->title        );

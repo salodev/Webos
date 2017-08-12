@@ -38,8 +38,8 @@ class Confirm extends Window {
 			'<div __ALIGN__>' .
 				'<div>MESSAGE</div>' .
 				'<div style="margin-top:20px;">' .
-					'<input type="button" value="Sí" onclick="CLICK_YES" />'.
-					'<input type="button" value="no" onclick="CLICK_NO" />'.
+					'<input type="button" value="Sí" webos action="confirm" />'.
+					'<input type="button" value="no" webos action="close" />'.
 				'</div>' .
 			'</div>'
 		);
@@ -50,8 +50,6 @@ class Confirm extends Window {
 		}
 		$content->replace('__ALIGN__', $align);
 		$content->replace('MESSAGE',   nl2br($this->message));
-		$content->replace('CLICK_YES', "__doAction('send',{actionName:'confirm', objectId:'OBJECTID'});");
-		$content->replace('CLICK_NO',  "__doAction('send',{actionName:'close', objectId:'OBJECTID'});");
 		$content->replace('OBJECTID',  $this->getObjectID());
 		
 		$template->replace('__CONTENT__', $content);

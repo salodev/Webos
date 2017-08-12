@@ -232,21 +232,21 @@ class Window extends Container {
 	 */
 	protected function _getRenderTemplate() {
 		$html = new \Webos\StringChar(
-			'<div id="__ID__" class="Window form-wrapper__ACTIVE____STATUS__" style="__STYLE__">' .
+			'<div id="__ID__" class="Window form-wrapper__ACTIVE____STATUS__" style="__STYLE__"__READY__>' .
 				'<div class="form-titlebar">' .
 					($this->showTitle ?
 						'<div class="title">__TITLE__</div>' .
 						($this->showControls ?
 							'<div class="controls">' .
-								'<a class="small-control restore" href="#" onclick="__doAction(\'send\', {actionName:\'restore\',objectId:\'__ID__\'});return false;"></a>' .
-								'<a class="small-control maximize" href="#" onclick="__doAction(\'send\', {actionName:\'maximize\',objectId:\'__ID__\'});return false;"></a>' .
-								'<a class="small-control close" href="#" onclick="__doAction(\'send\', {actionName:\'close\',objectId:\'__ID__\'});return false;"></a>' .
+								'<a class="small-control restore"  href="#" webos restore></a>' .
+								'<a class="small-control maximize" href="#" webos maximize></a>' .
+								'<a class="small-control close"    href="#" webos close></a>' .
 							'</div>' : ''
 						) : '' 
 					) .
 				'</div>' .
 				'<div class="form-content">__CONTENT__</div>' .
-				'__AUTOFOCUS__' . '__READY__' .
+				'__AUTOFOCUS__' . 
 			'</div>'
 		);
 		
@@ -263,18 +263,7 @@ class Window extends Container {
 					
 		}
 		
-		$ready = '';
-		
-		if ($this->_eventsHandler->hasListenersForEventName('ready')) {
-			$ready = new \Webos\StringChar(
-				'<script>' .
-					'$(function() {' .
-						'__doAction(\'send\', {actionName:\'ready\',objectId:\''. $this->getObjectID() . '\'});' .
-					'});' .
-				'</script>'
-			);
-			// $ready = '___doAction(\'send\', {actionName:\'ready\',objectId:\''. $this->getObjectID() . '\'});';
-		}
+		$hasReadyListeners = $this->_eventsHandler->hasListenersForEventName('ready');
 		
 
 		$styles = array(
@@ -299,7 +288,7 @@ class Window extends Container {
 			'__TITLE__'     => $this->title,
 			'__STYLE__'     => $this->getAsStyles($styles),
 			'__AUTOFOCUS__' => $autofocus,
-			'__READY__'     => $ready,
+			'__READY__'     => $hasReadyListeners ? 'webos ready': '',
 		));
 
 		return $html;

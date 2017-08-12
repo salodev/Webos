@@ -8,27 +8,26 @@ class TextBox extends Field {
 		if ($this->multiline) {
 			$html =  new \Webos\StringChar(
 				'<textarea id="__id__" ' .
-					'class="TextFieldControl__leaveTyping__"__style__ ' .
-					'onchange="__onchange__" ' .
+					'class="TextFieldControl"__style__ ' .
+					'webos update-value __leaveTyping__ ' .
 					'placeholder="__placeholder__" ' .
 					'name="__name__"__disabled__>__value__</textarea>'
 			);
 		} else {
 			$html =  new \Webos\StringChar(
 				'<input id="__id__" ' .
-					'class="TextFieldControl__leaveTyping__"__style__ ' .
+					'class="TextFieldControl"__style__ ' .
 					'type="text" ' .
-					'onchange="__onchange__" ' .
+					'webos update-value __leaveTyping__ ' .
 					'name="__name__" ' .
 					'placeholder="__placeholder__" ' .
 					'value="__value__"__disabled__ />'
 			);
 		}
-		$onchange = "__doAction('send',{actionName:'setValue',objectId:this.id, value:this.value});";
+		
 		$hasLeaveTypingEvent = $this->_eventsHandler->hasListenersForEventName('leaveTyping');
 		$html->replaces(array(
 			'__id__'          => $this->getObjectID(),
-			'__onchange__'    => $onchange,
 			'__name__'        => $this->name,
 			'__value__'       => $this->value,
 			'__placeholder__' => $this->placeholder,

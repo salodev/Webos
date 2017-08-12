@@ -134,6 +134,14 @@ abstract class Application {
 	 * @return $this
 	 */
 	public function setActiveWindow(Container $window): self {
+		
+		if ($this->_activeWindow instanceof Container) {
+			$this->_activeWindow->modified();
+		}
+		$this->_activeWindow = $window;
+		return $this;
+		
+		
 		$windows = $this->getWorkSpace()->getApplications()->getObjectsByClassName(Window::class);
 		foreach($windows as $wnd) {
 			$wnd->modified();

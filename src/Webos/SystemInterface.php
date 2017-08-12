@@ -120,6 +120,10 @@ class SystemInterface {
 		// Verifica si tiene que agregar a la lista de notificaciones.
 		if ($this->checkNeccessary($object->getObjectID())) {
 			$this->_notifications['update'][] = $object;
+			$this->_notifications['update_stacks'][] = [
+				'stack' => explode("\n", (new \Exception)->getTraceAsString()),
+				'objectID' => $object->getObjectID(),
+			];
 		}
 	}
 
@@ -154,8 +158,11 @@ class SystemInterface {
 						return false;
 					}
 				}
+				if ($object->getObjectID() == $objectId) {
+					return false;
+				}
 			}
-			return true;
+			//return true;
 		}
 
 

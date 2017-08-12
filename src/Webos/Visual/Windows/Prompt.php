@@ -43,15 +43,13 @@ class Prompt extends Window {
 			'<div style="text-align:center;">' .
 				'<div>__CONTENT__</div>' .
 				'<div style="margin-top:20px;">' .
-					'<input type="button" value="Sí" onclick="CLICK_YES" />'.
-					'<input type="button" value="no" onclick="CLICK_NO" />'.
+					'<input type="button" value="Sí" webos action="confirm" />'.
+					'<input type="button" value="no" webos action="close" />'.
 				'</div>' .
 			'</div>'
 		);
 
 		$content->replace('__CONTENT__', $this->getChildObjects()->render());
-		$content->replace('CLICK_YES', "__doAction('send',{actionName:'confirm', objectId:'OBJECTID'});");
-		$content->replace('CLICK_NO',  "__doAction('send',{actionName:'close', objectId:'OBJECTID'});");
 		$content->replace('OBJECTID',  $this->getObjectID());
 		
 		$template->replace('__CONTENT__', $content);

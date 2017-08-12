@@ -117,20 +117,13 @@ class Tree extends Control {
 		$scrollTop  = $this->scrollTop  ?? 0;
 		$scrollLeft = $this->scrollLeft ?? 0;
 		$html = new \Webos\StringChar(
-			'<ul id="__id__" class="Tree container"__style__ >' .
+			'<ul id="__id__" '.
+				'class="Tree container" '.
+				'__style__ ' .
+				"webos set-scroll-values=\"{$scrollTop},{$scrollLeft}\" " .
+			'>' .
 				'__content__' . 
-			'</ul>' .
-			'<script type="text/javascript">' .
-				'$(function() {' .
-					'var $obj = $(\'#__id__\');' .
-					'$obj.attr(\'disable-scroll-event\', \'yes\');' .
-					'$obj.scrollTop(' . $scrollTop . ');' .
-					'$obj.scrollLeft(' . $scrollLeft . ');' .
-					'setTimeout(function() {' .
-						'$obj.attr(\'disable-scroll-event\', \'NO\');' .
-					'}, 600); /* nunca entendí porqué hace falta esto... */' .
-				'});' .
-			'</script>'
+			'</ul>'
 		);
 
 		$content = '';

@@ -45,13 +45,10 @@ class Wait extends Window {
 			'</div>'
 		);
 		
-		$onClick = "__doAction('send',{actionName:'close', objectId:'__OBJECTID__'});";
-		$content->replace('__MESSAGE__',      $this->message      );
-		$content->replace('__ONCLICK__',      $onClick            );
-		$content->replace('__OBJECTID__',     $this->getObjectID());
-		
-		$template->replace('__TITLE__',       $this->title        );
-		$template->replace('__CONTENT__',     $content            );
+		$content->replace('__OBJECTID__',     $this->getObjectID());		
+		$content->replace('__MESSAGE__',      $this->message);
+		$template->replace('__TITLE__',       $this->title  );
+		$template->replace('__CONTENT__',     $content      );
 		
 		return $template;
 	}

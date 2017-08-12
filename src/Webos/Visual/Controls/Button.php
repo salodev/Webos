@@ -45,19 +45,16 @@ class Button extends \Webos\Visual\Control {
 	
 	public function render(): string {
 		$html = new \Webos\StringChar(
-			'<button id="__id__" class="__class__" type="button" name="__name__" onclick="__onclick__"__style____disabled__>__value__</button>'
+			'<button id="__id__" class="__class__" type="button" name="__name__" webos button-press__style____disabled__>__value__</button>'
 		);
 		
 		$html->replace('__style__', $this->getInLineStyle());
-
-		$onclick = new \Webos\StringChar("__doAction('send', {actionName:'press', objectId:this.id});");
 			
 		$html->replaces(array(
 			'__id__'      => $this->getObjectID(),
 			'__class__'   => self::class,
 			'__name__'    => $this->name,
 			'__value__'   => $this->getChildObjects()->render() . $this->value,
-			'__onclick__' => $onclick,
 			'__disabled__' => $this->disabled ? 'disabled="disabled"' : '',
 		));
 

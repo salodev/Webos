@@ -163,7 +163,7 @@ class DataTable extends \Webos\Visual\Control {
 			}
 		}
 		$html .= '</div>'; // end TataTableHeaders
-		$html .= '<div class="DataTableHole">';
+		$html .= "<div class=\"DataTableHole\" webos set-scroll-values=\"{$scrollTop},{$scrollLeft}\">";
 		$html .= '<div class="DataTableBody" style="width:'.$bodyWidth.'px">';
 		foreach($rs as $i => $row) {
 			$classSelected = '';
@@ -189,18 +189,6 @@ class DataTable extends \Webos\Visual\Control {
 		}
 		$html .= '</div>'; // end DataTableBody
 		$html .= '</div>'; // end DataTableHole
-		$html .= <<<HTML
-		<script type="text/javascript">
-			$(function() {
-				$('#{$objectID} .DataTableHole').attr('disable-scroll-event', 'yes');
-				$('#{$objectID} .DataTableHole').scrollTop({$scrollTop});
-			 	$('#{$objectID} .DataTableHole').scrollLeft({$scrollLeft});
-				setTimeout(function() {
-					$('#{$objectID} .DataTableHole').attr('disable-scroll-event', 'NO');
-				}, 600); // nunca entendí porqué hace falta esto...
-			});
-		</script>
-HTML;
 		$html .= '</div>'; // end DataTable
 
 		return $html;
