@@ -1,5 +1,8 @@
 <?php
 namespace Webos;
+
+use Webos\StringChar;
+use Webos\Visual\Window;
 use Exception;
 use Webos\Exceptions\Collection\NotFound;
 /**
@@ -30,7 +33,7 @@ abstract class VisualObject extends BaseObject {
 		if (is_array($initialAttributes)) {
 			$data = array_merge($this->getInitialAttributes(), $data);
 		} else {
-			throw new \Exception(__CLASS__ . '::getInitialAttributes() must return an array.');
+			throw new Exception(__CLASS__ . '::getInitialAttributes() must return an array.');
 		}
 
 		parent::__construct($data);
@@ -237,8 +240,8 @@ abstract class VisualObject extends BaseObject {
 		return $this->_application;
 	}
 
-	public function getParentWindow(): Visual\Window {
-		if ($this instanceof Visual\Window) {
+	public function getParentWindow(): Window {
+		if ($this instanceof Window) {
 			return $this;
 		}
 
@@ -247,7 +250,7 @@ abstract class VisualObject extends BaseObject {
 			return null;
 		}
 
-		if ($parent instanceof Visual\Window) {
+		if ($parent instanceof Window) {
 			return $parent;
 		} else {
 			return $this->getParent()->getParentWindow();
@@ -273,7 +276,7 @@ abstract class VisualObject extends BaseObject {
 		if (in_array($name,$this->getAllowedActions())){
 			$this->$name($params);
 		} else {
-			throw new \Exception("Action $name not allowed by " . get_class($this) . " object.");
+			throw new Exception("Action $name not allowed by " . get_class($this) . " object.");
 		}
 	}
 
@@ -282,7 +285,7 @@ abstract class VisualObject extends BaseObject {
 		if ($this->_eventsHandler->isAvailable($eventName)) {
 			$this->_eventsHandler->addListener($eventName, $eventListener, $persistent, $contextData);
 		} else {
-			throw new \Exception("Event $eventName not available in " . get_class($this) . " object.");
+			throw new Exception("Event $eventName not available in " . get_class($this) . " object.");
 		}
 		return $this;
 	}
@@ -305,6 +308,10 @@ abstract class VisualObject extends BaseObject {
 	public function enableEvent(string $eventName): self {
 		$this->_eventsHandler->enableEvent($eventName);
 		return $this;
+	}
+	
+	public function hasListenerFor(string $eventName): bool {
+		return $this->_eventsHandler->hasListenersForEventName($eventName);
 	}
 	
 	/**
@@ -365,11 +372,13 @@ abstract class VisualObject extends BaseObject {
 				$styles['position'] = 'absolute';
 			}
 		}
-		
+		if (!empty($attrs['position']) && $attrs['position'] == 'fixed') {
+			$styles['position'] = 'fixed';
+		}
 		$stylesString = self::getAsStyles($styles);
 
 		if (strlen($stylesString)) {
-			$ret = new \Webos\StringChar(' style="__style_string__"');
+			$ret = new StringChar(' style="__style_string__"');
 			$ret->replace('__style_string__', $stylesString);
 		} else {
 			$ret = '';

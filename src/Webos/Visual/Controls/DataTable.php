@@ -111,12 +111,37 @@ class DataTable extends \Webos\Visual\Control {
 		$this->scrollTop  = $params['top' ] ?? 0;
 		$this->scrollLeft = $params['left'] ?? 0;
 	}
+	
+	
+	
+	public function contextMenu($params) {
+		if (empty($params['top']) || empty($params['left']) || !isset($params['data'])) {
+			return;
+		}
+		if ($this->hasListenerFor('contextMenu')) {
+			$rowIndex = $params['data'];
+			$rowData = $this->getRowData($rowIndex);
+			$this->rowIndex =$rowIndex;
+			$menu = $this->getParentWindow()->createContextMenu($params['top'], $params['left']);
+			$this->triggerEvent('contextMenu', [
+				'menu' => $menu,
+				'rowIndex' => $rowIndex,
+				'rowData'  => $rowData,
+			]);
+		}
+	}
+	
+	public function onContextMenu(callable $cb, bool $persistent = true, array $contextData = []): self {
+		$this->bind('contextMenu', $cb, $persistent, $contextData);
+		return $this;
+	}
 
 	public function getAllowedActions(): array {
 		return array(
 			'rowClick',
 			'rowDoubleClick',
-			'scroll'
+			'scroll',
+			'contextMenu',
 		);
 	}
 
@@ -124,6 +149,7 @@ class DataTable extends \Webos\Visual\Control {
 		return array(
 			'rowClick',
 			'rowDoubleClick',
+			'contextMenu',
 		);
 	}
 	
@@ -172,7 +198,7 @@ class DataTable extends \Webos\Visual\Control {
 			}
 			//$ondblClick = "alert($(this).closest('.DataTable').attr('class'));";
 			//$ondblClick = "console.log($(this).closest('.DataTable'));";
-			$html .= '<div class="DataTableRow' . $classSelected . '">';
+			$html .= '<div class="DataTableRow' . $classSelected . '" webos contextmenu="'.$i.'">';
 			foreach($this->columns as $column) {
 				// $column = (property_exists($column, 'fieldName'))? $column->fieldName : '';
 				$onClick    = "__doAction('send', {actionName:'rowClick',objectId:\$(this).closest('.DataTable').attr('id'),row:{$i}, fieldName:'{$column->fieldName}'}); $(this).closest('.DataTableBody').find('.DataTableRow.selected').removeClass('selected'); $(this).closest('.DataTableRow').addClass('selected')";

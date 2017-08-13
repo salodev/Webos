@@ -41,9 +41,11 @@ class ListItems extends \Webos\Visual\Control {
 	
 	public function render(): string {
 		$content = $this->getChildObjects()->render();
-		$html = new \Webos\StringChar('<table cellspacing="0" id="__id__" class="MenuList">__content__</table>');
+		$html = new \Webos\StringChar('<table cellspacing="0" id="__id__" class="MenuList"__style__>__content__</table>');
 		$html->replace('__id__',      $this->getObjectID());
 		$html->replace('__content__', $content);
+		$html->replace('__style__', $this->getInlineStyle(true));
+		
 		return $html;
 	}
 }

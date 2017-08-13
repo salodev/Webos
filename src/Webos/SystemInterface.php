@@ -153,11 +153,11 @@ class SystemInterface {
 		// Verifico objetos a crear.
 		if (!empty($notif['create'])) {
 			foreach($notif['create'] as $object) {
-				if ($object instanceof Visual\Window) {
+				// if ($object instanceof Visual\Window) {
 					if ($object->hasObjectID($objectId)) {
 						return false;
 					}
-				}
+				// }
 				if ($object->getObjectID() == $objectId) {
 					return false;
 				}

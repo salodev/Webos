@@ -1,11 +1,13 @@
 <?php
 namespace Webos\Visual;
-use \Webos\VisualObject;
-use \Webos\Visual\Windows\Wait;
-use \Webos\Visual\Windows\Message;
-use \Webos\Visual\Windows\Prompt;
-use \Webos\Visual\Windows\Confirm;
-use \Webos\Exceptions\Collection\NotFound;
+use Webos\VisualObject;
+use Webos\Visual\Windows\Wait;
+use Webos\Visual\Windows\Message;
+use Webos\Visual\Windows\Prompt;
+use Webos\Visual\Windows\Confirm;
+use Webos\Visual\Controls\Menu\ListItems;
+use Webos\Visual\Controls\Menu\Item;
+use Webos\Exceptions\Collection\NotFound;
 class Window extends Container {
 	use FormContainer;
 
@@ -142,6 +144,28 @@ class Window extends Container {
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * 
+	 * @param type $top
+	 * @param type $left
+	 * @return ListItems
+	 */
+	public function createContextMenu($top, $left): ListItems {
+
+		$menu = $this->createObject(ListItems::class, [
+			'top'      => $top,
+			'left'     => $left,
+			'position' => 'fixed',
+		]);
+		
+		$this->getApplication()->addSystemEventListener('actionCalled', function($context) {
+			$menu     = $context['menu'];
+			$menu->getParentWindow()->removeChild($menu);
+		}, false, ['menu'=>$menu]);
+		
+		return $menu;
 	}
 	
 	/**

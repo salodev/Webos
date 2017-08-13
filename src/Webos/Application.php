@@ -54,7 +54,7 @@ abstract class Application {
 		return $this;
 	}
 
-	public function addSystemEventListener(string $eventName, callback $eventListener, bool $persistent = true,  array $contextData = []): self {
+	public function addSystemEventListener(string $eventName, $eventListener, bool $persistent = true,  array $contextData = []): self {
 		//$this->getWorkSpace()->addEventListener($eventName, $eventListener, $persistent);
 		$this->_systemEventsHandler->addListener($eventName, $eventListener, $persistent, $contextData);
 		return $this;

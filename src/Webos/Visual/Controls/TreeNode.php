@@ -40,6 +40,7 @@ class TreeNode extends \Webos\Visual\Control {
 			'toggle',
 			'select',
 			'click',
+			'contextMenu',
 		);
 	}
 	
@@ -79,14 +80,28 @@ class TreeNode extends \Webos\Visual\Control {
 		return $this;
 	}
 	
+	public function contextMenu($params) {
+		if (empty($params['top']) || empty($params['left'])) {
+			return;
+		}
+		if ($this->treeControl->hasListenerFor('contextMenu')) {
+			$this->treeControl->setSelectedNode($this);
+			$menu = $this->getParentWindow()->createContextMenu($params['top'], $params['left']);
+			$this->treeControl->triggerEvent('contextMenu', [
+				'menu' => $menu,
+				'node' => $this
+			]);
+		}
+	}
+	
 	public function getAvailableEvents(): array {
-		return array();
+		return ['contextMenu'];
 	}
 	
 	public function render(): string {
 
 		$html = new \Webos\StringChar(
-			'<li id="__id__" class="TreeNode"__style__ onclick="__onclick__">' .
+			'<li id="__id__" class="TreeNode"__style__ onclick="__onclick__" webos contextmenu>' .
 				'<div class="row __selected__">' . 
 					// ($this->hasChilds===false ? '' :
 					'<span class="toggle __toggleClass__" onclick="__onclickToggle__"></span>' .

@@ -49,6 +49,7 @@ class Tree extends Control {
 		return [
 			'nodeToggled',
 			'nodeSelected',
+			'contextMenu',
 		];
 	}
 	/**
