@@ -43,7 +43,7 @@ abstract class Field extends \Webos\Visual\Control {
 	 * @param type $width
 	 * @return \Webos\Visual\Controls\Button
 	 */
-	public function attachButton(string $text, int $width = 50): Button {
+	public function attachButton(string $text = '...', int $width = 25): Button {
 		$top = $this->top;
 		$left = $this->left + $this->width - $width;
 		//die("{$this->left} + {$this->width} - {$width} = {$left}");
