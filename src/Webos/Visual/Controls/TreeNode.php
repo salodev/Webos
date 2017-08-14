@@ -101,10 +101,10 @@ class TreeNode extends \Webos\Visual\Control {
 	public function render(): string {
 
 		$html = new \Webos\StringChar(
-			'<li id="__id__" class="TreeNode"__style__ onclick="__onclick__" webos contextmenu>' .
+			'<li id="__id__" class="TreeNode"__style__ webos contextmenu click="select">' .
 				'<div class="row __selected__">' . 
 					// ($this->hasChilds===false ? '' :
-					'<span class="toggle __toggleClass__" onclick="__onclickToggle__"></span>' .
+					'<span class="toggle __toggleClass__" __onclickToggle__></span>' .
 					// ).
 					'<div class="title">__text__</div>'.
 					'__columns__' .
@@ -115,7 +115,7 @@ class TreeNode extends \Webos\Visual\Control {
 		$onclick = "__doAction('send',{actionName:'select',objectId:this.id});event.cancelBubble=true;event.stopPropagation();";
 		$ondblclick = "__doAction('send',{actionName:'doubleclick',objectId:this.id});event.cancelBubble=true;event.stopPropagation();";
 
-		$onclickToggle = "__doAction('send',{actionName:'toggle',objectId:'__id__'});event.cancelBubble=true;event.stopPropagation();";
+		$onclickToggle = 'webos click="toggle"';
 		if ($this->hasChilds === false) {
 			$onclickToggle = '';
 		}
@@ -146,8 +146,6 @@ class TreeNode extends \Webos\Visual\Control {
 			'__selected__'      => $this->selected ? " selected" : '',
 			'__text__'          => $this->text,
 			'__content__'       => $content,
-			'__onclick__'       => $onclick,
-			'__ondblclick__'    => $ondblclick,
 			'__onclickToggle__' => $onclickToggle,
 			'__columns__'       => $this->_renderColumns(),
 		))->replace('__id__', $this->getObjectID());
