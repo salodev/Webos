@@ -105,11 +105,9 @@ class Button extends \Webos\Visual\Control {
 			}
 		}
 
-		$onclick = "__doAction('send',{actionName:'press',objectId:'".$this->getObjectID()."'});";
-
 		$html = new \Webos\StringChar(
 			'<div id="__id__" class="MenuButton__selected__">' .
-				'<div class="text" onclick="__onclick__">__text__</div>' .
+				'<div class="text" webos press>__text__</div>' .
 				'<div class="container">__content__</div>' .
 			'</div>'
 		);
@@ -119,7 +117,6 @@ class Button extends \Webos\Visual\Control {
 			'__selected__' => $selected,
 			'__text__'     => $this->text,
 			'__content__'  => $content,
-			'__onclick__'  => $onclick,
 		));
 
 		return $html;

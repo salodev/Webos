@@ -75,14 +75,13 @@ class Item extends \Webos\Visual\Control {
 			$selected = ' selected';
 		}
 
-		$onclick = "__doAction('send',{actionName:'press',objectId:this.id});";
 		$arr = ($this->getChildObjects()->count()) ? '►' : '';
 		if (!$arr) {
 			$arr = ($this->shortCut) ? $this->shortCut : '';
 		}
 
 		$html = new \Webos\StringChar(
-			'<tr id="__id__" class="MenuItem__selected__" onclick="__onclick__">' .
+			'<tr id="__id__" class="MenuItem__selected__"__disabled__ webos press>' .
 				'<td class="icon__icon_class__"></td>' .
 				'<td class="text">__text__</td>' .
 				'<td class="arrow__arrow__">__arr__</td>' .
@@ -91,9 +90,9 @@ class Item extends \Webos\Visual\Control {
 		$html->replaces(array(
 			'__id__'         => $this->getObjectID(),
 			'__selected__'   => $selected,
+			'__disabled__'   => $this->disabled ? 'disabled="disabled"' : '',
 			'__icon_class__' => '',
 			'__text__'       => $this->text,
-			'__onclick__'    => $onclick,
 			'__arrow__'      => '',
 			'__arr__'        => $arr,
 			'__content__'    => $content,

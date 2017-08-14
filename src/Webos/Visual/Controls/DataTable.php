@@ -115,19 +115,20 @@ class DataTable extends \Webos\Visual\Control {
 	
 	
 	public function contextMenu($params) {
-		if (empty($params['top']) || empty($params['left']) || !isset($params['data'])) {
+		if (empty($params['top']) || empty($params['left'])) {
 			return;
 		}
 		if ($this->hasListenerFor('contextMenu')) {
-			$rowIndex = $params['data'];
-			$rowData = $this->getRowData($rowIndex);
-			$this->rowIndex =$rowIndex;
 			$menu = $this->getParentWindow()->createContextMenu($params['top'], $params['left']);
-			$this->triggerEvent('contextMenu', [
-				'menu' => $menu,
-				'rowIndex' => $rowIndex,
-				'rowData'  => $rowData,
-			]);
+			$eventData = ['menu' => $menu];
+			if (isset($params['data'])) {
+				$rowIndex = $params['data'];
+				$rowData = $this->getRowData($rowIndex);
+				$this->rowIndex =$rowIndex;
+				$eventData['rowIndex'] = $rowIndex;
+				$eventData['rowData' ] = $rowData;
+			}
+			$this->triggerEvent('contextMenu', $eventData);
 		}
 	}
 	
@@ -166,7 +167,7 @@ class DataTable extends \Webos\Visual\Control {
 
 		$scrollTop  = $this->scrollTop  ?? 0;
 		$scrollLeft = $this->scrollLeft ?? 0;
-		$html = '<div id="'.$this->getObjectID().'" class="DataTable" '. $this->getInlineStyle() .'>';
+		$html = '<div id="'.$this->getObjectID().'" class="DataTable" '. $this->getInlineStyle() .' webos contextmenu>';
 		$rs = $this->rows;
 		$bodyWidth = 0;
 		foreach($this->columns as $column) {
