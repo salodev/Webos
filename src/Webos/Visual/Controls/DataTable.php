@@ -167,7 +167,7 @@ class DataTable extends \Webos\Visual\Control {
 
 		$scrollTop  = $this->scrollTop  ?? 0;
 		$scrollLeft = $this->scrollLeft ?? 0;
-		$html = '<div id="'.$this->getObjectID().'" class="DataTable" '. $this->getInlineStyle() .' webos contextmenu>';
+		$html = '<div id="'.$objectID.'" class="DataTable" '. $this->getInlineStyle() .' webos contextmenu>';
 		$rs = $this->rows;
 		$bodyWidth = 0;
 		foreach($this->columns as $column) {
@@ -197,20 +197,24 @@ class DataTable extends \Webos\Visual\Control {
 			if ($this->rowIndex!==null && $i == $this->rowIndex) {
 				$classSelected = ' selected';
 			}
-			//$ondblClick = "alert($(this).closest('.DataTable').attr('class'));";
-			//$ondblClick = "console.log($(this).closest('.DataTable'));";
 			$html .= '<div class="DataTableRow' . $classSelected . '" webos contextmenu="'.$i.'">';
 			foreach($this->columns as $column) {
-				// $column = (property_exists($column, 'fieldName'))? $column->fieldName : '';
-				$onClick    = "__doAction('send', {actionName:'rowClick',objectId:\$(this).closest('.DataTable').attr('id'),row:{$i}, fieldName:'{$column->fieldName}'}); $(this).closest('.DataTableBody').find('.DataTableRow.selected').removeClass('selected'); $(this).closest('.DataTableRow').addClass('selected')";
-				$ondblClick = "__doAction('send', {actionName:'rowDoubleClick',objectId:\$(this).closest('.DataTable').attr('id'),row:{$i}, fieldName:'{$column->fieldName}'});";
+				
 				$linkable = ($column->linkable) ? ' linkable' : '';
 				if (empty($row[$column->fieldName])) {
 					$value = '&nbsp;';
 				} else {
 					$value = $column->renderValue($row[$column->fieldName]);
 				}
-				$html .= '<div class="DataTableCell' . $linkable . '" style="width:'.$column->width.'px;text-align:'.$column->align.';" onclick="'.$onClick.'" ondblclick="'.$ondblClick.'">' . $value . '</div>';
+				$html .= 
+					"<div class=\"DataTableCell{$linkable}\" " .
+						"style=\"width:{$column->width}px;text-align:{$column->align};\" " .
+						'webos click="rowClick" ' .
+						'double-click="rowDoubleClick" '.
+						"data-row=\"{$i}\" ".
+						"data-field-name=\"{$column->fieldName}\">" . 
+						$value . 
+					"</div>";
 			}
 			$html .= '</div>'; // end DataTableRow
 		}
