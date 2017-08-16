@@ -26,6 +26,8 @@ abstract class VisualObject extends BaseObject {
 
 	public function __construct(Application $application, array $data = array()) {
 		$this->_application = $application;
+		
+		$this->checkRequiredParams($data);
 
 		$initialAttributes = $this->getInitialAttributes();
 
@@ -43,6 +45,15 @@ abstract class VisualObject extends BaseObject {
 		$this->_childObjects = new ObjectsCollection();
 		
 		$this->_eventsHandler->setAvailableEvents($this->getAvailableEvents());
+	}
+	
+	public function checkRequiredParams(array $params) {
+		$requiredParams = $this->getRequiredParams();
+		foreach($requiredParams as $name) {
+			if (!isset($params[$name])) {
+				throw new Exception('Missing required param to initialize object.');
+			}
+		}
 	}
 
 	final public function __get($name) {
@@ -75,6 +86,13 @@ abstract class VisualObject extends BaseObject {
 	 */
 	public function getInitialAttributes(): array {
 		return array();
+	}
+	
+	/**
+	 * Permite especificar parámetros obligatorios para inicializar el objeto
+	 */
+	public function getRequiredParams(): array {
+		return [];
 	}
 
 	/**
