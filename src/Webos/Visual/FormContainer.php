@@ -77,6 +77,8 @@ trait FormContainer {
 		if ($attachToContainer) {
 			$this->$name = $control;
 		}
+		
+		$this->fixWindowHeight();
 
 		return $control;
 	}
@@ -144,6 +146,7 @@ trait FormContainer {
 	public function createToolBar(array $params = []): ToolBar {
 		$this->topControl += 20;
 		$this->maxTopControl += 20;
+		$this->getParentWindow()->height = $this->topControl + 20 + 40;
 		return $this->createObject(ToolBar::class, array_merge([
 			'top' =>   0,
 			'left' =>  0,
@@ -172,6 +175,7 @@ trait FormContainer {
 			'bottom' => '0',
 		);
 		$options = array_merge($initialOptions, $options);
+		$this->getParentWindow()->height = $this->topControl + ($options['height'] ?? 300) + 40;
 		return $this->createObject(DataTable::class, $options);
 	}
 	
@@ -203,9 +207,10 @@ trait FormContainer {
 	public function addHorizontalButton($caption, $width = 80, array $params = array()): Button {
 		if (!$this->hasHorizontalButtons) {
 			$this->hasHorizontalButtons = true;
-			$this->topHorizontalButtons = $this->maxTopControl;
-			$this->maxTopControl += 28;
+			$this->topHorizontalButtons = $this->maxTopControl + 10;
+			$this->maxTopControl += 28 + 10;
 			$this->topControl = $this->maxTopControl;
+			$this->fixWindowHeight();
 		}
 		if (!empty($params['left'])) {
 			$this->leftButton = $params['left']/1;
@@ -280,5 +285,9 @@ trait FormContainer {
 				$object->disabled = true;
 			}
 		};
+	}
+	
+	public function fixWindowHeight() {
+		$this->getParentWindow()->height = $this->maxTopControl + 45;
 	}
 }

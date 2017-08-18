@@ -58,8 +58,8 @@ class System {
 		if (!is_file($wsFileName)) {
 			$ws = $this->createWorkSpace($name);
 		} else {
-			$content = file_get_contents($wsFileName);
-			$ws = unserialize($content);
+			// $ws = unserialize(file_get_contents($wsFileName));
+			$ws = apc_fetch($name);
 			if (!$ws instanceof WorkSpace) {
 				$ws = $this->createWorkSpace($name);
 			}
@@ -99,7 +99,8 @@ class System {
 			throw new Exception('No workspace');
 		}
 		$wsFileName = $this->getConfig('path/workspaces') . $this->_workSpaceName;
-		file_put_contents($wsFileName, serialize($this->_workSpace), FILE_IGNORE_NEW_LINES);
+		// file_put_contents($wsFileName, serialize($this->_workSpace), FILE_IGNORE_NEW_LINES);
+		apc_store($this->_workSpaceName, $this->_workSpace);
 		
 		return $this;
 	}

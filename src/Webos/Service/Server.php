@@ -9,6 +9,7 @@ class Server {
 	public $interface = null;
 	public $system = null;
 	private $_username = null;
+	private $_storage = [];
 	public function __construct() {
 		$this->interface = new \Webos\SystemInterface();
 		$this->system = $this->interface->getSystemInstance();
@@ -26,7 +27,7 @@ class Server {
 				// IO::WriteLine("recibido: {$content}\n");
 				// $connection->write('Escribiste: ' . $content);
 				// \salodev\Timer::TimeOut(function() use ($content, $connection) {
-				echo "recibido: {$content}\n";
+				// echo "recibido: {$content}\n";
 				$json = json_decode($content, true);
 				if ($json==null) {
 					$connection->write('Bad json format: ' . $content);
@@ -49,13 +50,13 @@ class Server {
 					return;
 				}
 				
-				if (!$commandResponse) {
+				if ($commandResponse===null) {
 					$connection->write(json_encode(array(
 						'status' => 'error',
 						'errorMsg' => 'Invalid response type',
 					)));
 				} else {
-					echo "enviando: " . print_r($commandResponse, true);
+					// echo "enviando: " . print_r($commandResponse, true);
 					$connection->write(json_encode(array(
 						'status' => 'ok',
 						'data'   => $commandResponse,
@@ -108,7 +109,7 @@ class Server {
 	}
 	
 	public function call(string $command, array $data = array()) {
-		if (!in_array($command, ['renderAll', 'action'])) {
+		if (!in_array($command, ['renderAll', 'action', 'store', 'read'])) {
 			throw new \Exception('Invalid command');
 		}
 		return $this->$command($data);
@@ -125,6 +126,16 @@ class Server {
 		}
 		return $ws;
 	}
+	
+	public function store(array $data) {
+		$this->_storage[$this->_username] = $data;
+		return true;
+	}
+	
+	public function read(array $data) {
+		return $this->_storage[$this->_username] ?? "";
+	}
+	
 	
 	public function renderAll(array $data) {
 		if (empty($this->_username)) {
