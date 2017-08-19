@@ -1,6 +1,9 @@
 <?php
 namespace Webos;
 use Exception;
+use Webos\WorkSpaceHandlers\FileSystem;
+use Webos\WorkSpaceHandler;
+
 class System {
 
 	private $_eventsHandler  = null;
@@ -9,8 +12,19 @@ class System {
 	private $_workSpace = null;
 	private $_config = null;
 
+	/**
+	 *
+	 * @var Webos\WorkSpaceHandler
+	 */
+	private $_workSpaceHandler = null;
+
 	public function __construct() {
 		$this->_eventsHandler = new EventsHandler();
+		$this->_workSpaceHandler = new FileSystem($this);
+	}
+	
+	public function setWorkSpaceHandler(WorkSpaceHandler $workSpaceHandler) {
+		$this->_workSpaceHandler = $workSpaceHandler;
 	}
 
 	public function start() {
@@ -33,38 +47,15 @@ class System {
 		return $ws;
 	}
 	
-	public function loadCreateWorkSpace(string $name): WorkSpace {
-		if (!$this->_workSpace) {
-			$ws = $this->createWorkSpace($name);
-			$ws->setSystemEnvironment($this);
-			$this->_workSpace = $ws;
-
-			$this->triggerEvent('loadedWorkSpace', $this, array(
-				'workspace'=>$ws
-			));
-			$this->_workSpaceName = $name;
-		}
-		return $this->_workSpace;
-	}
-	
 	public function loadWorkSpace($name): WorkSpace {
 		$this->_workSpaceName = $name;
 
 		if ($this->_workSpace) {
 			return $this->_workSpace;
 		}
-
-		$wsFileName = $this->getConfig('path/workspaces') . $name;
-		if (!is_file($wsFileName)) {
-			$ws = $this->createWorkSpace($name);
-		} else {
-			// $ws = unserialize(file_get_contents($wsFileName));
-			$ws = apc_fetch($name);
-			if (!$ws instanceof WorkSpace) {
-				$ws = $this->createWorkSpace($name);
-			}
-		}
 		
+		$ws = $this->_workSpaceHandler->load($name);
+
 		/**
 		 * NOTA:
 		 * Por accidente (o por el diseño del sistema) queda almacenado
@@ -89,8 +80,7 @@ class System {
 	}
 	
 	public function removeWorkSpace(): self {
-		$wsFileName = $this->getConfig('path/workspaces') . $this->_workSpaceName;
-		unlink($wsFileName);
+		$this->_workSpaceHandler->remove($this->_workSpaceName);
 		return $this;
 	}
 	
@@ -98,9 +88,7 @@ class System {
 		if (!$this->_workSpaceName || !($this->_workSpace instanceof WorkSpace)) {
 			throw new Exception('No workspace');
 		}
-		$wsFileName = $this->getConfig('path/workspaces') . $this->_workSpaceName;
-		// file_put_contents($wsFileName, serialize($this->_workSpace), FILE_IGNORE_NEW_LINES);
-		apc_store($this->_workSpaceName, $this->_workSpace);
+		$this->_workSpaceHandler->store($this->_workSpace);
 		
 		return $this;
 	}
