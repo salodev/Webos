@@ -1,9 +1,13 @@
 <?php
 namespace Webos\Service;
-use \salodev\Socket;
-use \salodev\SocketServer;
-use \salodev\Worker;
-use \salodev\IO;
+use Exception;
+use Webos\SystemInterface;
+use Webos\WorkSpace;
+use Webos\Application;
+use salodev\Socket;
+use salodev\SocketServer;
+use salodev\Worker;
+use salodev\IO;
 
 class Server {
 	public $interface = null;
@@ -11,7 +15,7 @@ class Server {
 	private $_username = null;
 	private $_storage = [];
 	public function __construct() {
-		$this->interface = new \Webos\SystemInterface();
+		$this->interface = new SystemInterface();
 		$this->system = $this->interface->getSystemInstance();
 	}
 	
@@ -110,7 +114,7 @@ class Server {
 	
 	public function call(string $command, array $data = array()) {
 		if (!in_array($command, ['renderAll', 'action', 'store', 'read'])) {
-			throw new \Exception('Invalid command');
+			throw new Exception('Invalid command');
 		}
 		return $this->$command($data);
 	}
@@ -118,11 +122,11 @@ class Server {
 	private function _loadWorkspace($username) {
 		$this->system->addEventListener('createdWorkspace', function ($source, $eventName, $params) {
 			$ws = $params['ws'];
-			$ws->startApplication('SG\Application');
+			$ws->startApplication(\SG\Application::class);
 		});
 		$ws = $this->system->loadCreateWorkSpace($username);
-		if (!$ws instanceof \Webos\Workspace) {
-			throw new \Exception('Error loading workspace');
+		if (!$ws instanceof Workspace) {
+			throw new Exception('Error loading workspace');
 		}
 		return $ws;
 	}
@@ -139,7 +143,7 @@ class Server {
 	
 	public function renderAll(array $data) {
 		if (empty($this->_username)) {
-			throw new \Exception('Empty username');
+			throw new Exception('Empty username');
 		}
 		
 		$this->_loadWorkspace($this->_username);
@@ -151,10 +155,10 @@ class Server {
 	
 	public function action(array $data) {
 		if (empty($this->_username)) {
-			throw new \Exception('Empty username');
+			throw new Exception('Empty username');
 		}
 		$ws = $this->_loadWorkspace($this->_username);
-		if (!$ws || !($ws instanceof \Webos\WorkSpace)) {
+		if (!$ws || !($ws instanceof WorkSpace)) {
 			return array(
 				'events' => array(
 					array('name'=>'authUser'),
@@ -165,7 +169,7 @@ class Server {
 		$response['errors'] = array();
 		// Si se envía un parámetro actionName, entonces se enviará la acción al sistema.
 		if (!isset($data['actionName'])) {
-			throw new \Exception('Missing actionName param');
+			throw new Exception('Missing actionName param');
 		}
 
 		$params = array();
@@ -215,7 +219,7 @@ class Server {
 			$eventData = array();
 			foreach($notif['create'] as $object) {
 				$parent = $object->getParent();
-				$parentObjectId = ($parent instanceof \Webos\Application) ? '' :
+				$parentObjectId = ($parent instanceof Application) ? '' :
 						$parent->getObjectID();
 
 				$eventData[] = array(
