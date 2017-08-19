@@ -102,7 +102,7 @@ class System {
 		if ($this->_workSpace) {
 			return $this->_workSpace;
 		}
-		throw new \Exception('No workspace loaded');
+		throw new Exception('No workspace loaded');
 	}
 
 	public function addEventListener($eventName, $eventListener, $persistent = true,  array $contextData = []): self {

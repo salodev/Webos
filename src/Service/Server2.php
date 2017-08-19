@@ -2,7 +2,9 @@
 
 namespace Webos\Service;
 use Exception;
+use salodev\Thread;
 use salodev\Implementations\SimpleServer;
+use salodev\Debug\ObjectInspector;
 use Webos\WorkSpace;
 use Webos\SystemInterface;
 use Webos\WorkSpaceHandlers\Instance as InstanceHandler;
@@ -91,7 +93,7 @@ class Server2 {
 			}
 			
 			$notif = self::$interface->getNotifications();
-
+			
 			// Notificaciones: Actualización.
 			/*if (!empty($notif['update_stacks'])){
 				$eventData = array();
@@ -102,6 +104,8 @@ class Server2 {
 					);
 				}
 			}*/
+			$response = [];
+			
 			if (count($notif['update'])){
 				$eventData = array();
 				foreach($notif['update'] as $object) {
@@ -152,7 +156,6 @@ class Server2 {
 					'data' => $eventData,
 				);
 			}
-			
 			return $response;
 		});
 		
@@ -161,9 +164,13 @@ class Server2 {
 				throw new Exception('Token cant be modified');
 			}
 			if (empty($data['token'])) {
-				throw new Exception('Missing token');
+				throw new Exception('Missing token data');
 			}
 			self::$_token = $data['token'];
+		});
+		
+		self::RegisterActionHandler('debug', function(array $data) {
+			return ObjectInspector::inspect(self::$interface, $data['path'], true);
 		});
 	}
 	
@@ -194,6 +201,10 @@ class Server2 {
 	static public function Listen($address, $port, $username) {
 		self::Prepare($username);
 		self::RegisterActionHandlers();
+		/*Thread::SetSignalHandler([SIGINT,SIGTERM], function() {
+			echo "señal recibida\n\n";
+			die();
+		});*/
 		SimpleServer::Listen($address, $port, function($reqString) {
 			$json = json_decode($reqString, true);
 			if ($json==null) {

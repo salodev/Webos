@@ -35,7 +35,7 @@ class Client {
 	public function renderAll() {
 		return $this->call('renderAll');
 	}
-	public function action(string $actionName, $data) {
+	public function action($data) {
 		return $this->call('action', $data);
 	}
 }

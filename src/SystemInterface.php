@@ -1,7 +1,10 @@
 <?php
 namespace Webos;
-use \Webos\Exceptions\Collection\NotFound;
-use \Webos\Application;
+use Exception;
+use Webos\VisualObject;
+use Webos\Application;
+use Webos\Visual\Window;
+use Webos\Exceptions\Collection\NotFound;
 
 class SystemInterface {
 	private   $_sessionId         = null;
@@ -32,15 +35,14 @@ class SystemInterface {
 	}
 
 	public function action($actionName, $objectID, $parameters, $ignoreUpdateObject = false) {
+		$this->_resetNotifications();
 		$this->lastObjectID = $objectID;
 		$this->ignoreUpdateObject = $ignoreUpdateObject;
-		$ws = $this->_system->getWorkSpace(/*$this->getSessionId()*/);
-		// $apps = $object = $ws->getApplications();
-		// inspect($apps); die();
+		$ws = $this->_system->getWorkSpace();
 		try {
 			$object = $ws->getApplications()->getObjectByID($objectID);
 		} catch (NotFound $e) {
-			throw new \Exception('Object does not exist', null, $e);
+			throw new Exception('Object does not exist', null, $e);
 		}
 
 		// Se activa la aplicación antes de efectuar la acción. //
@@ -50,11 +52,11 @@ class SystemInterface {
 		// de efectuar la acción //
 		// Los termine anulando porque es lo que genera
 		// que se redibuje toda la ventana luego de actualizar un campo.
-		if (!($object instanceof \Webos\Visual\Window)) {
+		if (!($object instanceof Window)) {
 			
 			$window = $object->getParentWindow();
 
-			if ($window instanceof \Webos\VisualObject){
+			if ($window instanceof VisualObject){
 				// $app->setActiveWindow($window);
 			}
 		} else {
@@ -101,7 +103,6 @@ class SystemInterface {
 	}
 
 	public function addCreateNotification(VisualObject $object){
-		
 		//Log::write('CREATE: ' . $object->getObjectID() . "\n");
 		// Verifica si tiene que agregar a la lista de notificaciones.
 		if ($this->checkNeccessary($object->getObjectID())) {
@@ -197,7 +198,7 @@ class SystemInterface {
 
 	public function getNotifications() {
 		$notifications = $this->_notifications;
-		$this->_resetNotifications();
+		// $this->_resetNotifications();
 		return $notifications;
 	}
 	
@@ -219,6 +220,9 @@ class SystemInterface {
 	}
 
 	public function addNotification($name,$data) {
+		echo "\n*********************************";
+		echo "\n* addNotification: {$name}";
+		echo "\n*********************************\n";
 		$this->_notifications['general'][$name] = $data;
 	}
 	
