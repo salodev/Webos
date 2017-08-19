@@ -12,9 +12,8 @@ spl_autoload_register(function($className) {
 	}
 });
 
-use Webos\Service\Server;
-
-$server = new Server();
+use Webos\Service\Server2;
 
 echo "server started...\n\n";
-$server->start('127.0.0.1', 3000);
+Server2::Listen('127.0.0.1', 3000, 'salo');
+echo "server stopped...\n\n";

@@ -16,12 +16,7 @@ class SystemInterface {
 		/**
 		 * Establece parámetros iniciales.
 		 **/
-		$this->_notifications = array(
-			'update' => array(),
-			'create' => array(),
-			'remove' => array(),
-			'general' => array(),
-		);
+		$this->_resetNotifications();
 		
 		$system = new System();
 
@@ -201,7 +196,18 @@ class SystemInterface {
 	}
 
 	public function getNotifications() {
-		return $this->_notifications;
+		$notifications = $this->_notifications;
+		$this->_resetNotifications();
+		return $notifications;
+	}
+	
+	private function _resetNotifications() {
+		$this->_notifications = array(
+			'update' => array(),
+			'create' => array(),
+			'remove' => array(),
+			'general' => array(),
+		);
 	}
 
 	public function setSessionId($id) {
@@ -242,7 +248,7 @@ class SystemInterface {
 	public function onLoadedWorkspace($source, $eventName, $params) {
 		$ws = $source->getWorkSpace();
 		if (!$ws->getApplications()->count()) {
-			$ws->startApplication('\Webos\Apps\Desktop');
+			// $ws->startApplication('\Webos\Apps\Desktop');
 		}
 	}
 	

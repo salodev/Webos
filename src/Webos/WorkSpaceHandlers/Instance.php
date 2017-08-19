@@ -16,7 +16,7 @@ class Instance extends WorkSpaceHandler{
 		if ($this->_instance instanceof WorkSpace) {
 			return $this->_instance;
 		}		
-		return $this->createWorkSpace($name);
+		return $this->_system->createWorkSpace($name);
 	}
 	
 	public function store(WorkSpace $workSpace) {
