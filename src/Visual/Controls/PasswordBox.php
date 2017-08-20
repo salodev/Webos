@@ -9,7 +9,7 @@ class PasswordBox extends Field {
 				'__style__ ' .
 				'type="password" ' .
 				'name="__name__" ' .
-				'webos update-value' .
+				'webos update-value ' .
 				'value="__value__" ' .
 			'/>'
 		);
