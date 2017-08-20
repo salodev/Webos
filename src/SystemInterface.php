@@ -210,6 +210,75 @@ class SystemInterface {
 			'general' => array(),
 		);
 	}
+	
+	public function getParsedNotifications() {
+		$notif = $this->_notifications;
+		$parsed = [];
+			
+		// Notificaciones: Actualización.
+		/*if (!empty($notif['update_stacks'])){
+			$eventData = array();
+			foreach($notif['update_stacks'] as $info) {
+				$response['events'][] = array(
+					'name' => 'updateElements_staks',
+					'data' => $info,
+				);
+			}
+		}*/
+
+		if (count($notif['update'])){
+			$eventData = array();
+			foreach($notif['update'] as $object) {
+				$content = '';
+				try {
+					$content = $object->render();
+				} catch (NotFound $ex) {
+
+				}
+				$eventData[] = array(
+					'objectId' => $object->getObjectID(),
+					'content' => $content,
+				);
+			}
+
+			$parsed['events'][] = array(
+				'name' => 'updateElements',
+				'data' => $eventData,
+			);
+		}
+
+		// Notificaciones: Creación.
+		if (count($notif['create'])){
+			$eventData = array();
+			foreach($notif['create'] as $object) {
+				$parentObjectID = $object->hasParent() ? $object->getParent()->getObjectID() : '';
+				$eventData[] = array(
+					'parentObjectId' => $parentObjectID,
+					'content' => '' . $object->render(),
+				);
+			}
+
+			$parsed['events'][] = array(
+				'name' => 'createElements',
+				'data' => $eventData,
+			);
+		}
+
+		// Notificaciones: Eliminación.
+		if (count($notif['remove'])) {
+			$eventData = array();
+			foreach($notif['remove'] as $objectId) {
+				$eventData[]['objectId'] = $objectId;
+			}
+
+			$parsed['events'][] = array(
+				'name' => 'removeElements',
+				'data' => $eventData,
+			);
+		}
+		
+		return $parsed;
+	}
 
 	public function setSessionId($id) {
 		$this->_sessionId = $id;

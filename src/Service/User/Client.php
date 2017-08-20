@@ -1,8 +1,7 @@
 <?php
-namespace Webos\Service;
-use Exception;
-use salodev\ClientSocket as Socket;
-use Webos\Log;
+namespace Webos\Service\User;
+use \salodev\ClientSocket as Socket;
+use \Exception;
 
 class Client {
 	
@@ -13,17 +12,11 @@ class Client {
 	private $_socket = null;
 	
 	private $_token = null;
-	private $_host = null;
-	private $_port = null;
 	
 	public function __construct(string $token, string $host = '127.0.0.1', int $port = 3000) {
 		$this->_host = $host;
 		$this->_port = $port;
 		$this->_token = $token;
-	}
-	
-	public function getPort() {
-		return $this->_port;
 	}
 	
 	public function connect() {
@@ -39,15 +32,12 @@ class Client {
 			'token'    => $this->_token,
 		));
 		// $resp = $this->_socket->writeAndRead();
-		
-		Log::write(" *** ENVIANDO: $msg\n");
-		
 		$this->_socket->write($msg."\n");
 		$resp = $this->_socket->readAll(255);
-		
+		// echo "response: {$resp}\n";
 		$json = json_decode($resp, true);
 		if (!$json || !isset($json['status'])) {
-			throw new Exception('Unexpected service response: ' . $resp);
+			throw new Exception('Unexpected service response');
 		}
 		if ($json['status'] != 'ok') {
 			if (!isset($json['errorMsg'])) {
@@ -60,5 +50,13 @@ class Client {
 		}
 		
 		return $json['data'] ?? null;
+	}
+	
+	public function renderAll() {
+		return $this->call('renderAll');
+	}
+	
+	public function action($data) {
+		return $this->call('action', $data);
 	}
 }

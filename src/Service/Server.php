@@ -1,251 +1,92 @@
 <?php
+
 namespace Webos\Service;
+
 use Exception;
-use Webos\SystemInterface;
+use salodev\Implementations\SimpleServer;
+use salodev\Debug\ObjectInspector;
 use Webos\WorkSpace;
-use Webos\Application;
-use salodev\Socket;
-use salodev\SocketServer;
-use salodev\Worker;
-use salodev\IO;
+use Webos\SystemInterface;
+use Webos\WorkSpaceHandlers\Instance as InstanceHandler;
+use Webos\FrontEnd\Page;
 
 class Server {
-	public $interface = null;
-	public $system = null;
-	private $_username = null;
-	private $_storage = [];
-	public function __construct() {
-		$this->interface = new SystemInterface();
-		$this->system = $this->interface->getSystemInstance();
+	
+	/**
+	 *
+	 * @var string 
+	 */
+	static private $_token = null;
+	
+	/**
+	 *
+	 * @var array 
+	 */
+	static private $_actionHandlers = [];
+	
+	static public function RegisterActionHandler($name, $handler) {
+		self::$_actionHandlers[$name] = $handler;
 	}
 	
-	public function start(string $host = '127.0.0.1', int $port = 3000):void {
-		$this->setupSocket($host, $port);
-		$this->setupInteractiveConsole();
-		SocketServer::Start();
+	static public function GetWorkSpace(): WorkSpace {
+		return self::$system->getWorkSpace();
 	}
 	
-	public function setupSocket(string $host = '127.0.0.1', int $port = 3000):void {
-		SocketServer::AddListener($host, $port, function(Socket $connection) {
-			$connection->readLine(function($content) use ($connection){
-				// IO::WriteLine("recibido: {$content}\n");
-				// $connection->write('Escribiste: ' . $content);
-				// \salodev\Timer::TimeOut(function() use ($content, $connection) {
-				// echo "recibido: {$content}\n";
-				$json = json_decode($content, true);
-				if ($json==null) {
-					$connection->write('Bad json format: ' . $content);
-					$connection->close();
-					return;
-				}
-
-				$username = $json['username'];
-				$command  = $json['command'];
-				$data     = $json['data'];
-				$this->_username = $username;
-				try {
-					$commandResponse = $this->call($command, $data);
-				} catch(Exception $e) {
-					$connection->write(json_encode(array(
-						'status' => 'error',
-						'errorMsg' => $e->getMessage(),
-					)));
-					$connection->close();
-					return;
-				}
-				
-				if ($commandResponse===null) {
-					$connection->write(json_encode(array(
-						'status' => 'error',
-						'errorMsg' => 'Invalid response type',
-					)));
-				} else {
-					// echo "enviando: " . print_r($commandResponse, true);
-					$connection->write(json_encode(array(
-						'status' => 'ok',
-						'data'   => $commandResponse,
-					)));
-					
-				}
-				$connection->close();
-				// }, 5000);
-			});
-		});
-	}
-	
-	public function setupInteractiveConsole() {
-		IO::ReadLine(function($line) {
-			if (empty($line)) {
-				return;
+	static public function Call($name, $token, array $data = [])  {
+		if (self::$_token) {
+			if (!$token) {
+				throw new Exception('Missing token');
 			}
-			$line = strtolower($line);
-			if (in_array($line, ['exit','quit','stop'])) {
-				Worker::Stop();
-				return;
+			if (self::$_token != $token) {
+				throw new Exception('Invalid token');
 			}
-			if ($line=='count') {
-				IO::WriteLine(Worker::GetCountTasks());
-				return;
-			}
-			if ($line=='mem') {
-				IO::WriteLine(memory_get_usage());
-				return;
-			}
-			if ($line=='list') {
-				$rs = Worker::GetTasksList();
-				IO::WriteLine('#   TASK DESCRIPTION                          PERSISTENT?');
-				IO::WriteLine('---------------------------------------------------------');
-				foreach($rs as $index => $row) {
-					IO::WriteLine(sprintf("#%-3d %-40s %s", $index, $row['taskName'], $row['persistent']?'PERSISTENT':''));
-				}
-				return;
-			}
-			// if (in_array($line, ['h','help'])) {
-				IO::WriteLine("COMMAND NAME   DESCRIPTION                        ");
-				IO::WriteLine("--------------------------------------------------");
-				IO::WriteLine("list           Show list of worker processes alive");
-				IO::WriteLine("count          Show count of worker processes alive");
-				IO::WriteLine("mem            Show Memory usage bytes");
-				IO::WriteLine("h|help         This help");
-				IO::WriteLine("exit|quit|stop Shut down the service");
-			//}
-		}, false);
-	}
-	
-	public function call(string $command, array $data = array()) {
-		if (!in_array($command, ['renderAll', 'action', 'store', 'read'])) {
-			throw new Exception('Invalid command');
 		}
-		return $this->$command($data);
-	}
-	
-	private function _loadWorkspace($username) {
-		$this->system->addEventListener('createdWorkspace', function ($source, $eventName, $params) {
-			$ws = $params['ws'];
-			$ws->startApplication(\SG\Application::class);
-		});
-		$ws = $this->system->loadCreateWorkSpace($username);
-		if (!$ws instanceof Workspace) {
-			throw new Exception('Error loading workspace');
+		if (!isset(self::$_actionHandlers[$name])) {
+			throw new Exception("Undefined '{$name}' action handler");
 		}
-		return $ws;
+		$actionHandler = self::$_actionHandlers[$name];
+		return $actionHandler($data);
 	}
 	
-	public function store(array $data) {
-		$this->_storage[$this->_username] = $data;
-		return true;
-	}
-	
-	public function read(array $data) {
-		return $this->_storage[$this->_username] ?? "";
-	}
-	
-	
-	public function renderAll(array $data) {
-		if (empty($this->_username)) {
-			throw new Exception('Empty username');
-		}
+	static public function Listen($address, $port) {
 		
-		$this->_loadWorkspace($this->_username);
-		$objects = $this->interface->getApplications()->getVisualObjects();
-
-		$html = $objects->render();
-		return $html;
-	}
-	
-	public function action(array $data) {
-		if (empty($this->_username)) {
-			throw new Exception('Empty username');
-		}
-		$ws = $this->_loadWorkspace($this->_username);
-		if (!$ws || !($ws instanceof WorkSpace)) {
-			return array(
-				'events' => array(
-					array('name'=>'authUser'),
-				)
-			);
-		}
-		$response = array();
-		$response['errors'] = array();
-		// Si se envía un parámetro actionName, entonces se enviará la acción al sistema.
-		if (!isset($data['actionName'])) {
-			throw new Exception('Missing actionName param');
-		}
-
-		$params = array();
-
-		foreach($data as $pname => $pvalue) {
-			if ($pname != 'actionName' && $pname != 'objectId' && $pname != 'username'){
-				$params[$pname] = $pvalue;
+		self::RegisterActionHandler('setToken', function(array $data) {
+			if (self::$_token) {
+				throw new Exception('Token cant be modified');
 			}
-		}
-
-		try {
-			$this->interface->action(
-				$data['actionName'],
-				$data['objectId'],
-				$params
-			);
-		} catch (Exception $e) {
-			$response['errors'][] = array(
-				'message' => $e->getMessage(),
-				'file'    => $e->getFile(),
-				'line'    => $e->getLine(),
-				'trace'   => $e->getTraceAsString(),
-			);
-		}
-
-		// Obtengo las notificaciones.
-		$notif = $this->interface->getNotifications();
-
-		// Notificaciones: Actualización.
-		if (count($notif['update'])){
-			$eventData = array();
-			foreach($notif['update'] as $object) {
-				$eventData[] = array(
-					'objectId' => $object->getObjectID(),
-					'content' => '' . $object->render(),
-				);
+			if (empty($data['token'])) {
+				throw new Exception('Missing token data');
+			}
+			self::$_token = $data['token'];
+		});
+		
+		SimpleServer::Listen($address, $port, function($reqString) {
+			$json = json_decode($reqString, true);
+			if ($json==null) {
+				return 'Bad json format: ' . $reqString;
 			}
 
-			$response['events'][] = array(
-				'name' => 'updateElements',
-				'data' => $eventData,
-			);
-		}
-
-		// Notificaciones: Creación.
-		if (count($notif['create'])){
-			$eventData = array();
-			foreach($notif['create'] as $object) {
-				$parent = $object->getParent();
-				$parentObjectId = ($parent instanceof Application) ? '' :
-						$parent->getObjectID();
-
-				$eventData[] = array(
-					'parentObjectId' => $parentObjectId,
-					'content' => '' . $object->render(),
-				);
+			$command  = $json['command'];
+			$data     = $json['data'];
+			$token    = $json['token'] ?? null;
+			
+			try {
+				$commandResponse = self::Call($command, $token, $data);
+			} catch(Exception $e) {
+				echo "Command Exception: {$e->getMessage()} at file '{$e->getFile()}' ({$e->getLine()})\n\n";
+				\Webos\Log::write("USER SERVICE. Command Exception: {$e->getMessage()} at file '{$e->getFile()}' ({$e->getLine()})\n\n");
+				echo $e->getTraceAsString();
+				return json_encode(array(
+					'status' => 'error',
+					'errorMsg' => $e->getMessage(),
+				));
 			}
 
-			$response['events'][] = array(
-				'name' => 'createElements',
-				'data' => $eventData,
-			);
-		}
-
-		// Notificaciones: Eliminación.
-		if (count($notif['remove'])) {
-			$eventData = array();
-			foreach($notif['remove'] as $objectId) {
-				$eventData[]['objectId'] = $objectId;
-			}
-
-			$response['events'][] = array(
-				'name' => 'removeElements',
-				'data' => $eventData,
-			);
-		}
-		return $response;
+			// echo "enviando: " . print_r($commandResponse, true);
+			return json_encode(array(
+				'status' => 'ok',
+				'data'   => $commandResponse,
+			));
+		});
 	}
 }
