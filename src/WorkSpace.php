@@ -37,16 +37,6 @@ class WorkSpace {
 	public function getInfo($name) {
 		return $this->_info[$name];
 	}
-	
-	/**
-	 * @returns WorkSpace;
-	 */
-	static public function LoadFromFile(string $pathToFile): self {
-		$file = new File($pathToFile);
-		$file->open('readwrite');
-		$ws = unserialize($file->getContent());
-		return $ws['ws'];
-	}
 
 	public function __construct(string $name) {
 		$this->_name = $name;
