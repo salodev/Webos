@@ -185,6 +185,7 @@ trait FormContainer {
 	 * @return Controls\Tree
 	 */
 	public function createTree(array $options = array()): Tree {
+		$this->getParentWindow()->height = $this->topControl + ($options['height'] ?? 300) + 40;
 		return $this->createObject(Tree::class, $options);
 	}
 	

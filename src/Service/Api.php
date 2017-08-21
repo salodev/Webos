@@ -12,16 +12,9 @@ class Api {
 			'applicationName'=> $applicationName,
 		]);
 			
-		$port = $ret['port'];
+		$port  = $ret['port'];
 		$token = $ret['token'];
-		$new   = $ret['new'];
 		$client = new Client($token, '127.0.0.1', $port);
-		if ($new) {
-			$client->call('startApplication', [
-				'name' => $applicationName,
-				'params' => [],
-			]);
-		}
 		
 		return $client;
 	}
