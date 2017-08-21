@@ -30,6 +30,27 @@ class Client {
 		$this->_socket = new Socket("{$this->_host}:{$this->_port}");
 	}
 	
+	public function waitForService($maxTime = 5) {
+		$start = time();
+		$socket = null;
+		do {
+			try {
+				$socket = new Socket("{$this->_host}:{$this->_port}");
+			} catch (Exception $e) {
+				usleep(1000);
+			}
+			if(time()-$start>$maxTime) {
+				break;
+			}
+		} while(!($socket instanceof Socket));
+		
+		if ($socket instanceof Socket) {
+			$socket->close();
+			return true;
+		}
+		return false;
+	}
+	
 	public function call( string $commandName, array $data = array()) {
 		$this->connect();
 		$this->_socket->setBlocking();
