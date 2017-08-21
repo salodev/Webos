@@ -62,13 +62,16 @@ class Server {
 			UserServer::Listen($host, $userPort, $userName);
 		});
 		
-		sleep(2); // give time to start
-		
 		// Spawn application into created service
 		$client = new Client($userToken, self::$_host, $userPort);
+		
+		if (!$client->waitForService()) {
+			throw new Exception('Service could not be spawned');
+		}
+		
 		$client->call('startApplication', [
 			'name' => $applicationName,
-		]);		
+		]);
 		
 		// Store user info.
 		self::RegisterUserInfo($userName, $applicationName, $userPort, $userToken);
