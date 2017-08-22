@@ -3,6 +3,7 @@
 namespace Webos\Service;
 use Webos\SystemInterface;
 use Webos\WorkSpaceHandlers\FileSystem AS FileSystemHanlder;
+use salodev\Debug\ObjectInspector;
 
 class DevInterface implements UserInterface {
 	
@@ -32,5 +33,10 @@ class DevInterface implements UserInterface {
 	
 	public function action(string $name, string $objectID, array $parameters, bool $ignoreUpdateObject = false): array {
 		return $this->_interface->action($name, $objectID, $parameters, $ignoreUpdateObject);
+	}
+	
+	public function debug(): void {
+		ObjectInspector::inspect($this->_interace);
+		die();
 	}
 }

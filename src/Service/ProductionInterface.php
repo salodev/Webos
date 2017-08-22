@@ -37,4 +37,11 @@ class ProductionInterface implements UserInterface {
 			'ignoreUpdateObject' => $ignoreUpdateObject,
 		]);
 	}
+	
+	public function debug():void {
+		$html = $this->_client->call('debug', [
+			'path' => $_REQUEST['__path'] ?? null,
+		]);
+		echo $html; die();
+	}
 }

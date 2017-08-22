@@ -9,4 +9,6 @@ interface UserInterface {
 	public function renderAll(): string;
 	
 	public function action(string $name, string $objectID, array $parameters, bool $ignoreUpdateObject = false): array;
+	
+	public function debug(): void;
 }
