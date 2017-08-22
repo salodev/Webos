@@ -5,6 +5,7 @@ use Webos\VisualObject;
 use Webos\Application;
 use Webos\Visual\Window;
 use Webos\Exceptions\Collection\NotFound;
+use Webos\FrontEnd\Page;
 
 class SystemInterface {
 	private   $_sessionId         = null;
@@ -23,18 +24,20 @@ class SystemInterface {
 		
 		$system = new System();
 
-		$system->addEventListener('sessionCreated',  array($this, 'onsSessionCreated'));
-		$system->addEventListener('createObject',    array($this, 'onCRUObjects'));
-		$system->addEventListener('removeObject',    array($this, 'onCRUObjects'));
-		$system->addEventListener('updateObject',    array($this, 'onCRUObjects'));
-		$system->addEventListener('loadedWorkSpace', array($this, 'onLoadedWorkspace'), false);
+		$system->addEventListener('sessionCreated',      [$this, 'onsSessionCreated'    ]);
+		$system->addEventListener('createObject',        [$this, 'onCRUObjects'         ]);
+		$system->addEventListener('removeObject',        [$this, 'onCRUObjects'         ]);
+		$system->addEventListener('updateObject',        [$this, 'onCRUObjects'         ]);
+		$system->addEventListener('loadedWorkSpace',     [$this, 'onLoadedWorkspace'    ], false);
+		$system->addEventListener('closeTerminalOption', [$this, 'onCloseTerminalOption']);
+		$system->addEventListener('closeSessionOption',  [$this, 'onCloseTerminalOption']);
 
 		$system->start();
 
 		$this->_system = $system;
 	}
 
-	public function action($actionName, $objectID, $parameters, $ignoreUpdateObject = false) {
+	private function _callAction(string $actionName, string $objectID, array $parameters, bool $ignoreUpdateObject = false) {
 		$this->_resetNotifications();
 		$this->lastObjectID = $objectID;
 		$this->ignoreUpdateObject = $ignoreUpdateObject;
@@ -73,6 +76,35 @@ class SystemInterface {
 		));
 
 		$object->action($actionName, $parameters);
+	}
+	
+	public function action(string $actionName, string $objectID, array $parameters, bool $ignoreUpdateObject = false): array {
+		try {
+			$this->_callAction($actionName, $objectID, $parameters, $ignoreUpdateObject);
+		} catch (Exception $e) {
+			$app = self::$interface->getActiveApplication();
+			$app->openMessageWindow('Opps', $e->getMessage());
+			
+			// @todo: decide about it.
+			/*if (ENV==ENV_DEV) {
+				$app->openExceptionWindow($e);
+			} else {
+				$app->openMessageWindow('Opps', $e->getMessage());
+			}*/
+		}
+		return $this->getParsedNotifications();
+		
+	}
+	
+	public function renderAll(): string {
+		$html = $this->getWorkSpace()
+				->getApplications()
+				->getVisualObjects()
+				->render();
+		
+		$page = new Page();
+		$page->setContent($html);
+		return $page->getHTML();
 	}
 
 	public function getActiveApplication(): Application {
@@ -211,9 +243,17 @@ class SystemInterface {
 		);
 	}
 	
-	public function getParsedNotifications() {
+	public function getParsedNotifications(): array {
 		$notif = $this->_notifications;
 		$parsed = [];
+		
+		if (isset($this->_notifications['general']['authUser'])) {
+			return [
+				'events' => [
+					['name'=>'authUser'],
+				]
+			];
+		}
 			
 		// Notificaciones: Actualización.
 		/*if (!empty($notif['update_stacks'])){
@@ -289,9 +329,6 @@ class SystemInterface {
 	}
 
 	public function addNotification($name,$data) {
-		echo "\n*********************************";
-		echo "\n* addNotification: {$name}";
-		echo "\n*********************************\n";
 		$this->_notifications['general'][$name] = $data;
 	}
 	
@@ -329,5 +366,9 @@ class SystemInterface {
 		$this->addNotification('sessionCreated', array(
 			'sessionId' => $params['sessionId'],
 		));
+	}
+	
+	public function onCloseTerminalOption($eventName) {
+		$this->addNotification('authUser', []);
 	}
 }

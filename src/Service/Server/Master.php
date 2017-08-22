@@ -1,14 +1,15 @@
 <?php
 
-namespace Webos\Service\Master;
-use Exception;
-use Webos\Service\Server as BaseServer;
-use Webos\Service\Client;
-use Webos\Service\User\Server as UserServer;
-use Webos\Log;
-use salodev\Thread;
+namespace Webos\Service\Server;
 
-class Server {
+use Exception;
+use Webos\Service\Server\Base as BaseServer;
+use Webos\Service\Server\User as UserServer;
+use Webos\Service\Client;
+use salodev\Thread;
+use salodev\Child;
+
+class Master {
 	
 	static private $_host = null;
 	
@@ -18,10 +19,12 @@ class Server {
 	
 	static private $_usersInfo = [];
 	
-	static public function RegisterUserInfo($userName, $applicationName, $userPort, $userToken) {
-		self::$_usersInfo[$userName] = [
-			'port'  => $userPort,
-			'token' => $userToken,
+	static public function RegisterUserInfo($name, $applicationName, $port, $token, Child $child) {
+		self::$_usersInfo[$name] = [
+			'child'   => $child,
+			'port'    => $port,
+			'token'   => $token,
+			'created' => microtime(true),
 			'applicationName' => $applicationName,
 		];
 	}
@@ -46,7 +49,10 @@ class Server {
 		// If user exists returns info.
 		$userInfo = self::GetUserInfo($userName);
 		if ($userInfo) {
-			return $userInfo;
+			return [
+				'port'  => $userInfo['port' ],
+				'token' => $userInfo['token'],
+			];
 		}
 		
 		// If not, we need create a new service.
@@ -54,11 +60,12 @@ class Server {
 		$userPort = self::_SelectNewPort($userPort);
 		
 		//generate a token;
-		$userToken = md5(time().getmypid());
+		$userToken = md5(time() . Thread::GetPid());
 		
 		// Spawn service for user.
 		$host = self::$_host;
-		Thread::Fork(function() use ($userName, $userPort, $host) {
+		$childProcess = Thread::Fork(function() use ($userName, $userPort, $host, $userToken) {
+			UserServer::SetToken($userToken);
 			UserServer::Listen($host, $userPort, $userName);
 		});
 		
@@ -74,10 +81,23 @@ class Server {
 		]);
 		
 		// Store user info.
-		self::RegisterUserInfo($userName, $applicationName, $userPort, $userToken);
+		self::RegisterUserInfo($userName, $applicationName, $userPort, $userToken, $childProcess);
 		
 		// And retrieve it.
-		return self::GetUserInfo($userName);
+		return [
+			'port'  => $userPort,
+			'token' => $userToken,
+		];
+	}
+	
+	static public function RemoveUserService($userName) {
+		$userInfo = self::GetUserInfo($userName);
+		if (!$userInfo) {
+			throw new Exception('User service not found');
+		}
+		$userInfo['child']->kill();
+		unset(self::$_usersInfo[$userName]);
+		return true;
 	}
 	
 	static public function Listen(string $host = '127.0.0.1', int $port = 3000) {
@@ -94,6 +114,28 @@ class Server {
 			}
 			return self::CreateUserService($data['userName'], $data['applicationName'], $data['port'] ?? null);
 		});
+		
+		BaseServer::RegisterActionHandler('remove', function(array $data) {
+			if (empty($data['userName'])) {
+				throw new Exception('Missing userName param');
+			}
+			return self::RemoveUserService($data['userName']);
+		});
+		
+		BaseServer::RegisterActionHandler('list', function() {
+			$rs = [];
+			foreach(self::$_usersInfo as $name => $userInfo) {
+				$rs[] = [
+					'name'    => $name,
+					'port'    => $userInfo['port'   ],
+					'token'   => $userInfo['token'  ],
+					'pid'     => $userInfo['child'  ]->getPid(),
+					'created' => $userInfo['created'],
+				];
+			}
+			return $rs;
+		});
+		
 		BaseServer::Listen($host, $port);
 	}
 }

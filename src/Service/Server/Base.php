@@ -1,16 +1,11 @@
 <?php
 
-namespace Webos\Service;
+namespace Webos\Service\Server;
 
 use Exception;
 use salodev\Implementations\SimpleServer;
-use salodev\Debug\ObjectInspector;
-use Webos\WorkSpace;
-use Webos\SystemInterface;
-use Webos\WorkSpaceHandlers\Instance as InstanceHandler;
-use Webos\FrontEnd\Page;
 
-class Server {
+class Base {
 	
 	/**
 	 *
@@ -24,12 +19,12 @@ class Server {
 	 */
 	static private $_actionHandlers = [];
 	
-	static public function RegisterActionHandler($name, $handler) {
-		self::$_actionHandlers[$name] = $handler;
+	static public function SetToken(string $token):void {
+		self::$_token = $token;
 	}
 	
-	static public function GetWorkSpace(): WorkSpace {
-		return self::$system->getWorkSpace();
+	static public function RegisterActionHandler($name, $handler) {
+		self::$_actionHandlers[$name] = $handler;
 	}
 	
 	static public function Call($name, $token, array $data = [])  {
@@ -50,16 +45,6 @@ class Server {
 	
 	static public function Listen($address, $port) {
 		
-		self::RegisterActionHandler('setToken', function(array $data) {
-			if (self::$_token) {
-				throw new Exception('Token cant be modified');
-			}
-			if (empty($data['token'])) {
-				throw new Exception('Missing token data');
-			}
-			self::$_token = $data['token'];
-		});
-		
 		SimpleServer::Listen($address, $port, function($reqString) {
 			$json = json_decode($reqString, true);
 			if ($json==null) {
@@ -67,14 +52,13 @@ class Server {
 			}
 
 			$command  = $json['command'];
-			$data     = $json['data'];
-			$token    = $json['token'] ?? null;
+			$data     = $json['data'   ] ?? [];
+			$token    = $json['token'  ] ?? null;
 			
 			try {
 				$commandResponse = self::Call($command, $token, $data);
 			} catch(Exception $e) {
 				echo "Command Exception: {$e->getMessage()} at file '{$e->getFile()}' ({$e->getLine()})\n\n";
-				\Webos\Log::write("USER SERVICE. Command Exception: {$e->getMessage()} at file '{$e->getFile()}' ({$e->getLine()})\n\n");
 				echo $e->getTraceAsString();
 				return json_encode(array(
 					'status' => 'error',

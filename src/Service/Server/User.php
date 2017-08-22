@@ -1,17 +1,16 @@
 <?php
 
-namespace Webos\Service\User;
+namespace Webos\Service\Server;
 
 use Exception;
-use salodev\Implementations\SimpleServer;
 use salodev\Debug\ObjectInspector;
 use Webos\WorkSpace;
 use Webos\SystemInterface;
 use Webos\WorkSpaceHandlers\Instance as InstanceHandler;
 use Webos\FrontEnd\Page;
-use Webos\Service\Server as BaseServer;
+use Webos\Service\Server\Base as BaseServer;
 
-class Server {
+class User {
 	
 	/**
 	 *
@@ -30,6 +29,10 @@ class Server {
 	 * @var string;
 	 */
 	static private $_username = null;
+	
+	static public function SetToken(string $token):void {
+		BaseServer::SetToken($token);
+	}
 	
 	static public function Prepare(string $username) {
 		self::$_username = $username;
@@ -53,10 +56,7 @@ class Server {
 		});
 		
 		BaseServer::RegisterActionHandler('renderAll', function(array $data) {
-			$html = self::GetWorkSpace()->getApplications()->getVisualObjects()->render();
-			$page = new Page();
-			$page->setContent($html);
-			return $page->getHTML();
+			return self::$interface->renderAll();
 		});
 		
 		BaseServer::RegisterActionHandler('action', function(array $data) {
@@ -64,25 +64,7 @@ class Server {
 			$objectID   = $data['objectID'  ];
 			$parameters = $data['parameters'] ?? [];
 			$ignoreUpdateObject = $data['ignoreUpdateObject'] ?? false;
-			try {
-				self::$interface->action($actionName, $objectID, $parameters, $ignoreUpdateObject);
-
-			} catch (\Webos\Exceptions\Base $e) {
-				$app = self::$interface->getActiveApplication();
-				$app->openMessageWindow('Opps', $e->getMessage());
-			} catch (\SG\Exception $e) {
-				$app = self::$interface->getActiveApplication();
-				$app->openMessageWindow('Opps', $e->getMessage());
-			} catch (Exception $e) {
-				$app = self::$interface->getActiveApplication();
-				if (ENV==ENV_DEV) {
-					$app->openExceptionWindow($e);
-				} else {
-					$app->openMessageWindow('Opps', $e->getMessage());
-				}
-			}
-			
-			return self::$interface->getParsedNotifications();
+			return self::$interface->action($actionName, $objectID, $parameters, $ignoreUpdateObject);
 		});
 		
 		BaseServer::RegisterActionHandler('debug', function(array $data) {
