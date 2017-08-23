@@ -2,7 +2,6 @@
 namespace Webos\Service;
 use Exception;
 use salodev\ClientSocket as Socket;
-use Webos\Log;
 
 class Client {
 	
@@ -22,15 +21,21 @@ class Client {
 		$this->_token = $token;
 	}
 	
-	public function getPort() {
+	public function getPort(): int {
 		return $this->_port;
 	}
 	
-	public function connect() {
+	public function connect(): void {
 		$this->_socket = new Socket("{$this->_host}:{$this->_port}");
 	}
 	
-	public function waitForService($maxTime = 5) {
+	public function checkAvailable(): bool {
+		$socket = new Socket("{$this->_host}:{$this->_port}");
+		$socket->close();
+		return true;
+	}
+	
+	public function waitForService(int $maxTime = 5): bool {
 		$start = time();
 		$socket = null;
 		do {
@@ -51,7 +56,7 @@ class Client {
 		return false;
 	}
 	
-	public function call( string $commandName, array $data = array()) {
+	public function call( string $commandName, array $data = []) {
 		$this->connect();
 		$this->_socket->setBlocking();
 		$msg = json_encode(array(
@@ -60,8 +65,6 @@ class Client {
 			'token'    => $this->_token,
 		));
 		// $resp = $this->_socket->writeAndRead();
-		
-		Log::write(" *** ENVIANDO: $msg\n");
 		
 		$this->_socket->write($msg."\n");
 		$resp = $this->_socket->readAll(255);

@@ -82,7 +82,7 @@ class SystemInterface {
 		try {
 			$this->_callAction($actionName, $objectID, $parameters, $ignoreUpdateObject);
 		} catch (Exception $e) {
-			$app = self::$interface->getActiveApplication();
+			$app = $this->getActiveApplication();
 			$app->openMessageWindow('Opps', $e->getMessage());
 			
 			// @todo: decide about it.

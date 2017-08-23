@@ -63,7 +63,17 @@ class Master {
 		$userToken = md5(time() . Thread::GetPid());
 		
 		// Spawn service for user.
-		$host = self::$_host;
+		$host = self::$_host;		
+		self::_CreateUserService($userName, $userPort, $host, $userToken, $applicationName);
+		
+		// And retrieve it.
+		return [
+			'port'  => $userPort,
+			'token' => $userToken,
+		];
+	}
+	
+	static private function _CreateUserService($userName, $userPort, $host, $userToken, $applicationName) {
 		$childProcess = Thread::Fork(function() use ($userName, $userPort, $host, $userToken) {
 			UserServer::SetToken($userToken);
 			UserServer::Listen($host, $userPort, $userName);
@@ -82,12 +92,6 @@ class Master {
 		
 		// Store user info.
 		self::RegisterUserInfo($userName, $applicationName, $userPort, $userToken, $childProcess);
-		
-		// And retrieve it.
-		return [
-			'port'  => $userPort,
-			'token' => $userToken,
-		];
 	}
 	
 	static public function RemoveUserService($userName) {
@@ -97,6 +101,22 @@ class Master {
 		}
 		$userInfo['child']->kill();
 		unset(self::$_usersInfo[$userName]);
+		return true;
+	}
+	
+	static public function RestartUserService($userName) {
+		$userInfo = self::GetUserInfo($userName);
+		if (!$userInfo) {
+			throw new Exception('User service not found');
+		}
+		$child = $userInfo['child'];
+		$child->kill();
+		$child->wait();
+		$userPort  = $userInfo['port'];
+		$userToken = $userInfo['token'];
+		$applicationName = $userInfo['applicationName'];
+		$host      = '127.0.0.1';
+		self::_CreateUserService($userName, $userPort, $host, $userToken, $applicationName);
 		return true;
 	}
 	
@@ -120,6 +140,13 @@ class Master {
 				throw new Exception('Missing userName param');
 			}
 			return self::RemoveUserService($data['userName']);
+		});
+		
+		BaseServer::RegisterActionHandler('restart', function(array $data) {
+			if (empty($data['userName'])) {
+				throw new Exception('Missing userName param');
+			}
+			return self::RestartUserService($data['userName']);
 		});
 		
 		BaseServer::RegisterActionHandler('list', function() {

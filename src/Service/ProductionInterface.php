@@ -30,12 +30,20 @@ class ProductionInterface implements UserInterface {
 	}
 	
 	public function action(string $name, string $objectID, array $parameters, bool $ignoreUpdateObject = false): array {
-		return $this->_client->call('action', [
+		$ret = $this->_client->call('action', [
 			'name'       => $name,
 			'objectID'   => $objectID,
 			'parameters' => $parameters,
 			'ignoreUpdateObject' => $ignoreUpdateObject,
 		]);
+		
+		foreach($ret['events'] as $event) {
+			if ($event['name']=='authUser') {
+				session_destroy();
+			}
+		}
+		
+		return $ret;
 	}
 	
 	public function debug():void {

@@ -70,6 +70,9 @@ class Column {
 		}
 		
 		if ($this->dateFormat !== null) {
+			if (is_numeric($value)) {
+				return date($this->dateFormat, $value);;
+			}
 			list($m, $d, $y) = explode('-', date('m-d-Y', strtotime($value)));
 			if (checkdate($m/1, $d/1, $y/1)) {
 				return date($this->dateFormat, $value);
