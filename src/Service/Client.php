@@ -26,11 +26,11 @@ class Client {
 	}
 	
 	public function connect(): void {
-		$this->_socket = new Socket("{$this->_host}:{$this->_port}");
+		$this->_socket = Socket::Create($this->_host, $this->_port);
 	}
 	
 	public function checkAvailable(): bool {
-		$socket = new Socket("{$this->_host}:{$this->_port}");
+		$socket = Socket::Create($this->_host, $this->_port, 0.5);
 		$socket->close();
 		return true;
 	}
@@ -40,7 +40,7 @@ class Client {
 		$socket = null;
 		do {
 			try {
-				$socket = new Socket("{$this->_host}:{$this->_port}");
+				$socket = Socket::Create($this->_host, $this->_port);
 			} catch (Exception $e) {
 				usleep(1000);
 			}
@@ -64,10 +64,7 @@ class Client {
 			'data'     => $data,
 			'token'    => $this->_token,
 		));
-		// $resp = $this->_socket->writeAndRead();
-		
-		$this->_socket->write($msg."\n");
-		$resp = $this->_socket->readAll(255);
+		$resp = $this->_socket->writeAndRead($msg);
 		
 		$json = json_decode($resp, true);
 		if (!$json || !isset($json['status'])) {

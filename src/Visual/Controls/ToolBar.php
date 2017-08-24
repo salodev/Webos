@@ -1,13 +1,9 @@
 <?php
 namespace Webos\Visual\Controls;
-use \Webos\ObjectsCollection;
+
 class ToolBar extends \Webos\Visual\Control {
 	
 	use \Webos\Visual\ControlsFactory;
-
-	public function toolItems(): ObjectsCollection {
-		return $this->_childObjects;//->getObjectsByClassName('ToolItem');
-	}
 
 	public function getAllowedActions(): array {
 		return array();
@@ -36,7 +32,7 @@ class ToolBar extends \Webos\Visual\Control {
 	
 	public function render(): string {
 		$html = '<div class="Toolbar"'.$this->getInlineStyle(true).'>';
-		$html .= $this->toolItems()->render();
+		$html .= $this->getChildObjects()->render();
 		$html .= '</div>';
 		return $html;
 	}

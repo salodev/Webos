@@ -8,6 +8,7 @@ use Webos\Service\Server\User as UserServer;
 use Webos\Service\Client;
 use salodev\Thread;
 use salodev\Child;
+use salodev\ClientSocket;
 
 class Master {
 	
@@ -44,11 +45,28 @@ class Master {
 		return $userPort;
 	}
 	
+	static public function CheckUserService($userName) {
+		echo "checking {$userName}...\n";
+		$userInfo = self::GetUserInfo($userName);
+		if (!$userInfo) {
+			return false;
+		}
+		
+		$port = $userInfo['port'];
+		try {
+			$socket = ClientSocket::Create('127.0.0.1', $port, 0.5);
+			$socket->close();
+		} catch (Exception $e) {
+			return false;
+		}
+		return true;
+	}
+	
 	static public function CreateUserService($userName, $applicationName, $userPort = null) {
 		
-		// If user exists returns info.
-		$userInfo = self::GetUserInfo($userName);
-		if ($userInfo) {
+		// If user exists returns info.		
+		if (self::CheckUserService($userName)) {
+			$userInfo = self::GetUserInfo($userName);
 			return [
 				'port'  => $userInfo['port' ],
 				'token' => $userInfo['token'],
