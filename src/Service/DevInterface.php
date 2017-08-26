@@ -36,7 +36,7 @@ class DevInterface implements UserInterface {
 	}
 	
 	public function debug(): void {
-		ObjectInspector::inspect($this->_interace);
+		ObjectInspector::inspect($this->_interface);
 		die();
 	}
 }

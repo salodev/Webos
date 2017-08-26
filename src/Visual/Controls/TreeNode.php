@@ -112,8 +112,6 @@ class TreeNode extends \Webos\Visual\Control {
 				'<ul class="container">__content__</ul>'.
 			'</li>'
 		);
-		$onclick = "__doAction('send',{actionName:'select',objectId:this.id});event.cancelBubble=true;event.stopPropagation();";
-		$ondblclick = "__doAction('send',{actionName:'doubleclick',objectId:this.id});event.cancelBubble=true;event.stopPropagation();";
 
 		$onclickToggle = 'webos click="toggle"';
 		if ($this->hasChilds === false) {
