@@ -9,12 +9,14 @@ class ProductionInterface implements UserInterface {
 	
 	private $_client = null;
 	private $_userName = null;
-	private $_applicationName = null;
+	private $_applicationName   = null;
+	private $_applicationParams = null;
 	
-	public function __construct(string $userName, string $applicationName) {
+	public function __construct(string $userName, string $applicationName, array $applicationParams = []) {
 		
-		$this->_userName        = $userName;
-		$this->_applicationName = $applicationName;
+		$this->_userName          = $userName;
+		$this->_applicationName   = $applicationName;
+		$this->_applicationParams = $applicationParams;
 		
 		$userName = $_SESSION['username' ] ?? $userName;
 		$port     = $_SESSION['port' ] ?? null;

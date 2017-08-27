@@ -4,7 +4,7 @@ namespace Webos\Service;
 
 interface UserInterface {
 	
-	public function __construct(string $userName, string $applicationName);
+	public function __construct(string $userName, string $applicationName, array $params = []);
 	
 	public function renderAll(): string;
 	

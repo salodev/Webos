@@ -12,16 +12,17 @@ class DevInterface implements UserInterface {
 	private $_interface = null;
 	private $_system    = null;
 	
-	public function __construct(string $userName, string $applicationName) {
+	public function __construct(string $userName, string $applicationName, array $applicationParams = []) {
 		$this->_user = $userName;
-		$this->_applicationName = $applicationName;
+		$this->_applicationName   = $applicationName;
+		$this->_applicationParams = $applicationParams;
 		$this->_interface = new SystemInterface();
 		$this->_system = $this->_interface->getSystemInstance();
 		$this->_system->setConfig('path/workspaces', PATH_PRIVATE . 'workspaces/');
 		$this->_system->setWorkSpaceHandler(new FileSystemHanlder($this->_system));
 		
 		$this->_system->addEventListener('createdWorkspace', function($data) {
-			$data['ws']->startApplication($this->_applicationName);
+			$data['ws']->startApplication($this->_applicationName, $this->_applicationParams);
 		});
 		$this->_system->loadWorkSpace($userName);
 		

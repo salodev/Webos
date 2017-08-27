@@ -24,6 +24,18 @@ abstract class Application {
 
 	abstract public function main(array $data = array());
 	
+	/**
+	 * Each time a workspace is loaded, WebOS call setup() for all applications
+	 * It may be useful for set up things like db connection, external services
+	 * and more.
+	 * 
+	 * Only put here setups that you need keep right.
+	 * 
+	 * Unlike main() method, setup() will be called for each WorkSpace load, meanwhile
+	 * main() just will be called once application starts.
+	 */
+	public function setup() {}
+	
 	public function signalFinish() {}
 
 	final public function finish() {

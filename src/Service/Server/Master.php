@@ -62,7 +62,7 @@ class Master {
 		return true;
 	}
 	
-	static public function CreateUserService($userName, $applicationName, $userPort = null) {
+	static public function CreateUserService($userName, $applicationName, array $applicationParams = [], $userPort = null) {
 		
 		// If user exists returns info.		
 		if (self::CheckUserService($userName)) {
@@ -82,7 +82,7 @@ class Master {
 		
 		// Spawn service for user.
 		$host = self::$_host;		
-		self::_CreateUserService($userName, $userPort, $host, $userToken, $applicationName);
+		self::_CreateUserService($userName, $userPort, $host, $userToken, $applicationName, $applicationParams);
 		
 		// And retrieve it.
 		return [
@@ -91,7 +91,7 @@ class Master {
 		];
 	}
 	
-	static private function _CreateUserService($userName, $userPort, $host, $userToken, $applicationName) {
+	static private function _CreateUserService($userName, $userPort, $host, $userToken, $applicationName, $applicationParams) {
 		$childProcess = Thread::Fork(function() use ($userName, $userPort, $host, $userToken) {
 			UserServer::SetToken($userToken);
 			UserServer::Listen($host, $userPort, $userName);
@@ -105,7 +105,8 @@ class Master {
 		}
 		
 		$client->call('startApplication', [
-			'name' => $applicationName,
+			'name'   => $applicationName,
+			'params' => $applicationParams,
 		]);
 		
 		// Store user info.
@@ -150,7 +151,7 @@ class Master {
 			if (empty($data['applicationName'])) {
 				throw new Exception('Missing applicationName param');
 			}
-			return self::CreateUserService($data['userName'], $data['applicationName'], $data['port'] ?? null);
+			return self::CreateUserService($data['userName'], $data['applicationName'], $data['applicationParams'] ?? [], $data['port'] ?? null);
 		});
 		
 		BaseServer::RegisterActionHandler('remove', function(array $data) {

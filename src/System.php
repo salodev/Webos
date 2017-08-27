@@ -75,6 +75,13 @@ class System {
 		$this->triggerEvent('loadedWorkSpace', $this, array(
 			'workspace'=>$ws
 		));
+		
+		/**
+		 * Just useful for development mode.
+		 */
+		$ws->getApplications()->each(function($application) {
+			$application->setup();
+		});
 
 		return $ws;
 	}

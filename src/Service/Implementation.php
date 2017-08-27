@@ -4,21 +4,21 @@ namespace Webos\Service;
 
 class Implementation {
 	static public $dev = true;
-	static public function CreateInterface(string $user, string $applicationName): UserInterface {
+	static public function CreateInterface(string $user, string $applicationName, array $applicationParams = []): UserInterface {
 		if (self::$dev) {
-			return new DevInterface($user, $applicationName);
+			return new DevInterface($user, $applicationName, $applicationParams);
 		} else {
-			return new ProductionInterface($user, $applicationName);
+			return new ProductionInterface($user, $applicationName, $applicationParams);
 		}
 	}
 	
-	static public function Start(string $applicationName, string $location = null, $debug = false) {
+	static public function Start(string $applicationName, array $applicationParams = [], string $location = null, $debug = false) {
 		if (empty($_SESSION['username'])) {
 			self::GetLogin($location);
 		}
 		$userName = $_SESSION['username'];
 		
-		$interface = self::CreateInterface($userName, $applicationName);
+		$interface = self::CreateInterface($userName, $applicationName, $applicationParams);
 		
 		if ($debug) {
 			self::Debug($interface);
