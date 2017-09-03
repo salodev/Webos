@@ -167,7 +167,13 @@ class DataTable extends \Webos\Visual\Control {
 
 		$scrollTop  = $this->scrollTop  ?? 0;
 		$scrollLeft = $this->scrollLeft ?? 0;
-		$html = '<div id="'.$objectID.'" class="DataTable" '. $this->getInlineStyle() .' webos contextmenu>';
+		
+		$hasContextMenu = $this->hasListenerFor('contextMenu');
+		$inlineStyle    = $this->getInlineStyle();
+		$contextMenuDirective = $hasContextMenu ? 'webos contextmenu' : '';
+		
+		$html = "<div id=\"{$objectID}\" class=\"DataTable\" {$inlineStyle} {$contextMenuDirective}>";
+		
 		$rs = $this->rows;
 		$bodyWidth = 0;
 		foreach($this->columns as $column) {
@@ -192,12 +198,15 @@ class DataTable extends \Webos\Visual\Control {
 		$html .= '</div>'; // end TataTableHeaders
 		$html .= "<div class=\"DataTableHole\" webos set-scroll-values=\"{$scrollTop},{$scrollLeft}\">";
 		$html .= '<div class="DataTableBody" style="width:'.$bodyWidth.'px">';
+		
 		foreach($rs as $i => $row) {
 			$classSelected = '';
 			if ($this->rowIndex!==null && $i == $this->rowIndex) {
 				$classSelected = ' selected';
 			}
-			$html .= '<div class="DataTableRow' . $classSelected . '" webos contextmenu="'.$i.'">';
+			
+			$contextMenuDirective = $hasContextMenu ? "webos contextmenu=\"{$i}\"" : '';
+			$html .= "<div class=\"DataTableRow {$classSelected}\" {$contextMenuDirective}>";
 			foreach($this->columns as $column) {
 				
 				$linkable = ($column->linkable) ? ' linkable' : '';
