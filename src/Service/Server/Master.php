@@ -104,13 +104,15 @@ class Master {
 			throw new Exception('Service could not be spawned');
 		}
 		
+		// Store user info.
+		self::RegisterUserInfo($userName, $applicationName, $userPort, $userToken, $childProcess);
+		
 		$client->call('startApplication', [
 			'name'   => $applicationName,
 			'params' => $applicationParams,
 		]);
 		
-		// Store user info.
-		self::RegisterUserInfo($userName, $applicationName, $userPort, $userToken, $childProcess);
+
 	}
 	
 	static public function RemoveUserService($userName) {

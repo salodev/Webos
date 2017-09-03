@@ -26,13 +26,20 @@ class ProductionInterface implements UserInterface {
 			$this->_getService();
 		}
 		$this->_client = new Client($_SESSION['token'], '127.0.0.1', $_SESSION['port']);
+		// $this->_client->setLogHandler(function($msg) {
+		// 	file_put_contents(PATH_PRIVATE.'log/client.log', "{$msg}\n\n", FILE_APPEND);
+		// });
 	}
 	
 	private function _getService() {
 		$client = new Client('root', '127.0.0.1', 3000);
+		// $client->setLogHandler(function($msg) {
+		// 	file_put_contents(PATH_PRIVATE.'log/client.log', "{$msg}\n\n", FILE_APPEND);
+		// });
 		$ret = $client->call('create', [
-			'userName'        => $this->_userName,
-			'applicationName' => $this->_applicationName,
+			'userName'          => $this->_userName,
+			'applicationName'   => $this->_applicationName,
+			'applicationParams' => $_SESSION['db'],
 		]);
 		$_SESSION['port' ] = $ret['port'];
 		$_SESSION['token'] = $ret['token'];
@@ -50,9 +57,11 @@ class ProductionInterface implements UserInterface {
 			'ignoreUpdateObject' => $ignoreUpdateObject,
 		]);
 		
-		foreach($ret['events'] as $event) {
-			if ($event['name']=='authUser') {
-				session_destroy();
+		if (isset($ret['events']) && is_array($ret['events'])){
+			foreach($ret['events'] as $event) {
+				if ($event['name']=='authUser') {
+					session_destroy();
+				}
 			}
 		}
 		

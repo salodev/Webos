@@ -15,6 +15,8 @@ class Client {
 	private $_host = null;
 	private $_port = null;
 	
+	private $_logHandler = null;
+	
 	public function __construct(string $token = null, string $host = '127.0.0.1', int $port = 3000) {
 		$this->_host = $host;
 		$this->_port = $port;
@@ -59,12 +61,20 @@ class Client {
 	public function call( string $commandName, array $data = []) {
 		$this->connect();
 		$this->_socket->setBlocking();
+		
+		$logHandler = $this->_logHandler ?? function() {};
+		
 		$msg = json_encode(array(
 			'command'  => $commandName,
 			'data'     => $data,
 			'token'    => $this->_token,
 		));
+		
+		$logHandler('SEND ' . $msg);
+		
 		$resp = $this->_socket->writeAndRead($msg);
+		
+		$logHandler('RECV ' . $resp);
 		
 		$json = json_decode($resp, true);
 		if (!$json || !isset($json['status'])) {
@@ -81,5 +91,9 @@ class Client {
 		}
 		
 		return $json['data'] ?? null;
+	}
+	
+	public function setLogHandler(callable $fn) {
+		$this->_logHandler = $fn;
 	}
 }
