@@ -13,3 +13,5 @@
 .MenuItem > .icon { width:22px; display: block; }
 .MenuItem > .text { height:25px; }
 .MenuItem > .arrow { text-align: right; padding:0 10px; }
+.MenuItem[disabled] { color: #999; }
+.MenuItem[disabled]:hover { color: #999 !important; background:#fff !important; }

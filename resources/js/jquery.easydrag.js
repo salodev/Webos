@@ -25,6 +25,8 @@
 	var lastElemTop;
 	var lastElemLeft;
 	
+	var lastID = 0;
+	
 	// track element dragStatus
 	var dragStatus = {};	
 
@@ -117,22 +119,31 @@
 		return this.each(function(){
 
 			// if no id is defined assign a unique one
-			if(undefined == this.id || !this.id.length) this.id = "easydrag"+(new Date().getTime());
+			if(undefined == this.id || !this.id.length) this.id = "easydrag"+(++lastID);
 
 			// set dragStatus 
-			dragStatus[this.id] = "on";
+			dragStatus[this.id] = 'on';
 			
 			// change the mouse pointer
-			$(this).css("cursor", "move");
+			// $(this).css("cursor", "move");
 
 			// when an element receives a mouse press
 			$(this).mousedown(function(e){
-
+				//console.log('mousedown', e);
+				
+				if (dragStatus[this.id]!='on') {
+					return;
+				}
+				
+				if (e.button!==0) {
+					return;
+				}
+				
 				// set it as absolute positioned
 				$(this).css("position", "absolute");
 
 				// set z-index
-				$(this).css("z-index", "10000");
+				// $(this).css("z-index", "10000");
 
 				// update track variables
 				isMouseDown    = true;

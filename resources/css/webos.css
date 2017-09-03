@@ -1,0 +1,21 @@
+
+.filled {
+	background-color:#4285f4;
+	color: #ffffff;
+}
+.clear {
+	background-color: #ffffff;
+	color:#4285f4;
+}
+
+.block, input {
+	box-sizing: border-box;
+	padding: 5px !important;
+	margin: 5px !important;
+}
+
+* {
+	border:none;
+	padding:5px;
+	margin: 0;
+}
