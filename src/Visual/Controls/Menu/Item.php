@@ -4,17 +4,17 @@ class Item extends \Webos\Visual\Control {
 
 	public function  getAllowedActions(): array {
 		return array(
-			'press'
+			'click'
 		);
 	}
 
 	public function  getAvailableEvents(): array {
-		return array('press');
+		return array('click');
 	}
 
-	public function press() {
+	public function click() {
 		
-		if ($this->triggerEvent('press')) {
+		if ($this->triggerEvent('click')) {
 			if ($this->getObjectsByClassName(ListItems::class)->count()) {
 				$this->selected = true;
 				$this->getParentByClassName(Button::class)->modified();
@@ -81,7 +81,7 @@ class Item extends \Webos\Visual\Control {
 		}
 
 		$html = new \Webos\StringChar(
-			'<tr id="__id__" class="MenuItem__selected__"__disabled__ webos press>' .
+			'<tr id="__id__" class="MenuItem__selected__"__disabled__ webos click>' .
 				'<td class="icon__icon_class__"></td>' .
 				'<td class="text">__text__</td>' .
 				'<td class="arrow__arrow__">__arr__</td>' .

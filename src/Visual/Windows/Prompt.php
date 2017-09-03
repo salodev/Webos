@@ -26,6 +26,7 @@ class Prompt extends Window {
 			'confirm',
 			'close',
 			'move',
+			'resize',
 		);
 	}
 

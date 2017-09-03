@@ -3,18 +3,18 @@ namespace Webos\Visual\Controls;
 class Button extends \Webos\Visual\Control {
 	public function getAllowedActions(): array {
 		return array(
-			'press',
+			'click',
 		);
 	}
 
 	public function getAvailableEvents(): array {
 		return array(
-			'press',
+			'click',
 		);
 	}
 
-	public function press() {
-		$this->triggerEvent('press');
+	public function click() {
+		$this->triggerEvent('click');
 	}
 	
 	/**
@@ -26,7 +26,7 @@ class Button extends \Webos\Visual\Control {
 	public function openWindow(string $className, array $parameters = []): self {
 		$this->_openWindowClassName  = $className;
 		$this->_openWindowParameters = $parameters;
-		$this->onPress(function() {
+		$this->onClick(function() {
 			$this->getApplication()->openWindow($this->_openWindowClassName, $this->_openWindowParameters, $this->getParentWindow());
 		});
 		return $this;
@@ -37,7 +37,7 @@ class Button extends \Webos\Visual\Control {
 	 * @return $this
 	 */
 	public function closeWindow(): self {
-		$this->onPress(function() {
+		$this->onClick(function() {
 			$this->getParentWindow()->close();
 		});
 		return $this;
@@ -45,7 +45,7 @@ class Button extends \Webos\Visual\Control {
 	
 	public function render(): string {
 		$html = new \Webos\StringChar(
-			'<button id="__id__" class="__class__" type="button" name="__name__" webos button-press__style____disabled__>__value__</button>'
+			'<button id="__id__" class="__class__" type="button" name="__name__" webos click __style____disabled__>__value__</button>'
 		);
 		
 		$html->replace('__style__', $this->getInLineStyle());

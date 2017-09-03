@@ -79,6 +79,7 @@ class System {
 		/**
 		 * Just useful for development mode.
 		 */
+		
 		$ws->getApplications()->each(function($application) {
 			$application->setup();
 		});

@@ -24,19 +24,19 @@ class Button extends \Webos\Visual\Control {
 
 	public function  getAllowedActions(): array {
 		return array(
-			'press',
+			'click',
 		);
 	}
 
 	public function  getAvailableEvents(): array {
 		return array(
-			'press'
+			'click'
 		);
 	}
 
-	public function press() {
+	public function click() {
 		// $this->selected = true;
-		if ($this->triggerEvent('press')) {
+		if ($this->triggerEvent('click')) {
 			$a = $this->selected;
 			if (!$this->selected) {
 				$this->selected = true;
@@ -107,7 +107,7 @@ class Button extends \Webos\Visual\Control {
 
 		$html = new \Webos\StringChar(
 			'<div id="__id__" class="MenuButton__selected__">' .
-				'<div class="text" webos press>__text__</div>' .
+				'<div class="text" webos click>__text__</div>' .
 				'<div class="container">__content__</div>' .
 			'</div>'
 		);

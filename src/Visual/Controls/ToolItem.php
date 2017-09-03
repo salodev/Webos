@@ -2,19 +2,19 @@
 namespace Webos\Visual\Controls;
 class ToolItem extends \Webos\Visual\Control {
 
-	public function press() {
-		$this->triggerEvent('press', array());
+	public function click() {
+		$this->triggerEvent('click', array());
 	}
 
 	public function getAllowedActions(): array {
 		return array(
-			'press',
+			'click',
 		);
 	}
 
 	public function getAvailableEvents(): array {
 		return array(
-			'press',
+			'click',
 		);
 	}
 	

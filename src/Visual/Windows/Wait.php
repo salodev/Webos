@@ -9,7 +9,8 @@ class Wait extends Window {
 		$this->message = Utils::Ifnull($params['message'], 'Please, wait a moment...');
 		$this->width   = Utils::Ifnull($params['width'  ], 350);
 		$this->height  = Utils::Ifnull($params['height' ], 130);
-		$this->showTitle = false;
+		$this->showTitle   = false;
+		$this->allowResize = false;
 	}
 
 	public function  getInitialAttributes(): array {

@@ -1,6 +1,7 @@
 <?php
 
 namespace Webos\Service;
+use Webos\Webos;
 
 class Implementation {
 	static public $dev = true;

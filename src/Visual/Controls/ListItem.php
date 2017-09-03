@@ -5,33 +5,28 @@ class ListItem extends \Webos\Visual\Control {
 
 	public function getAllowedActions(): array {
 		return array(
-			'press'
+			'click'
 		);
 	}
 
 	public function getAvailableEvents(): array {
 		return array(
-			'press'
+			'click'
 		);
 	}
 
-	public function press() {
+	public function click() {
 		$this->getParent()->setSelectedItem($this);
-		$this->triggerEvent('press');
+		$this->triggerEvent('click');
 	}
 	
 	public function render(): string {
 		$html = new \Webos\StringChar(
-			'<div class="ItemListFieldControl__selected__" onclick="__onclick__">' .
+			'<div class="ItemListFieldControl__selected__" webos click>' .
 			'__title__' .
 			'</div>'
 		);
 		
-		$onclick = new \Webos\StringChar(
-			"location.href='index.php?actionName=press&objectId=" .
-			$this->getObjectID() . "';"
-		);
-
 		$parent = $this->getParent()->getSelectedItem();
 		
 		if ($parent && $parent->getObjectID()==$this->getObjectID()) {
@@ -41,7 +36,6 @@ class ListItem extends \Webos\Visual\Control {
 		}
 
 		$html
-			->replace('__onclick__', $onclick)
 			->replace('__title__', $this->title)
 			->replace('__selected__', $selected);
 

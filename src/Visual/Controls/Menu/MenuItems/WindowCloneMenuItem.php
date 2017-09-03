@@ -8,7 +8,7 @@ class WindowCloneMenuItem extends MenuItem {
 		);
 	}
 
-	public function press() {
+	public function click() {
 		$this->getParentApp()->addChildObject(clone $this);
 		$this->getParentByClassName('MenuButton')->close();
 	}

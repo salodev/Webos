@@ -15,7 +15,7 @@ class Client {
 	private $_host = null;
 	private $_port = null;
 	
-	public function __construct(string $token, string $host = '127.0.0.1', int $port = 3000) {
+	public function __construct(string $token = null, string $host = '127.0.0.1', int $port = 3000) {
 		$this->_host = $host;
 		$this->_port = $port;
 		$this->_token = $token;

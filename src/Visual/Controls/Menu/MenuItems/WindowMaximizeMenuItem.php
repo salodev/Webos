@@ -8,7 +8,7 @@ class WindowMaximizeMenuItem extends MenuItem {
 		);
 	}
 
-	public function press() {
+	public function click() {
 		$this->getParentWindow()->status = 'maximized';
 		$this->getParentByClassName('MenuButton')->close();
 	}

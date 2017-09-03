@@ -23,6 +23,7 @@ class Confirm extends Window {
 			'confirm',
 			'close',
 			'move',
+			'resize',
 		);
 	}
 

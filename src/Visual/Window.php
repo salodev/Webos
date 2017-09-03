@@ -27,8 +27,16 @@ class Window extends Container {
 		$this->height = 400;
 		$this->top    = 100;
 		$this->left   = 100;
-		$this->showTitle = true;
+		$this->showTitle    = true;
 		$this->showControls = true;
+		$this->allowResize  = true;
+		
+		$this->onContextMenu(function($data) {
+			$menu = $data['menu'];
+			$menu->createItem('Cerrar')->onClick(function() {
+				$this->close();
+			});
+		});
 	}
 	
 	public function initialize(array $params = []) {}
@@ -44,6 +52,7 @@ class Window extends Container {
 			'close',
 			'ready',
 			'focus',
+			'contextMenu',
 		);
 	}
 
@@ -57,7 +66,24 @@ class Window extends Container {
 			'restore',
 			'focus',
 			'ready',
+			'contextMenu',
 		);
+	}
+	
+	public function contextMenu($params) {
+		if (empty($params['top']) || empty($params['left'])) {
+			return;
+		}
+		if ($this->hasListenerFor('contextMenu')) {
+			$menu = $this->getParentWindow()->createContextMenu($params['top'], $params['left']);
+			$eventData = ['menu' => $menu];
+			$this->triggerEvent('contextMenu', $eventData);
+		}
+	}
+	
+	public function onContextMenu(callable $cb, bool $persistent = true, array $contextData = []): self {
+		$this->bind('contextMenu', $cb, $persistent, $contextData);
+		return $this;
 	}
 	
 	public function getActiveControl() {
@@ -75,8 +101,11 @@ class Window extends Container {
 	}
 
 	public function resize($params) {
-		$this->top  = $params['y1'];
-		$this->left = $params['x1'];
+		if (!($this->allowResize??true)) {
+			return;
+		}
+		$this->top    = $params['y1'];
+		$this->left   = $params['x1'];
 		$this->width  = $params['x2'] - $params['x1'];
 		$this->height = $params['y2'] - $params['y1'];
 	}
@@ -256,10 +285,14 @@ class Window extends Container {
 	 */
 	protected function _getRenderTemplate() {
 		$html = new \Webos\StringChar(
-			'<div id="__ID__" class="Window form-wrapper__ACTIVE____STATUS__" style="__STYLE__"__READY__>' .
+			'<div 
+				id="__ID__" 
+				class="Window form-wrapper__ACTIVE____STATUS__"
+				style="__STYLE__"__READY__' . (($this->allowResize ?? true) ? ' webos resize' : '') .
+			'>' .
 				'<div class="form-titlebar">' .
 					($this->showTitle ?
-						'<div class="title">__TITLE__</div>' .
+						'<div class="title" webos no-contextmenu="titleBar" move=".form-wrapper">__TITLE__</div>' .
 						($this->showControls ?
 							'<div class="controls">' .
 								'<a class="small-control restore"  href="#" webos restore></a>' .

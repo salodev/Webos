@@ -8,7 +8,7 @@ class WindowRestoreMenuItem extends MenuItem {
 		);
 	}
 
-	public function press() {
+	public function click() {
 		$this->getParentWindow()->status = 'normal';
 		$this->getParentByClassName('MenuButton')->close();
 	}

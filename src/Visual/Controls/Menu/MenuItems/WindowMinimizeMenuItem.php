@@ -8,7 +8,7 @@ class WindowMinimizeMenuItem extends MenuItem {
 		);
 	}
 
-	public function press() {
+	public function click() {
 		$this->getParentWindow()->status = 'minimized';
 		$this->getParentByClassName('MenuButton')->close();
 	}
