@@ -412,6 +412,9 @@ abstract class VisualObject extends BaseObject {
 			if (in_array($name, ['top','bottom','left','right','width','height'])) {
 				$unit = 'px';
 			}
+			if (strpos($value, '%')!==false) {
+				$unit = '';
+			}
 			$strings[] = "{$name}:{$value}{$unit}";
 			unset($unit);
 		}

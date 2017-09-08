@@ -274,7 +274,8 @@ class Window extends Container {
 	
 	public function render(): string {
 		$html = $this->_getRenderTemplate();
-		$content = $this->getChildObjects()->render();
+		$content = $this->text ?? '';
+		$content .= $this->getChildObjects()->render();
 		$html->replace('__CONTENT__', $content);
 		return $html;
 	}

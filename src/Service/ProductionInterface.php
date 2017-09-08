@@ -19,8 +19,8 @@ class ProductionInterface implements UserInterface {
 		$this->_applicationParams = $applicationParams;
 		
 		$userName = $_SESSION['username' ] ?? $userName;
-		$port     = $_SESSION['port' ] ?? null;
-		$token    = $_SESSION['token'] ?? null;
+		$port     = $_SESSION['port'     ] ?? null;
+		$token    = $_SESSION['token'    ] ?? null;
 		
 		if (!$userName || !$port || !$token) {
 			$this->_getService();
@@ -39,9 +39,9 @@ class ProductionInterface implements UserInterface {
 		$ret = $client->call('create', [
 			'userName'          => $this->_userName,
 			'applicationName'   => $this->_applicationName,
-			'applicationParams' => $_SESSION['db'],
+			'applicationParams' => $this->_applicationParams,
 		]);
-		$_SESSION['port' ] = $ret['port'];
+		$_SESSION['port' ] = $ret['port' ];
 		$_SESSION['token'] = $ret['token'];
 	}
 	

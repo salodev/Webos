@@ -1,60 +1,32 @@
 <?php
 namespace Webos\Visual\Windows;
-use \Webos\Visual\Window;
+use Webos\Visual\Window;
+use Webos\Visual\Controls\TextBox;
 class Prompt extends Window {
 
-	public function  getInitialAttributes(): array {
-		$attrs = parent::getInitialAttributes();
-
-		return array_merge($attrs, array(
-			'title' => 'Confirmar',
-		));
-	}
-
 	public function initialize(array $params = []) {
-		$this->enableEvent('confirm');
-		$this->title = 'Confirmar';
-		$this->height = 130;
-		$t = $this->createTextBox($this->message, 'promptText');
-		if (!empty($params['defaultValue'])) {
-			$t->value = $params['defaultValue'];
-		}
-	}
-
-	public function getAllowedActions(): array {
-		return array(
-			'confirm',
-			'close',
-			'move',
-			'resize',
-		);
-	}
-
-	public function confirm() {
-		$this->triggerEvent('confirm', [
-			'value' => $this->promptText->value,
+		$this->title = $this->message;
+		$this->height = 25;
+		$this->width = 327;
+		$this->textBox = $textBox = $this->createObject(TextBox::class, [
+			'width'=>'100%',
 		]);
-		$this->close();
-	}
-	
-	public function render(): string {
-		$template = $this->_getRenderTemplate();
-
-		$content = new \Webos\StringChar(
-			'<div style="text-align:center;">' .
-				'<div>__CONTENT__</div>' .
-				'<div style="margin-top:20px;">' .
-					'<input type="button" value="Sí" webos action="confirm" />'.
-					'<input type="button" value="no" webos action="close" />'.
-				'</div>' .
-			'</div>'
-		);
-
-		$content->replace('__CONTENT__', $this->getChildObjects()->render());
-		$content->replace('OBJECTID',  $this->getObjectID());
 		
-		$template->replace('__CONTENT__', $content);
-
-		return $template;
+		if (!empty($params['defaultValue'])) {
+			$textBox->value = $params['defaultValue'];
+		}
+		
+		$buttonsBar = $this->createButtonsBar();
+		
+		// $this->height = 130;
+		
+		$buttonsBar->addButton('Confirmar')->onClick(function() {
+			$this->close();
+			$this->triggerEvent('confirm', [
+				'value' => $this->textBox->value,
+			]);
+		});
+		$buttonsBar->addButton('Cancelar')->closeWindow();
+		$this->enableEvent('confirm');
 	}
 }

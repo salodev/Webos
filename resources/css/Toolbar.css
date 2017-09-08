@@ -1,7 +1,23 @@
 .Toolbar {
 	background:#eee;
-	border-bottom:solid 1px #999;
 	height:36px;
+	left:0;
+	right:0;
+	position:absolute;
+}
+.Toolbar.top {
+	top: 0;
+	border-bottom:solid 1px #999;
+}
+.Toolbar.bottom {
+	bottom: 0;
+	border-top:solid 1px #999;
+}
+.Toolbar.contentRight {
+	text-align: right;
+}
+.Toolbar.contentLeft {
+	text-align: left;
 }
 
 .Toolbar > * {

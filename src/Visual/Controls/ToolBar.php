@@ -1,9 +1,11 @@
 <?php
 namespace Webos\Visual\Controls;
+use \Webos\Visual\Control;
+use \Webos\Visual\ControlsFactory;
 
-class ToolBar extends \Webos\Visual\Control {
+class ToolBar extends Control {
 	
-	use \Webos\Visual\ControlsFactory;
+	use ControlsFactory;
 
 	public function getAllowedActions(): array {
 		return array();
@@ -31,7 +33,10 @@ class ToolBar extends \Webos\Visual\Control {
 	}
 	
 	public function render(): string {
-		$html = '<div class="Toolbar"'.$this->getInlineStyle(true).'>';
+		$fixed = $this->fixedTo ?? 'top';
+		$horizontalAlign = ($this->horizontalAlign ?: '')=='right'?'contentRight':'';
+		$inlineStyle = ''; //$this->getInlineStyle();
+		$html = "<div class=\"Toolbar {$fixed} {$horizontalAlign}\" {$inlineStyle}>";
 		$html .= $this->getChildObjects()->render();
 		$html .= '</div>';
 		return $html;

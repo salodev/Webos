@@ -146,12 +146,20 @@ trait FormContainer {
 	public function createToolBar(array $params = []): ToolBar {
 		$this->topControl += 20;
 		$this->maxTopControl += 20;
-		$this->getParentWindow()->height = $this->topControl + 20 + 40;
+		$parentWindow = $this->getParentWindow();
+		$parentWindow->height = $parentWindow->height + $this->topControl + 20 + 40;
 		return $this->createObject(ToolBar::class, array_merge([
 			'top' =>   0,
 			'left' =>  0,
 			'right' => 0,
 		],$params));
+	}
+	
+	public function createButtonsBar(): ToolBar {
+		return $this->createToolBar([
+			'fixedTo' => 'bottom',
+			'horizontalAlign' => 'right',
+		]);
 	}
 	
 	/**
