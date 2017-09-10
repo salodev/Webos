@@ -1,4 +1,4 @@
-__registerEventListener('updateElements', function(data){
+Webos.bind('updateElements', function(data){
 	var i;
 	for(i in data) {
 		var objectId = data[i].objectId;
@@ -15,10 +15,10 @@ __registerEventListener('updateElements', function(data){
 			}, 100); // no entiendo porqué... $object no está disponible en el DOM y tengo que eperar ...
 		})(objectId);
 	}
-	__triggerEvent('elementsUpdated');
+	Webos.trigger('elementsUpdated');
 });
 
-__registerEventListener('createElements', function(data) {
+Webos.bind('createElements', function(data) {
 	var i;
 	for (i in data) {
 		(function(create) {
@@ -38,28 +38,28 @@ __registerEventListener('createElements', function(data) {
 			Directives.findNApplyAll($container);
 		})(data[i]);
 	}
-	__triggerEvent('elementsUpdated');
+	Webos.trigger('elementsUpdated');
 });
 
-__registerEventListener('removeElements', function(data) {
+Webos.bind('removeElements', function(data) {
 	var i;
 	for (i in data) {
 		$('#' + data[i].objectId).remove();
 	}
-	__triggerEvent('elementsUpdated');
+	Webos.trigger('elementsUpdated');
 });
 
-__registerEventListener('authUser', function() {
+Webos.bind('authUser', function() {
 	location.href='/landing.php?p=login';
 });
-__registerEventListener('changeEnterprise', function() {
+Webos.bind('changeEnterprise', function() {
 	location.href='empresa.php';
 });
 
 /**
  * Este observador se encarga de acomodar los MenuList disponibles.
  **/
-__registerEventListener('elementsUpdated', function() {
+Webos.bind('elementsUpdated', function() {
 	$('.MenuList').each(function(){
 		var $prev = $(this).prev();
 		if (!$prev.length) return;
@@ -90,7 +90,7 @@ __registerEventListener('elementsUpdated', function() {
 /**
  * Este observador se encarga de acomodar los MenuList disponibles.
  **/
-__registerEventListener('elementsUpdated', function() {
+Webos.bind('elementsUpdated', function() {
 	$('.form-wrapper.active').each(function(){
 		this.parentNode.appendChild(this);
 	});
@@ -100,29 +100,5 @@ __registerEventListener('elementsUpdated', function() {
 });
 
 $(document).ready(function() {
-	__triggerEvent('elementsUpdated');
+	Webos.trigger('elementsUpdated');
 });
-
-jQuery.fn.drag = function(callback) {
-	var dragging = false;
-	$(this).each(function() {
-
-		$(this).mousedown(function() {
-			dragging = true;
-		});
-
-		$(this).mousemove(function(event) {
-			if (dragging) {
-				callback.call($(this), event);
-			}
-		});
-
-		$(this).mouseup(function() {
-			dragging = false;
-		});
-
-		$(this).mouseout(function() {
-			dragging = false;
-		});
-	});
-}

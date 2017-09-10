@@ -18,10 +18,16 @@ Webos.action = function(actionName, objectID, params) {
 				eventName = data.events[i].name;
 				eventData = data.events[i].data;
 
-				__triggerEvent(eventName, eventData);
+				Webos.trigger(eventName, eventData);
 			}
 		}
 	}).fail(function(r) {
 		alert('unexpected response:\n' + r);
 	});
+}
+Webos.trigger = function(eventName, eventData) {
+	eventEngine.triggerEvent(eventName, eventData);
+}
+Webos.bind = function(eventName, eventHandler, persistance) {
+	eventEngine.registerEventListener(eventName, eventHandler, persistance);
 }
