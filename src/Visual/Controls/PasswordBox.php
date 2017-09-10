@@ -1,8 +1,11 @@
 <?php
 namespace Webos\Visual\Controls;
+
+use Webos\StringChar;
+
 class PasswordBox extends Field {
 	public function render(): string {
-		$html = new \Webos\StringChar(
+		$html = new StringChar(
 			'<input ' .
 				'id="__id__" ' .
 				'class="PasswordFieldControl"' .

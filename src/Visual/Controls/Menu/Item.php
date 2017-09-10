@@ -1,6 +1,11 @@
 <?php
 namespace Webos\Visual\Controls\Menu;
-class Item extends \Webos\Visual\Control {
+
+use Webos\Visual\Control;
+use Webos\StringChar;
+use TypeError;
+
+class Item extends Control {
 
 	public function  getAllowedActions(): array {
 		return array(
@@ -21,7 +26,7 @@ class Item extends \Webos\Visual\Control {
 			} else {
 				try {
 					$this->getParentByClassName(Button::class)->close();
-				} catch (\TypeError $e) {
+				} catch (TypeError $e) {
 					
 				}
 			}
@@ -80,7 +85,7 @@ class Item extends \Webos\Visual\Control {
 			$arr = ($this->shortCut) ? $this->shortCut : '';
 		}
 
-		$html = new \Webos\StringChar(
+		$html = new StringChar(
 			'<tr id="__id__" class="MenuItem__selected__"__disabled__ webos click>' .
 				'<td class="icon__icon_class__"></td>' .
 				'<td class="text">__text__</td>' .

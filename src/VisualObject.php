@@ -5,6 +5,7 @@ use Webos\StringChar;
 use Webos\Visual\Window;
 use Exception;
 use Webos\Exceptions\Collection\NotFound;
+
 /**
  * Un VisualObject es subtipo de BaseObject porque puede ser representado
  * como un objeto de datos, o puede ser una representación visual de un

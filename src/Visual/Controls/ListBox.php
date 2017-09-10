@@ -1,6 +1,9 @@
 <?php
 namespace Webos\Visual\Controls;
+
 use \Webos\ObjectsCollection;
+use Webos\StringChar;
+
 class ListBox extends Field {
 	protected $_selectedItem = null;
 
@@ -26,7 +29,7 @@ class ListBox extends Field {
 	}
 	
 	public function render(): string {
-		$html = new \Webos\StringChar(
+		$html = new StringChar(
 			'<div class="ListFieldControl"__style__>' .
 				'<div class="listWrapper">__content__</div>' .
 			'</div>'

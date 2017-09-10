@@ -1,6 +1,8 @@
 <?php
 namespace Webos\Visual\Windows;
-use \Webos\Visual\Window;
+
+use Webos\Visual\Window;
+
 class Application extends Window {
 	
 	public function render(): string {

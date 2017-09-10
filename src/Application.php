@@ -1,7 +1,11 @@
 <?php
 namespace Webos;
-use \Webos\Visual\Container;
-use \Webos\Visual\Window;
+use Webos\Visual\Control;
+use Webos\Visual\Container;
+use Webos\Visual\Window;
+use Webos\Visual\Windows\Exception as ExceptionWindow;
+use Webos\Visual\Windows\Message as MessageWindow;
+use Exception;
 
 abstract class Application {
 
@@ -91,7 +95,7 @@ abstract class Application {
 	 * @param array $params
 	 * @return Visual\Window
 	 */
-	public function openWindow(string $windowName = null, array $params = array(), $relativeTo = null): Visual\Window {
+	public function openWindow(string $windowName = null, array $params = array(), $relativeTo = null): Window {
 		if ($windowName===null) {
 			$windowName = Window::class;
 		}
@@ -108,11 +112,11 @@ abstract class Application {
 	/**
 	 * 
 	 * @param \Exception $e
-	 * @return Visual\ExceptionWindow
+	 * @return Visual\Windows\Exception
 	 */
-	public function openExceptionWindow(\Exception $e): Visual\Windows\Exception {
-		$params = Visual\Windows\Exception::ParseException($e);
-		return $this->openWindow(Visual\Windows\Exception::class, $params, $this);
+	public function openExceptionWindow(Exception $e): ExceptionWindow {
+		$params = ExceptionWindow::ParseException($e);
+		return $this->openWindow(ExceptionWindow::class, $params, $this);
 	}
 
 	/**
@@ -120,7 +124,7 @@ abstract class Application {
 	 * @param \Webos\Visual\Window $window
 	 * @return $this
 	 */
-	public function closeWindow(Visual\Window $window): self {
+	public function closeWindow(Window $window): self {
 		$objectId = $window->getObjectID();
 		$this->_visualObjects->removeObject($window);
 
@@ -168,8 +172,8 @@ abstract class Application {
 	 * @param type $message
 	 * @return Visual\MessageWindow
 	 */
-	public function openMessageWindow(string $title, string $message): Visual\Windows\Message {
-		return $this->openWindow(Visual\Windows\Message::class, array(
+	public function openMessageWindow(string $title, string $message): MessageWindow {
+		return $this->openWindow(MessageWindow::class, array(
 			'title' => $title,
 			'message' => $message,
 		), $this->getActiveWindow());
@@ -179,7 +183,7 @@ abstract class Application {
 	 * 
 	 * @return Visual\Control
 	 */
-	public function getActiveControl(): Visual\Control {
+	public function getActiveControl(): Control {
 		return $this->_activeControl;
 	}
 
@@ -188,7 +192,7 @@ abstract class Application {
 	 * @param \Webos\Visual\Control $control
 	 * @return $this
 	 */
-	public function setActiveControl(Visual\Control $control): self {
+	public function setActiveControl(Control $control): self {
 		$this->_activeControl = $control;
 		return $this;
 	}
@@ -208,7 +212,7 @@ abstract class Application {
 	 */
 	public function getWindow(string $id): Window {
 		$window = $this->_visualObjects->getObjectByID($id);
-		if ($window instanceof Visual\Window) {
+		if ($window instanceof Window) {
 			return $window;
 		}
 
@@ -220,7 +224,7 @@ abstract class Application {
 	 * @return ObjectsCollection
 	 */
 	public function getWindows(): ObjectsCollection {
-		return $this->_visualObjects->getObjectsByClassName('\Webos\Visual\Window');
+		return $this->_visualObjects->getObjectsByClassName(Window::class);
 	}
 
 	/**
@@ -240,7 +244,7 @@ abstract class Application {
 	public function addChildObject(VisualObject $child): self {
 		
 		if ($child->getApplication() !== $this) {
-			throw new \Exception('Child object to add must be created by same application.');
+			throw new Exception('Child object to add must be created by same application.');
 		}
 
 		$this->_visualObjects->add($child);

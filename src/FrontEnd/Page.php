@@ -39,9 +39,7 @@ class Page {
 					// '<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>' .
 					'<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>' .
 					'<script type="text/javascript" src="js/jquery.easydrag.js"></script>' .
-					'<script type="text/javascript">' . "
-						var __system_url = 'http://localhost/visualdata/public/html/';
-					" . '</script>' .
+					// '<script type="text/javascript" src="js/jquery.dragndrop.js"></script>' .
 					'<script type="text/javascript" src="js/engines/actionEngine.js"></script>' .
 					'<script type="text/javascript" src="js/engines/eventEngine.js"></script>' .
 					'<script type="text/javascript" src="js/engines/directives.js"></script>' .

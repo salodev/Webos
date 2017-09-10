@@ -1,8 +1,13 @@
 <?php
 namespace Webos\Visual;
-abstract class Control extends \Webos\VisualObject {
 
-	final public function __construct(\Webos\Application $application, \Webos\VisualObject $parent, array $initialAttributes = array()) {
+use Webos\Application;
+use Webos\VisualObject;
+use Exception;
+
+abstract class Control extends VisualObject {
+
+	final public function __construct(Application $application, VisualObject $parent, array $initialAttributes = array()) {
 		parent::__construct($application, $initialAttributes);
 
 		$this->_parentObject = $parent;
@@ -36,7 +41,7 @@ abstract class Control extends \Webos\VisualObject {
 		 * se verifica y se frena la acción.
 		 */
 		if ($this->disabled == true) {
-			throw new \Exception('Object disabled');
+			throw new Exception('Object disabled');
 		}
 		return parent::action($name, $params);
 	}

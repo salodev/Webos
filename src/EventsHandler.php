@@ -1,6 +1,11 @@
 <?php
 namespace Webos;
 
+use stdClass;
+use Webos\Closure as WebosClosure;
+use Closure;
+use Exception;
+
 class EventsHandler {
 
 	public $events = null;
@@ -18,16 +23,16 @@ class EventsHandler {
 		$this->checkAvailableEvent($eventName);
 
 		if (!is_callable($eventListener)) {
-			throw new \Exception('eventListener must be a function or an Closure instance');
+			throw new Exception('eventListener must be a function or an Closure instance');
 		}
 		
 		$dependenciesList = $this->_getDependenciesList($eventListener);
 		
-		if ($eventListener instanceof \Closure) {
-			$eventListener = new Closure($eventListener);
+		if ($eventListener instanceof Closure) {
+			$eventListener = new WebosClosure($eventListener);
 		}
 		
-		$evData = new \stdClass();
+		$evData = new stdClass();
 		$evData->eventListener    = $eventListener;
 		$evData->persistent       = (bool) $persistent;
 		$evData->contextData      = $contextData;
@@ -40,7 +45,7 @@ class EventsHandler {
 
 	public function removeListeners(string $eventName){
 		//@todo: completar esto..
-		throw new \Exception('TODO: complete it.');
+		throw new Exception('TODO: complete it.');
 	}
 
 	public function trigger(string $eventName, $source, $params = null): bool {
@@ -89,7 +94,7 @@ class EventsHandler {
 
 	private function checkAvailableEvent(string $eventName) {
 		if (!$this->isAvailable($eventName)) {
-			throw new \Exception("Unavailable {$eventName} event.");
+			throw new Exception("Unavailable {$eventName} event.");
 		}
 	}
 

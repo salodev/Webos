@@ -197,6 +197,7 @@ Directives.register('move', function(el) {
 	
 	$el.mouseout(function() {
 		$container.dragOff();
+		// $container.undrag();
 	});
 });
 

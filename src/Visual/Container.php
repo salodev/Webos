@@ -1,13 +1,14 @@
 <?php
 namespace Webos\Visual;
-use Webos;
+use Webos\VisualObject;
+use Webos\Application;
 /**
  * Los ContainerObject están en el nivel mas alto de la estructura Composite,
  * en lo que se refiere a subclases de VisualObject.
  */
-abstract class Container extends \Webos\VisualObject {
+abstract class Container extends VisualObject {
 
-	final public function __construct(\Webos\Application $application, array $initialAttributes = array()) {
+	final public function __construct(Application $application, array $initialAttributes = array()) {
 		parent::__construct($application, $initialAttributes);
 		$application->addChildObject($this);
 		

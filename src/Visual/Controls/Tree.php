@@ -1,9 +1,10 @@
 <?php
 namespace Webos\Visual\Controls;
-use \Exception;
-use \Webos\Visual\Controls\DataTable\Column;
-use \Webos\Visual\Control;
-use \Webos\Collection;
+
+use Webos\Visual\Controls\DataTable\Column;
+use Webos\Visual\Control;
+use Webos\Collection;
+use Webos\StringChar;
 
 class Tree extends Control {
 
@@ -117,7 +118,7 @@ class Tree extends Control {
 	public function render(): string {
 		$scrollTop  = $this->scrollTop  ?? 0;
 		$scrollLeft = $this->scrollLeft ?? 0;
-		$html = new \Webos\StringChar(
+		$html = new StringChar(
 			'<ul id="__id__" '.
 				'class="Tree container" '.
 				'__style__ ' .

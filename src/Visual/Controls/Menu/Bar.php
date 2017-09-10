@@ -1,6 +1,8 @@
 <?php
 namespace Webos\Visual\Controls\Menu;
-use \Webos\Visual\Control;
+
+use Webos\Visual\Control;
+
 /**
  * Barra de menús. Contenedora de MenuButtons.
  */

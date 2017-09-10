@@ -1,9 +1,12 @@
 <?php
 namespace Webos\Visual\Controls;
 
-class Label extends \Webos\Visual\Control {
+use Webos\Visual\Control;
+use Webos\StringChar;
+
+class Label extends Control {
 	public function render(): string {
-		$html = new \Webos\StringChar('<div class="LabelControl"__style__>__text__</div>');
+		$html = new StringChar('<div class="LabelControl"__style__>__text__</div>');
 		
 		return $html
 			->replace('__text__', ($this->text)??$this->value)

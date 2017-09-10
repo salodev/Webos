@@ -1,6 +1,6 @@
 <?php
 namespace Webos;
-use \Webos\Exceptions\Collection\NotFound;
+use Webos\Exceptions\Collection\NotFound;
 /**
  * Cada elemento de esta colección es un objeto
  */

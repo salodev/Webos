@@ -1,14 +1,16 @@
 <?php
 namespace Webos\Visual;
-use \Webos\Visual\Controls\TextBox;
-use \Webos\Visual\Controls\PasswordBox;
-use \Webos\Visual\Controls\Label;
-use \Webos\Visual\Controls\Button;
-use \Webos\Visual\Controls\ComboBox;
-use \Webos\Visual\Controls\ToolBar;
-use \Webos\Visual\Controls\DataTable;
-use \Webos\Visual\Controls\Tree;
-use \Webos\Visual\Controls\Frame;
+use Webos\Visual\Controls\Field;
+use Webos\Visual\Controls\TextBox;
+use Webos\Visual\Controls\PasswordBox;
+use Webos\Visual\Controls\Label;
+use Webos\Visual\Controls\Button;
+use Webos\Visual\Controls\ComboBox;
+use Webos\Visual\Controls\ToolBar;
+use Webos\Visual\Controls\DataTable;
+use Webos\Visual\Controls\Tree;
+use Webos\Visual\Controls\Frame;
+use Webos\Visual\Controls\Menu\Bar as MenuBar;
 
 trait FormContainer {
 	protected $maxTopControl     = 15;
@@ -20,6 +22,7 @@ trait FormContainer {
 	protected $controlProperties = array();
 	protected $controlClassName  = TextBox::class;
 	protected $hasHorizontalButtons = false;
+	protected $hasWindowButtons  = false;
 
 	protected function setControlProperties(array $properties = array()) {
 		$this->controlProperties = $properties;
@@ -166,8 +169,8 @@ trait FormContainer {
 	 * 
 	 * @return \Webos\Visual\Controls\Menu\Bar
 	 */
-	public function createMenuBar(): Controls\Menu\Bar {
-		return $this->createObject(Controls\Menu\Bar::class);
+	public function createMenuBar(): MenuBar {
+		return $this->createObject(MenuBar::class);
 	}
 	
 	/**
@@ -238,6 +241,14 @@ trait FormContainer {
 		$this->leftButton = ($this->leftButton/1) + 10 + ($width*1); // + ($width/1) + 10;
 		return $button;
 	}
+	
+	public function createWindowButton($label, array $options = []): Button {
+		if (!$this->hasWindowButtons) {
+			$this->hasWindowButtons = true;
+			$this->buttonsBar = $this->createButtonsBar();
+		}
+		return $this->buttonsBar->addButton($label);
+	}
 
 	public function setFormData(array $data) {
 		if (array_key_exists(0, $data)) {
@@ -258,7 +269,7 @@ trait FormContainer {
 	public function clearFormData() {
 		$objects = $this->getChildObjects();
 		foreach($objects as $object) {
-			if ($object instanceOf Controls\Field) {
+			if ($object instanceOf Field) {
 				$object->value = null;
 			}
 		};
@@ -281,7 +292,7 @@ trait FormContainer {
 	public function enableForm() {
 		$objects = $this->getChildObjects();
 		foreach($objects as $object) {
-			if ($object instanceOf Controls\Field) {
+			if ($object instanceOf Field) {
 				$object->disabled = false;
 			}
 		};
@@ -290,7 +301,7 @@ trait FormContainer {
 	public function disableForm() {
 		$objects = $this->getChildObjects();
 		foreach($objects as $object) {
-			if ($object instanceOf Controls\Field) {
+			if ($object instanceOf Field) {
 				$object->disabled = true;
 			}
 		};

@@ -46,17 +46,22 @@ class Master {
 	}
 	
 	static public function CheckUserService($userName) {
-		echo "checking {$userName}...\n";
+		echo "looking for '{$userName}' service info...";
 		$userInfo = self::GetUserInfo($userName);
 		if (!$userInfo) {
+			echo "NOT FOUND\n";
 			return false;
 		}
+		echo "OK\n";
 		
 		$port = $userInfo['port'];
 		try {
+			echo "making connection test for {$username} in port no:{$port}...";
 			$socket = ClientSocket::Create('127.0.0.1', $port, 0.5);
 			$socket->close();
+			echo "OK\n";
 		} catch (Exception $e) {
+			echo "TIMED OUT (0.5s)\n";
 			return false;
 		}
 		return true;
@@ -92,27 +97,33 @@ class Master {
 	}
 	
 	static private function _CreateUserService($userName, $userPort, $host, $userToken, $applicationName, $applicationParams) {
+		echo "spawing via fork for '{$userName}' in port {$userPort}\n";
 		$childProcess = Thread::Fork(function() use ($userName, $userPort, $host, $userToken) {
 			UserServer::SetToken($userToken);
 			UserServer::Listen($host, $userPort, $userName);
 		});
 		
-		// Spawn application into created service
 		$client = new Client($userToken, self::$_host, $userPort);
 		
+		echo "waiting service availability...";
 		if (!$client->waitForService()) {
+			echo "ERROR\n";
 			throw new Exception('Service could not be spawned');
 		}
+		echo "OK\n";
 		
 		// Store user info.
 		self::RegisterUserInfo($userName, $applicationName, $userPort, $userToken, $childProcess);
+		echo "service information stored\n";
 		
+		echo "spawing '{$applicationName}' application into user service...";
+		// Spawn application into created service
 		$client->call('startApplication', [
 			'name'   => $applicationName,
 			'params' => $applicationParams,
 		]);
-		
-
+		echo "OK\n";
+		echo "SERVICE IS READY FOR USE\n";
 	}
 	
 	static public function RemoveUserService($userName) {

@@ -1,7 +1,10 @@
 <?php
 namespace Webos\Visual\Controls;
 
-class MultiTab extends \Webos\Visual\Control {
+use Webos\Visual\Control;
+use Webos\StringChar;
+
+class MultiTab extends Control {
 
 	protected $_activeTab;
 	public function initialize() {
@@ -56,7 +59,7 @@ class MultiTab extends \Webos\Visual\Control {
 		$content = '<div class="Tabs">';
 
 		foreach($this->getChildObjects() as $tab) {
-			$tabHTML = new \Webos\StringChar(
+			$tabHTML = new StringChar(
 				'<a class="tab__SELECTED__" href="#" onclick="' .
 				"__doAction('send', {actionName:'select', objectId:'" . $tab->getObjectID() ."'}); return false;" .
 				'">' . $tab->title . '</a>'

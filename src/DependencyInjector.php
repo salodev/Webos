@@ -1,13 +1,17 @@
 <?php
 namespace Webos;
 
+use ReflectionObject;
+use ReflectionFunction;
+
 class DependencyInjector {
-	public function getDependenciesList (callable $fn) {
+	
+	public function getDependenciesList (callable $fn): array {
 		if (is_array($fn) && is_object($fn[0]) && isset($fn[1])) {
-			$ro = new \ReflectionObject($fn[0]);
+			$ro = new ReflectionObject($fn[0]);
 			$rf = $ro->getMethod($fn[1]);
 		} else {
-			$rf = new \ReflectionFunction($fn);
+			$rf = new ReflectionFunction($fn);
 		}
 		$pl = $rf->getParameters();
 		$list = [];

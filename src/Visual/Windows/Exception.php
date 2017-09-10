@@ -1,6 +1,8 @@
 <?php
 namespace Webos\Visual\Windows;
-use \Webos\Visual\Window;
+
+use Webos\Visual\Window;
+use Exception;
 
 class Exception extends Window {
 
@@ -44,7 +46,7 @@ class Exception extends Window {
 	 * @param \Exception $e
 	 * @return array
 	 */
-	static public function ParseException(\Exception $e): array {
+	static public function ParseException(Exception $e): array {
 		$exceptionClass = get_class($e);
 		$message = "'{$e->getMessage()}' in file {$e->getFile()} ({$e->getLine()})";
 		$rsTrace = [];

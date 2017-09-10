@@ -1,5 +1,8 @@
 <?php
 namespace Webos\Visual\Controls;
-class HorizontalSeparator extends \Webos\Visual\Control {
+
+use Webos\Visual\Control;
+
+class HorizontalSeparator extends Control {
 	
 }

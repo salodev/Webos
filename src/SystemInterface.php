@@ -149,7 +149,7 @@ class SystemInterface {
 		if ($this->checkNeccessary($object->getObjectID())) {
 			$this->_notifications['update'][] = $object;
 			$this->_notifications['update_stacks'][] = [
-				'stack' => explode("\n", (new \Exception)->getTraceAsString()),
+				'stack' => explode("\n", (new Exception)->getTraceAsString()),
 				'objectID' => $object->getObjectID(),
 			];
 		}

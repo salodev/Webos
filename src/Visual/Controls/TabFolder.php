@@ -1,7 +1,10 @@
 <?php
 
 namespace Webos\Visual\Controls;
-class TabFolder extends \Webos\Visual\Control {
+use Webos\Visual\Control;
+
+
+class TabFolder extends Control {
 
 	public function initialize() {
 		if (!$this->title) {

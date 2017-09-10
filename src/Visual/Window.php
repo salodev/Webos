@@ -1,13 +1,17 @@
 <?php
 namespace Webos\Visual;
+
 use Webos\VisualObject;
 use Webos\Visual\Windows\Wait;
 use Webos\Visual\Windows\Message;
 use Webos\Visual\Windows\Prompt;
 use Webos\Visual\Windows\Confirm;
+use Webos\Visual\Control;
 use Webos\Visual\Controls\Menu\ListItems;
 use Webos\Visual\Controls\Menu\Item;
 use Webos\Exceptions\Collection\NotFound;
+use Webos\StringChar;
+
 class Window extends Container {
 	use FormContainer;
 
@@ -90,11 +94,11 @@ class Window extends Container {
 		return $this->activeControl;
 	}
 	
-	public function setActiveControl(\Webos\Visual\Control $object) {
+	public function setActiveControl(Control $object) {
 		$this->activeControl = $object;
 	}
 	
-	public function hasFocus(\Webos\Visual\Control $object) {
+	public function hasFocus(Control $object) {
 		if ($this->activeControl === $object) {
 			return true;
 		}
@@ -145,7 +149,7 @@ class Window extends Container {
 			return false;
 		}
 
-		if ($test instanceof \Webos\Visual\Window) {
+		if ($test instanceof self) {
 			if ($test->active) {
 				return true;
 			}
@@ -284,8 +288,8 @@ class Window extends Container {
 	 * 
 	 * @return \Webos\StringChar
 	 */
-	protected function _getRenderTemplate() {
-		$html = new \Webos\StringChar(
+	protected function _getRenderTemplate(): StringChar {
+		$html = new StringChar(
 			'<div 
 				id="__ID__" 
 				class="Window form-wrapper__ACTIVE____STATUS__"
@@ -310,8 +314,8 @@ class Window extends Container {
 		
 		$autofocus = '';
 		$activeControl = $this->getActiveControl();
-		if ($activeControl instanceof \Webos\Visual\Control) {
-			$autofocus = new \Webos\StringChar(
+		if ($activeControl instanceof Control) {
+			$autofocus = new StringChar(
 				'<script>' .
 					'$(function() {' .
 						'$(\'#' . $activeControl->getObjectID() .'\').focus();' .

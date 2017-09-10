@@ -1,17 +1,21 @@
 <?php
 namespace Webos\Visual\Controls\Menu;
-use Webos\Exceptions\Collection\NotFound;
-class Button extends \Webos\Visual\Control {
+
+use Webos\Visual\Control;
+use Webos\StringChar;
+use TypeError;
+
+class Button extends Control {
 
 	public function initialize() {
-		$this->getApplication()->getWorkSpace()->addEventListener('actionCalled', function ($source, $eventName, $params) {
+		$this->getApplication()->getWorkSpace()->addEventListener('actionCalled', function ($params) {
 			$selected = $this->selected;
 			if (!$selected || $params['object'] === $this) {
 				return;
 			}
 			try {
 				$parentObject = $params['object']->getParentByClassName(Button::class);
-			} catch (\TypeError $e) {
+			} catch (TypeError $e) {
 				$this->close();
 				return true;
 			}
@@ -105,7 +109,7 @@ class Button extends \Webos\Visual\Control {
 			}
 		}
 
-		$html = new \Webos\StringChar(
+		$html = new StringChar(
 			'<div id="__id__" class="MenuButton__selected__">' .
 				'<div class="text" webos click>__text__</div>' .
 				'<div class="container">__content__</div>' .

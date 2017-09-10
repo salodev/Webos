@@ -1,7 +1,11 @@
 <?php
 
 namespace Webos\Visual\Controls;
-class ListItem extends \Webos\Visual\Control {
+
+use Webos\Visual\Control;
+use Webos\StringChar;
+
+class ListItem extends Control {
 
 	public function getAllowedActions(): array {
 		return array(
@@ -21,7 +25,7 @@ class ListItem extends \Webos\Visual\Control {
 	}
 	
 	public function render(): string {
-		$html = new \Webos\StringChar(
+		$html = new StringChar(
 			'<div class="ItemListFieldControl__selected__" webos click>' .
 			'__title__' .
 			'</div>'

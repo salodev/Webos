@@ -1,9 +1,13 @@
 <?php
 
 namespace Webos\Visual\Controls;
-use \Webos\Visual\FormContainer;
-use \Webos\ObjectsCollection;
-class Frame extends \Webos\Visual\Control {
+
+use Webos\Visual\Control;
+use Webos\Visual\FormContainer;
+use Webos\ObjectsCollection;
+use Webos\StringChar;
+
+class Frame extends Control {
 	use FormContainer;
 
 	public function setInitialAttributes(array $userAttrs = array()){
@@ -28,7 +32,7 @@ class Frame extends \Webos\Visual\Control {
 	}
 	
 	public function render(): string {
-		$html = new \Webos\StringChar('<div class="FrameControl"__style__>__content__</div>');
+		$html = new StringChar('<div class="FrameControl"__style__>__content__</div>');
 
 		$html->replace('__style__',  $this->getInlineStyle(true));
 		$html->replace('__content__', $this->controls()->render());

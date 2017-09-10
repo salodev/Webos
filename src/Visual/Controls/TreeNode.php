@@ -1,7 +1,11 @@
 <?php
 namespace Webos\Visual\Controls;
 
-class TreeNode extends \Webos\Visual\Control {
+use Webos\Visual\Control;
+use Webos\StringChar;
+use Exception;
+
+class TreeNode extends Control {
 	
 	/**
 	 * 
@@ -30,7 +34,7 @@ class TreeNode extends \Webos\Visual\Control {
 	}
 
 	public function __set_selected(TreeNode $nodeTree) {
-		throw new \Exception('Read only property');
+		throw new Exception('Read only property');
 	}
 
 	public function getAllowedActions(): array {
@@ -100,7 +104,7 @@ class TreeNode extends \Webos\Visual\Control {
 	
 	public function render(): string {
 
-		$html = new \Webos\StringChar(
+		$html = new StringChar(
 			'<li id="__id__" class="TreeNode"__style__ webos contextmenu click="select">' .
 				'<div class="row __selected__">' . 
 					// ($this->hasChilds===false ? '' :
@@ -151,13 +155,13 @@ class TreeNode extends \Webos\Visual\Control {
 		return $html;
 	}
 	
-	private function _renderColumns() {
+	private function _renderColumns(): string {
 		$html = '';
 		$width = 0;
 		foreach($this->treeControl->columns as $column) {
 			$width += $column->width/1;
 			$data = $this->data;
-			$value = \salodev\Utils::Ifnull($data[$column->fieldName], '&nbsp;');
+			$value = $data[$column->fieldName] ?? '&nbsp;';
 			$styles = $this->getAsStyles([
 				'width' => $column->width,
 				'text-align' => $column->align,

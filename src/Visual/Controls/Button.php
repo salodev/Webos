@@ -1,6 +1,10 @@
 <?php
 namespace Webos\Visual\Controls;
-class Button extends \Webos\Visual\Control {
+
+use Webos\Visual\Control;
+use Webos\StringChar;
+
+class Button extends Control {
 	public function getAllowedActions(): array {
 		return array(
 			'click',
@@ -44,7 +48,7 @@ class Button extends \Webos\Visual\Control {
 	}
 	
 	public function render(): string {
-		$html = new \Webos\StringChar(
+		$html = new StringChar(
 			'<button id="__id__" class="__class__" type="button" name="__name__" webos click __style____disabled__>__value__</button>'
 		);
 		

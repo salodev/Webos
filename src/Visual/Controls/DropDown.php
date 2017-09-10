@@ -3,6 +3,7 @@ namespace Webos\Visual\Controls;
 use Webos\Visual\Control;
 use Webos\Visual\Controls\Menu\ListItems;
 use Webos\Visual\Controls\Menu\Item;
+use Webos\StringChar;
 
 class DropDown extends Control {
 	
@@ -44,7 +45,7 @@ class DropDown extends Control {
 
 	
 	public function render(): string {
-		$html = new \Webos\StringChar(
+		$html = new StringChar(
 			'<button id="__id__" class="DropDown" type="button" name="__name__" webos set-object-pos action="click" __style____disabled__>__value__<span class="icon"></span></button>'
 		);
 		

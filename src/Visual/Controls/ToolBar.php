@@ -1,7 +1,8 @@
 <?php
 namespace Webos\Visual\Controls;
-use \Webos\Visual\Control;
-use \Webos\Visual\ControlsFactory;
+
+use Webos\Visual\Control;
+use Webos\Visual\ControlsFactory;
 
 class ToolBar extends Control {
 	

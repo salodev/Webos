@@ -1,12 +1,14 @@
 <?php
 namespace Webos\Visual\Controls;
+
+use Webos\StringChar;
+
 class TextBox extends Field {
 
-	
 	public function render(): string {
 		$html = '';
 		if ($this->multiline) {
-			$html =  new \Webos\StringChar(
+			$html =  new StringChar(
 				'<textarea id="__id__" ' .
 					'class="TextFieldControl"__style__ ' .
 					'webos update-value __leaveTyping__ ' .
@@ -14,7 +16,7 @@ class TextBox extends Field {
 					'name="__name__"__disabled__>__value__</textarea>'
 			);
 		} else {
-			$html =  new \Webos\StringChar(
+			$html =  new StringChar(
 				'<input id="__id__" ' .
 					'class="TextFieldControl"__style__ ' .
 					'type="text" ' .

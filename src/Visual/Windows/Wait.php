@@ -1,14 +1,16 @@
 <?php
 namespace Webos\Visual\Windows;
-use \Webos\Visual\Window;
-use \salodev\Utils;
-use \Exception;
+
+use Webos\Visual\Window;
+use Webos\StringChar;
+use Exception;
+
 class Wait extends Window {
 
 	public function initialize(array $params = array()) {
-		$this->message = Utils::Ifnull($params['message'], 'Please, wait a moment...');
-		$this->width   = Utils::Ifnull($params['width'  ], 350);
-		$this->height  = Utils::Ifnull($params['height' ], 130);
+		$this->message     = $params['message'] ?? 'Please, wait a moment...';
+		$this->width       = $params['width'  ] ?? 350;
+		$this->height      = $params['height' ] ?? 130;
 		$this->showTitle   = false;
 		$this->allowResize = false;
 	}
@@ -40,7 +42,7 @@ class Wait extends Window {
 	public function render(): string {
 		$template = $this->_getRenderTemplate();
 
-		$content = new \Webos\StringChar(
+		$content = new StringChar(
 			'<div style="text-align:center;">' .
 				'<div style="margin:20px;font-weight:bold;">__MESSAGE__</div>' .
 			'</div>'

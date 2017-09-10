@@ -1,6 +1,11 @@
 <?php
 
 namespace Webos;
+
+use Closure as PHPClosure;
+use ReflectionFunction;
+use ReflectionObject;
+
 /**
  * Dirty solution for serializing closures.
  * Useful for event driven development. 
@@ -20,7 +25,7 @@ class Closure {
 	private $_codeToEval     = null;
 	private $_args           = null;
 
-	public function __construct(\Closure $closure) {
+	public function __construct(PHPClosure $closure) {
 		$this->_code = $this->_getClosureCode($closure);
 		$this->_thisScope = $this->_getThisScope($closure);
 		$this->_topDefinitions = $this->_getTopDefinitions($closure);
@@ -54,13 +59,13 @@ class Closure {
 		return $ret;
 	}
 	
-	public function _getThisScope(\Closure $closure) {
-		$r = new \ReflectionFunction($closure);
+	public function _getThisScope(PHPClosure $closure) {
+		$r = new ReflectionFunction($closure);
 		return $r->getClosureThis();
 	}
 	
-	private function _getClosureCode(\Closure $closure) {
-		$r = new \ReflectionFunction($closure);
+	private function _getClosureCode(PHPClosure $closure) {
+		$r = new ReflectionFunction($closure);
 		$f = $r->getFileName();
 		$s = $r->getStartLine();
 		$e = $r->getEndLine();
@@ -76,8 +81,8 @@ class Closure {
 		return $code;
 	}
 	
-	private function _getTopDefinitions(\Closure $closure) {
-		$r = new \ReflectionFunction($closure);
+	private function _getTopDefinitions(PHPClosure $closure) {
+		$r = new ReflectionFunction($closure);
 		$f = $r->getFileName();
 		if (strpos($r, "eval()'d code")) {
 			return $this->_getTopDeclarationsFromLastEval();
@@ -117,7 +122,7 @@ class Closure {
 		if (empty($prevClosureThis)){
 			return '';
 		}
-		$r = new \ReflectionObject($prevClosureThis);
+		$r = new ReflectionObject($prevClosureThis);
 		$f = $r->getFileName();
 		return $this->_getTopDeclarationsFromFile($f);
 		
@@ -132,7 +137,7 @@ class Closure {
 		$prevClosureThis = &$lastTrace['args'][3];
 				
 		if (!empty($prevClosureThis)){
-			$r = new \ReflectionObject($prevClosureThis);
+			$r = new ReflectionObject($prevClosureThis);
 		}
 		
 		return $prevClosureCode;

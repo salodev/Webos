@@ -1,15 +1,17 @@
 <?php
 namespace Webos\Visual\Windows;
-use \Webos\Visual\Window;
-use \salodev\Utils;
+
+use Webos\Visual\Window;
+use Webos\StringChar;
+
 class Message extends Window {
 
 	public function initialize(array $params = array()) {
-		$this->title   = Utils::Ifnull($params['title'  ], 'Mensaje:');
-		$this->message = Utils::Ifnull($params['message'], 'Mensaje:');
-		$this->width   = Utils::Ifnull($params['width'  ], 450       );
-		$this->height  = Utils::Ifnull($params['height' ], 150       );
-		$this->messageType = Utils::Ifnull($params['type']);
+		$this->title       = $params['title'  ] ?? 'Mensaje:';
+		$this->message     = $params['message'] ?? 'Mensaje:';
+		$this->width       = $params['width'  ] ?? 450;
+		$this->height      = $params['height' ] ?? 150;
+		$this->messageType = $params['type'   ] ?? null;
 
 	}
 
@@ -23,7 +25,7 @@ class Message extends Window {
 	public function render(): string {
 		$template = $this->_getRenderTemplate();
 
-		$content = new \Webos\StringChar(
+		$content = new StringChar(
 			'<div style="text-align:center;">' .
 				'<div style="margin:10px 20px 20px 20px;font-weight:bold;__MESSAGE_TYPE__">__MESSAGE__</div>' .
 				'<div>' .

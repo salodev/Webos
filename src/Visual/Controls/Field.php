@@ -1,6 +1,9 @@
 <?php
 namespace Webos\Visual\Controls;
-abstract class Field extends \Webos\Visual\Control {
+
+use Webos\Visual\Control;
+
+abstract class Field extends Control {
 	protected $_linkedField = null;
 
 	public function setLinkedField(&$field){
@@ -57,7 +60,7 @@ abstract class Field extends \Webos\Visual\Control {
 		return $this->button;
 	}
 	
-	public function attachLabel(string $name, int $width = 200, int $left = 10): Label {
+	public function attachLabel(string $name, int $width = 200, int $left = 10): Button {
 		$top = $this->top;
 		$left += $this->left;
 		if ($this->button instanceof Button) {

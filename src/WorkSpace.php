@@ -1,6 +1,8 @@
 <?php
 namespace Webos;
+
 use Webos\Visual\Window;
+
 /**
  * El WorkSpace es el entorno donde se ejecutarán todas las posibles
  * aplicaciones.

@@ -1,14 +1,17 @@
 <?php
 namespace Webos\Visual\Controls;
-use \salodev\Utils;
-use \Exception;
-use \Webos\Visual\Controls\DataTable\Column;
-use \Webos\Exceptions\Alert;
-class DataTable extends \Webos\Visual\Control {
+
+use Exception;
+use Webos\Visual\Controls\DataTable\Column;
+use Webos\Exceptions\Alert;
+use Webos\Collection;
+use Webos\Visual\Control;
+
+class DataTable extends Control {
 	// public $rowIndex = null;
 	public function initialize() {
 		$this->rows = array();
-		$this->columns = new \Webos\Collection();
+		$this->columns = new Collection();
 		$this->rowIndex = null;
 		$this->columInded = null;
 	}
