@@ -2,9 +2,12 @@
 
 namespace Webos\Visual\Controls;
 use Webos\Visual\Control;
+use Webos\Visual\FormContainer;
 
 
 class TabFolder extends Control {
+	
+	use FormContainer;
 
 	public function initialize() {
 		if (!$this->title) {
@@ -31,9 +34,9 @@ class TabFolder extends Control {
 	}
 	
 	public function render(): string {
-		$html = '<div id="' . $this->getObjectID() . '" class="TabFolder">';
-		$html .= $this->getChildObjects()->render();
-		$html .= '</div>';
+		//$html = '<div id="' . $this->getObjectID() . '" class="TabFolder">';
+		$html = $this->getChildObjects()->render();
+		// $html .= '</div>';
 
 		return $html;
 	}

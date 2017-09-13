@@ -3,6 +3,7 @@ namespace Webos\Visual\Controls;
 
 use Webos\Visual\Control;
 use Webos\StringChar;
+use Exception;
 
 class MultiTab extends Control {
 
@@ -10,14 +11,12 @@ class MultiTab extends Control {
 	public function initialize() {
 		$this->_activeTab = null;
 	}
-
-	public function  getInitialAttributes(): array {
-		return array(
-			'top'    => 5,
-			'bottom' => 5,
-			'left'   => 5,
-			'right'  => 5,
-		);
+	
+	public function select(array $params = []) {
+		if (!isset($params['index'])) {
+			throw new Exception('Missing index param');
+		}
+		$this->setActiveTab($this->getChildObjects()->item($params['index']));
 	}
 
 	/**
@@ -39,7 +38,7 @@ class MultiTab extends Control {
 	 * @param type $title
 	 * @return TabFolder
 	 */
-	public function createTab($title): TabFolder {
+	public function addTab($title): TabFolder {
 		return $this->createObject(TabFolder::class, array(
 			'title' => $title,
 		));
@@ -50,6 +49,10 @@ class MultiTab extends Control {
 		$this->modified();
 	}
 	
+	public function getAllowedActions(): array {
+		return array_merge(parent::getAllowedActions(), ['select']);
+	}
+	
 	public function render(): string {
 		$attributes = $this->getAttributes();
 
@@ -58,14 +61,12 @@ class MultiTab extends Control {
 
 		$content = '<div class="Tabs">';
 
-		foreach($this->getChildObjects() as $tab) {
+		foreach($this->getChildObjects() as $index => $tab) {
 			$tabHTML = new StringChar(
-				'<a class="tab__SELECTED__" href="#" onclick="' .
-				"__doAction('send', {actionName:'select', objectId:'" . $tab->getObjectID() ."'}); return false;" .
-				'">' . $tab->title . '</a>'
+				'<a class="tab__SELECTED__" href="#" webos action="select" data-index="' . $index . '">' . $tab->title . '</a>'
 			);
 
-			if ($activeTab->getObjectID() == $tab->getObjectID()) {
+			if ($activeTab === $tab) {
 				$tabHTML->replace('__SELECTED__', ' selected');
 			} else {
 				$tabHTML->replace('__SELECTED__', '');
@@ -76,11 +77,11 @@ class MultiTab extends Control {
 
 		$content .= '</div><div class="folder">';
 		if ($activeTab) {
-			$content .= $this->renderer->renderObject($activeTab);
+			$content .= $activeTab->render();
 		}
 		$content .= '</div>';
 
-		$html = new String(
+		$html = new StringChar(
 			'<div class="MultiTab" id="__OBJECTID__" style="__STYLE__">__CONTENT__</div>'
 		);
 

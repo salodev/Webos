@@ -1,6 +1,6 @@
-.MultiTab { position:absolute; overflow:hidden; }
-.Tabs{ position:relative; height:24px; padding-top:5px; padding-left:7px; overflow:auto; }
-.tab { display:inline; background:#fff; margin-right:5px; padding: 5px 5px 8px 5px; border-radius:5px 5px 0 0; text-decoration:none; font-size:small; }
-.tab.selected, .tab:hover { background:#eee; }
-.folder{ position:absolute; top:29px; left:0; right:0; bottom:0; background:#eee; min-height:100px; border-radius:5px; }
-.TabFolder { position:absolute; top:5px; left:5px; right:5px; bottom:5px; }
+.MultiTab     { position: absolute; top: 0;    left:0; right: 0; bottom: 0; overflow: hidden; }
+.Tabs         { position: relative; overflow: auto; border-bottom: solid 1px #ccc;}
+.tab          { display: inline-block; margin-right: 10px; padding: 7px 10px; text-decoration: none; font-size: small; }
+.tab.selected { border-bottom: solid 2px #ccc;}
+.folder       { position: absolute; top: 42px; left: 0; right: 0; bottom: 0; }
+.TabFolder    { position: absolute; top: 0;    left: 0; right: 0; bottom: 0; }

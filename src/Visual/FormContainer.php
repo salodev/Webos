@@ -11,6 +11,7 @@ use Webos\Visual\Controls\DataTable;
 use Webos\Visual\Controls\Tree;
 use Webos\Visual\Controls\Frame;
 use Webos\Visual\Controls\Menu\Bar as MenuBar;
+use Webos\Visual\Controls\MultiTab;
 
 trait FormContainer {
 	protected $maxTopControl     = 15;
@@ -208,6 +209,10 @@ trait FormContainer {
 	public function createFrame(array $options = array()): Frame {
 		return $this->createObject(Frame::class, $options);
 	}
+	
+	public function createTabsFolder(): MultiTab {
+		return $this->createObject(MultiTab::class);
+	}
 
 	/**
 	 * 
@@ -247,7 +252,7 @@ trait FormContainer {
 			$this->hasWindowButtons = true;
 			$this->buttonsBar = $this->createButtonsBar();
 		}
-		return $this->buttonsBar->addButton($label);
+		return $this->buttonsBar->addButton($label, $options);
 	}
 
 	public function setFormData(array $data) {
