@@ -71,6 +71,7 @@ class TreeNode extends Control {
 	public function click() {
 		$this->treeControl->setSelectedNode($this);
 		$this->treeControl->triggerEvent('nodeSelected',['node'=>$this]);
+		$this->triggerEvent('click');
 		return $this;
 	}
 	
@@ -81,6 +82,7 @@ class TreeNode extends Control {
 	public function select() {
 		$this->treeControl->setSelectedNode($this);
 		$this->treeControl->triggerEvent('nodeSelected',['node'=>$this]);
+		$this->triggerEvent('click');
 		return $this;
 	}
 	
@@ -104,7 +106,7 @@ class TreeNode extends Control {
 	}
 	
 	public function getAvailableEvents(): array {
-		return ['contextMenu'];
+		return ['contextMenu', 'click'];
 	}
 	
 	public function render(): string {
