@@ -98,6 +98,11 @@ class TreeNode extends Control {
 		}
 	}
 	
+	public function onContextMenu(callable $cb, bool $persistent = true, array $contextData = []): self {
+		$this->bind('contextMenu', $cb, $persistent, $contextData);
+		return $this;
+	}
+	
 	public function getAvailableEvents(): array {
 		return ['contextMenu'];
 	}
