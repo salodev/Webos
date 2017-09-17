@@ -81,6 +81,18 @@ abstract class Field extends Control {
 		$this->bind('updateValue', $callback);
 		return $this;
 	}
+	
+	/**
+	 * Alias for onUpdateValue. Easy to remember by using of jQuery or
+	 * HTML DOM events.
+	 * 
+	 * @param \Webos\Visual\Controls\callable $callback
+	 * @return \Webos\Visual\Controls\Field
+	 */
+	public function onChange(callable $callback): Field {
+		$this->bind('updateValue', $callback);
+		return $this;
+	}
 
 	public function getAllowedActions(): array {
 		return array(

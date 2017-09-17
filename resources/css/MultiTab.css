@@ -1,6 +1,9 @@
 .MultiTab     { position: absolute; top: 0;    left:0; right: 0; bottom: 0; overflow: hidden; }
 .Tabs         { position: relative; overflow: auto; border-bottom: solid 1px #ccc;}
-.tab          { display: inline-block; margin-right: 10px; padding: 7px 10px; text-decoration: none; font-size: small; }
+.tab          { display: inline-block; margin-right: 10px; padding: 7px 10px; text-decoration: none; font-size: small;  cursor: pointer; color: inherit; }
+.tab .close   { font-family:'Glyphicons Halflings'; font-size: smaller; color: #ccc; }
+.tab .close:hover  { color: #666; }
+.tab .close:before {content: "\E014";}
 .tab.selected { border-bottom: solid 2px #ccc;}
 .folder       { position: absolute; top: 42px; left: 0; right: 0; bottom: 0; }
 .TabFolder    { position: absolute; top: 0;    left: 0; right: 0; bottom: 0; }

@@ -58,6 +58,7 @@ class TreeNode extends Control {
 			$this->expanded = false;
 		} else {
 			$this->expanded = true;
+			$this->triggerEvent('expanded', ['node' => $this]);
 		}
 		$this->treeControl->triggerEvent('nodeToggled',['node'=>$this]);
 		$this->select();
@@ -71,7 +72,7 @@ class TreeNode extends Control {
 	public function click() {
 		$this->treeControl->setSelectedNode($this);
 		$this->treeControl->triggerEvent('nodeSelected',['node'=>$this]);
-		$this->triggerEvent('click');
+		$this->triggerEvent('click', ['node' => $this]);
 		return $this;
 	}
 	
@@ -82,7 +83,7 @@ class TreeNode extends Control {
 	public function select() {
 		$this->treeControl->setSelectedNode($this);
 		$this->treeControl->triggerEvent('nodeSelected',['node'=>$this]);
-		$this->triggerEvent('click');
+		$this->triggerEvent('click', ['node' => $this]);
 		return $this;
 	}
 	
@@ -105,19 +106,24 @@ class TreeNode extends Control {
 		return $this;
 	}
 	
+	public function onExpand(callable $cb, $persistent = true):self {
+		$this->bind('expanded', $cb, $persistent);
+		return $this;
+	}
+	
 	public function getAvailableEvents(): array {
-		return ['contextMenu', 'click'];
+		return ['contextMenu', 'click', 'expanded'];
 	}
 	
 	public function render(): string {
 
 		$html = new StringChar(
-			'<li id="__id__" class="TreeNode"__style__ webos contextmenu click="select">' .
+			'<li id="__id__" class="TreeNode"__style__ webos contextmenu click="select" stop-propagation>' .
 				'<div class="row __selected__">' . 
 					// ($this->hasChilds===false ? '' :
 					'<span class="toggle __toggleClass__" __onclickToggle__></span>' .
 					// ).
-					'<div class="title">__text__</div>'.
+					'<div class="title no-break">__text__</div>'.
 					'__columns__' .
 				'</div>'.
 				'<ul class="container">__content__</ul>'.

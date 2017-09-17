@@ -9,10 +9,13 @@ Directives.register('action', function(el) {
 });
 
 Directives.register('click', function(el) {
-	var id = $(el).attr('id') || $(el).parents('[id]').attr('id');
-	var data = $(el).data();
-	$(el).unbind('click').bind('click', function(ev) {
-		ev.stopPropagation();
+	var $el = $(el);
+	var id = $el.attr('id') || $el.parents('[id]').attr('id');
+	var data = $el.data();
+	$el.unbind('click').bind('click', function(ev) {
+		if ($el.attr('stop-propagation')!==undefined) {
+			ev.stopPropagation();
+		}
 		ev.preventDefault();
 		Webos.action($(el).attr('click') || 'click', id, data);
 	});
@@ -63,7 +66,7 @@ Directives.register('update-value', function(el) {
 
 Directives.register('set-scroll-values', function(el) {
 	var $el = $(el);
-	var id = $el.attr('id');
+	var id = $(el).attr('id') || $(el).parents('[id]').attr('id');
 	var values = $(el).attr('set-scroll-values').split(',');
 	$el.attr('disable-scroll-event', 'yes');
 	$el.scrollTop(values[0]);
@@ -79,7 +82,11 @@ Directives.register('set-scroll-values', function(el) {
 		}
 		if (to) { clearTimeout(to); }
 		to = setTimeout(function() {
-			Webos.action('scroll', id, {left:el.scrollLeft, top:el.scrollTop});
+			Webos.action('scroll', id, {
+				left: el.scrollLeft, 
+				top:  el.scrollTop,
+				ignoreUpdateObject: true
+			});
 		}, 500);
 	});
 });
@@ -206,6 +213,26 @@ Directives.register('set-object-pos', function(el) {
 	var pos = $(el).offset();
 	$(el).data('top', pos.top);
 	$(el).data('left', pos.left);
+});
+
+Directives.register('remove-class', function(el) {
+	var $el = $(el);
+	var className = $el.attr('remove-class');
+	$el.bind('click', function() {
+		$el.removeClass(className);
+	});
+});
+
+Directives.register('toggle-class', function(el) {
+	var $el          = $(el);
+	var className    = $el.attr('toggle-class');
+	var removeOthers = $el.attr('remove-others')!==undefined;
+	$el.bind('click', function() {
+		if (removeOthers) {
+			$el.parent().find('> *').removeClass(className);
+		}
+		$el.toggleClass(className);
+	});
 });
 
 $(function() {

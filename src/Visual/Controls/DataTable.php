@@ -209,7 +209,10 @@ class DataTable extends Control {
 			}
 			
 			$contextMenuDirective = $hasContextMenu ? "webos contextmenu=\"{$i}\"" : '';
-			$html .= "<div class=\"DataTableRow {$classSelected}\" {$contextMenuDirective}>";
+			$html .= "<div 
+				class=\"DataTableRow {$classSelected}\" 
+				webos toggle-class=\"selected\" remove-others
+				{$contextMenuDirective}>";
 			foreach($this->columns as $column) {
 				
 				$linkable = ($column->linkable) ? ' linkable' : '';
@@ -219,12 +222,14 @@ class DataTable extends Control {
 					$value = $column->renderValue($row[$column->fieldName]);
 				}
 				$html .= 
-					"<div class=\"DataTableCell{$linkable}\" " .
+					"<div class=\"DataTableCell{$linkable} no-break\" " .
 						"style=\"width:{$column->width}px;text-align:{$column->align};\" " .
 						'webos click="rowClick" ' .
 						'double-click="rowDoubleClick" '.
 						"data-row=\"{$i}\" ".
-						"data-field-name=\"{$column->fieldName}\">" . 
+						"data-field-name=\"{$column->fieldName}\"" . 
+						"data-ignore-update-object=\"1\"" .
+						">" .
 						$value . 
 					"</div>";
 			}

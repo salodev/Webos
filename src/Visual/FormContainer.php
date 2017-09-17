@@ -210,8 +210,8 @@ trait FormContainer {
 		return $this->createObject(Frame::class, $options);
 	}
 	
-	public function createTabsFolder(): MultiTab {
-		return $this->createObject(MultiTab::class);
+	public function createTabsFolder(array $params = []): MultiTab {
+		return $this->createObject(MultiTab::class, $params);
 	}
 
 	/**

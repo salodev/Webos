@@ -18,6 +18,28 @@ class MultiTab extends Control {
 		}
 		$this->setActiveTab($this->getChildObjects()->item($params['index']));
 	}
+	
+	public function close(array $params = []) {
+		if (!isset($params['index'])) {
+			throw new Exception('Missing index param');
+		}
+		$childs = $this->getChildObjects();
+		$index = $params['index'];
+		
+		$child = $childs->item($index);
+		$child->getParent()->removeChild($child);
+		
+		$maxIndex = $childs->count()-1;
+		if ($params>$maxIndex) {
+			$index = $maxIndex;
+		}
+		if ($index<0) {
+			return;
+		}
+
+		$this->setActiveTab($this->getChildObjects()->item($index));
+	}
+
 
 	/**
 	 * 
@@ -38,10 +60,12 @@ class MultiTab extends Control {
 	 * @param type $title
 	 * @return TabFolder
 	 */
-	public function addTab($title): TabFolder {
-		return $this->createObject(TabFolder::class, array(
-			'title' => $title,
-		));
+	public function addTab($title, array $params = []): TabFolder {
+		$params['title'] = $title;
+		$tab = $this->createObject(TabFolder::class, $params);
+		$this->setActiveTab($tab);
+		$this->modified();
+		return $tab;
 	}
 
 	public function setActiveTab(TabFolder $tab) {
@@ -50,21 +74,27 @@ class MultiTab extends Control {
 	}
 	
 	public function getAllowedActions(): array {
-		return array_merge(parent::getAllowedActions(), ['select']);
+		return array_merge(parent::getAllowedActions(), ['select','close']);
 	}
 	
 	public function render(): string {
 		$attributes = $this->getAttributes();
 
 		$activeTab = $this->getActiveTab();
-		$tabs = array();
 
 		$content = '<div class="Tabs">';
 
 		foreach($this->getChildObjects() as $index => $tab) {
-			$tabHTML = new StringChar(
-				'<a class="tab__SELECTED__" href="#" webos action="select" data-index="' . $index . '">' . $tab->title . '</a>'
-			);
+			$tabHTML = new StringChar("
+				<a class=\"tab__SELECTED__\" 
+					href=\"#\" webos action=\"select\" 
+					data-index=\"{$index}\"
+				>
+					<span>{$tab->title}</span>
+					<span class=\"close\" webos action=\"close\" data-index=\"{$index}\" />
+				</a>
+				
+			");
 
 			if ($activeTab === $tab) {
 				$tabHTML->replace('__SELECTED__', ' selected');
@@ -75,7 +105,7 @@ class MultiTab extends Control {
 			$content .=$tabHTML;
 		}
 
-		$content .= '</div><div class="folder">';
+		$content .= '</div><div class="folder container">';
 		if ($activeTab) {
 			$content .= $activeTab->render();
 		}
