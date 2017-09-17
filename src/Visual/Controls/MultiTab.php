@@ -92,6 +92,11 @@ class MultiTab extends Control {
 		$this->modified();
 		return $tab;
 	}
+	
+	public function addClosableTab($title, array $params = []): TabFolder {
+		$params['closable'] = true;
+		return $this->addClosableTab($title, $params);
+	}
 
 	public function setActiveTab(TabFolder $tab): self {
 		$this->_activeTab = $tab;
@@ -121,7 +126,7 @@ class MultiTab extends Control {
 					data-index=\"{$index}\"
 				>
 					<span>{$tab->title}</span>
-					<span class=\"close\" webos action=\"close\" data-index=\"{$index}\" />
+					".($tab->closable?"<span class=\"close\" webos action=\"close\" data-index=\"{$index}\" />": '') . "
 				</a>
 				
 			");
