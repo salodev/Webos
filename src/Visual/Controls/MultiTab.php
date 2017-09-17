@@ -10,16 +10,18 @@ class MultiTab extends Control {
 	protected $_activeTab;
 	public function initialize() {
 		$this->_activeTab = null;
+		$this->enableEvent('close');
 	}
 	
-	public function select(array $params = []) {
+	public function select(array $params = []): self {
 		if (!isset($params['index'])) {
 			throw new Exception('Missing index param');
 		}
 		$this->setActiveTab($this->getChildObjects()->item($params['index']));
+		return $this;
 	}
 	
-	public function close(array $params = []) {
+	public function close(array $params = []): self {
 		if (!isset($params['index'])) {
 			throw new Exception('Missing index param');
 		}
@@ -27,6 +29,11 @@ class MultiTab extends Control {
 		$index = $params['index'];
 		
 		$child = $childs->item($index);
+		
+		$this->triggerEvent('close', [
+			'tab' => $child,
+		]);
+		
 		$child->getParent()->removeChild($child);
 		
 		$maxIndex = $childs->count()-1;
@@ -34,10 +41,28 @@ class MultiTab extends Control {
 			$index = $maxIndex;
 		}
 		if ($index<0) {
-			return;
+			$this->_activeTab = null;
+			$this->modified();
+			return $this;
 		}
 
 		$this->setActiveTab($this->getChildObjects()->item($index));
+		return $this;
+	}
+	
+	public function onClose(callable $function): self {
+		$this->bind('close', $function);
+		return $this;
+	}
+
+
+	/**
+	 * 
+	 * @return bool;
+	 */
+	public function hasActiveTab(): bool {
+		return $this->_activeTab instanceof TabFolder && 
+				$this->_childObjects->count() > 0;
 	}
 
 
@@ -45,7 +70,7 @@ class MultiTab extends Control {
 	 * 
 	 * @return TabFolder|null;
 	 */
-	public function getActiveTab() {
+	public function getActiveTab(): TabFolder {
 		if (!$this->_childObjects->count()) return null;
 
 		if (!($this->_activeTab instanceof TabFolder)) {
@@ -68,9 +93,10 @@ class MultiTab extends Control {
 		return $tab;
 	}
 
-	public function setActiveTab(TabFolder $tab) {
+	public function setActiveTab(TabFolder $tab): self {
 		$this->_activeTab = $tab;
 		$this->modified();
+		return $this;
 	}
 	
 	public function getAllowedActions(): array {
@@ -80,7 +106,11 @@ class MultiTab extends Control {
 	public function render(): string {
 		$attributes = $this->getAttributes();
 
-		$activeTab = $this->getActiveTab();
+		$activeTab = null;
+		if ($this->hasActiveTab()) {
+			$activeTab = $this->getActiveTab();
+		}
+	
 
 		$content = '<div class="Tabs">';
 
