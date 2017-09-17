@@ -151,7 +151,11 @@ trait FormContainer {
 		$this->topControl += 20;
 		$this->maxTopControl += 20;
 		$parentWindow = $this->getParentWindow();
-		$parentWindow->height = $parentWindow->height + $this->topControl + 20 + 40;
+		if (($params['fixedTo']??'top')=='bottom') {
+			$parentWindow->height = $this->topControl + 80;
+		} else {
+			$parentWindow->height = $parentWindow->height + $this->topControl + 20 + 40;
+		}
 		return $this->createObject(ToolBar::class, array_merge([
 			'top' =>   0,
 			'left' =>  0,
