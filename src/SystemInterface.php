@@ -135,7 +135,8 @@ class SystemInterface {
 	}
 
 	public function addCreateNotification(VisualObject $object){
-		//Log::write('CREATE: ' . $object->getObjectID() . "\n");
+		
+		Log::write('CREATE: ' . $object->getObjectID() . "\n");
 		// Verifica si tiene que agregar a la lista de notificaciones.
 		if ($this->checkNeccessary($object->getObjectID())) {
 			$this->_notifications['create'][] = $object;
@@ -143,8 +144,9 @@ class SystemInterface {
 	}
 
 	public function addUpdateNotification(VisualObject $object){
-
-		//Log::write('UPDATE: ' . $object->getObjectID() . "\n" . 'parent: ' . $object->getParentWindow()->getObjectId());
+		// $e = new Exception();
+		// Log::write('UPDATE: ' . $object->getObjectID() . "\n" . 'parent: ' . $object->getParentWindow()->getObjectId() . "\n\n" . $e->getTraceAsString() . "\n--------------------------------------\n\n");
+		Log::write('UPDATE: ' . $object->getObjectID() . "\n" . 'parent: ' . $object->getParentWindow()->getObjectId());
 		// Verifica si tiene que agregar a la lista de notificaciones.
 		if ($this->checkNeccessary($object->getObjectID())) {
 			$this->_notifications['update'][] = $object;
@@ -227,8 +229,24 @@ class SystemInterface {
 
 		return true;
 	}
+	
+	public function purgeNotifications() {
+		$update = $this->_notifications['update'];
+		$create = $this->_notifications['create'];
+		foreach($update as $updateObject) {
+			foreach($create as $y => $createObject) {
+				try {
+					$updateObject->getObjectByID($createObject->getObjectID());
+					unset($create[$y]);
+				} catch (Exception $e) {
+					
+				}
+			}
+		}
+	}
 
 	public function getNotifications() {
+		$this->purgeNotifications();
 		$notifications = $this->_notifications;
 		// $this->_resetNotifications();
 		return $notifications;
