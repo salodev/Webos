@@ -57,6 +57,7 @@ class Window extends Container {
 			'ready',
 			'focus',
 			'contextMenu',
+			'newData',
 		);
 	}
 
@@ -273,6 +274,16 @@ class Window extends Container {
 	
 	public function onClose(callable $cb): self {
 		$this->bind('close', $cb);
+		return $this;
+	}
+	
+	public function newData(array $params = []): self {
+		$this->triggerEvent('newData', $params);
+		return $this;
+	}
+	
+	public function onNewData(callable $function): self {
+		$this->bind('newData', $function);
 		return $this;
 	}
 	

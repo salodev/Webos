@@ -39,7 +39,7 @@ Directives.register('close', function(el) {
 	});
 });
 
-Directives.register('leaveTyping', function(el) {
+Directives.register('leavetyping', function(el) {
 	var id = $(el).attr('id');
 	var to = null;
 	$(el).unbind('keyup').bind('keyup', function(ev) {

@@ -15,10 +15,18 @@ class TabFolder extends Control {
 		}
 	}
 
-	public function select() {
+	public function select(): self {
 		if ($this->triggerEvent('select')) {
 			$this->getParent()->setActiveTab($this);
 		}
+		return $this;
+	}
+	
+	public function isActive(): bool {
+		if (!$this->getParent()->hasActiveTab()) {
+			return false;
+		}
+		return $this->getParent()->getActiveTab()===$this;
 	}
 
 	public function  getAllowedActions(): array {
@@ -29,8 +37,19 @@ class TabFolder extends Control {
 
 	public function  getAvailableEvents(): array {
 		return array(
+			'embedded',
 			'select',
 		);
+	}
+	
+	public function onEmbedded(callable $function): self {
+		$this->bind('embedded', $function);
+		return $this;
+	}
+	
+	public function onSelect(callable $function): self {
+		$this->bind('select', $function);
+		return $this;
 	}
 	
 	public function render(): string {
@@ -41,10 +60,15 @@ class TabFolder extends Control {
 		return $html;
 	}
 	
-	public function embedWindowOnSelect(string $windowClassName, array $initialAttributes = array()) {
+	public function embedWindowOnSelect(string $windowClassName, array $initialAttributes = array(), callable $onEmbed = null) {
 		if ($this->getParent()->hasActiveTab()) {
 			if ($this->getParent()->getActiveTab() === $this) {
-				return $this->embedWindow($windowClassName, $initialAttributes);
+				$window = $this->embedWindow($windowClassName, $initialAttributes);
+				$this->triggerEvent('embedded', [
+					'window' => $window,
+					'object' => $window,
+				]);
+				$this->_initialized = true;
 			}
 		}
 		$this->_windowToEmbedClassName = $windowClassName;
@@ -56,9 +80,13 @@ class TabFolder extends Control {
 			if ($this->_initialized) {
 				return;
 			}
-			$this->_initialized = true;			
-			return $this->embedWindow($this->_windowToEmbedClassName, $this->_windowToEmbedInitialAttributes);
+			$this->_initialized = true;
+			$window = $this->embedWindow($this->_windowToEmbedClassName, $this->_windowToEmbedInitialAttributes);
+			$this->triggerEvent('embedded', [
+				'window' => $window,
+				'object' => $window,
+			]);			
 		});
-		return true;
+		return $this;
 	}
 }
