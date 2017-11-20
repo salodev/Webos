@@ -51,7 +51,7 @@ abstract class Field extends Control {
 		$left = $this->left + $this->width - $width;
 		//die("{$this->left} + {$this->width} - {$width} = {$left}");
 		$this->width = $this->width - $width - 5;
-		$this->button = $this->getParentWindow()->createObject(Button::class, array(
+		$this->button = $this->getParent()->createObject(Button::class, array(
 			'top' => $top,
 			'left' => $left,
 			'width' => $width,

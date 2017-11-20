@@ -88,7 +88,9 @@ class MultiTab extends Control {
 	public function addTab($title, array $params = []): TabFolder {
 		$params['title'] = $title;
 		$tab = $this->createObject(TabFolder::class, $params);
-		$this->setActiveTab($tab);
+		if ($this->getChildObjects()->count()==1) {
+			$this->setActiveTab($tab);
+		}
 		$this->modified();
 		return $tab;
 	}
@@ -100,6 +102,7 @@ class MultiTab extends Control {
 
 	public function setActiveTab(TabFolder $tab): self {
 		$this->_activeTab = $tab;
+		$tab->triggerEvent('select');
 		$this->modified();
 		return $this;
 	}

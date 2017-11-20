@@ -312,6 +312,10 @@ class Window extends Container {
 			'</div>'
 		);
 		
+		if ($this->_embed) {
+			$html = new StringChar('<div id="__ID__" __READY__ style="top:0;left:0;bottom:0;right:0;position:absolute;overflow:hidden;">__CONTENT____AUTOFOCUS__</div>');
+		}
+		
 		$autofocus = '';
 		$activeControl = $this->getActiveControl();
 		if ($activeControl instanceof Control) {

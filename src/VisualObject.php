@@ -142,6 +142,26 @@ abstract class VisualObject extends BaseObject {
 
 		return $object;
 	}
+	
+	/**
+	 * It is a so crazy idea! :D
+	 * I need put a window content into another, e.g. into tabfolder.
+	 * So... I need reuse these window. Just embeding it can be done.
+	 * 
+	 * @param string $windowClassName
+	 * @param array $initialAttributes
+	 * @return Window
+	 */
+	public function embedWindow(string $windowClassName, array $initialAttributes = []): Window {
+		$window = new $windowClassName($this->_application, $initialAttributes, true);
+		$window->setParentObject($this);
+
+		$this->getApplication()->triggerSystemEvent('createObject', $this, array(
+			'object' => $window,
+		));
+
+		return $window;
+	}
 
 	//abstract public function getObjectByID($id);
 	final public function getObjectByID(string $id, bool $horizontal = true): self {
@@ -365,6 +385,7 @@ abstract class VisualObject extends BaseObject {
 			'height',
 			'border',
 			'text-align',
+			'backgroundImage',
 		);
 
 		foreach($visualAttributesList as $name) {
@@ -378,6 +399,10 @@ abstract class VisualObject extends BaseObject {
 				}
 			}
 
+			if ($name == 'backgroundImage') {
+				$name = 'background-image';
+				$value = "url({$value})";
+			}
 			if (strlen("$value")) {
 				$styles[$name] = $value;
 			}

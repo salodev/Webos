@@ -11,7 +11,7 @@ class TextBox extends Field {
 			$html =  new StringChar(
 				'<textarea id="__id__" ' .
 					'class="TextFieldControl"__style__ ' .
-					'webos update-value __leaveTyping__ ' .
+					'webos update-value __leavetyping__ ' .
 					'placeholder="__placeholder__" ' .
 					'name="__name__"__disabled__>__value__</textarea>'
 			);
@@ -20,7 +20,7 @@ class TextBox extends Field {
 				'<input id="__id__" ' .
 					'class="TextFieldControl"__style__ ' .
 					'type="text" ' .
-					'webos update-value __leaveTyping__ ' .
+					'webos update-value __leavetyping__ ' .
 					'name="__name__" ' .
 					'placeholder="__placeholder__" ' .
 					'value="__value__"__disabled__ />'
@@ -35,7 +35,7 @@ class TextBox extends Field {
 			'__placeholder__' => $this->placeholder,
 			'__style__'       => $this->getInlineStyle(),
 			'__disabled__'    => $this->disabled ? ' disabled="disabled"' : '',
-			'__leaveTyping__' => $hasLeaveTypingEvent ? ' leaveTyping' : '',
+			'__leavetyping__' => $hasLeaveTypingEvent ? ' leavetyping' : '',
 		));
 
 		return $html;
@@ -51,7 +51,7 @@ class TextBox extends Field {
 			// return;
 		}
 		$this->setValue($params['value']);
-		$this->triggerEvent('leaveTyping');
+		$this->triggerEvent('leaveTyping', $params);
 	}
 	
 	public function onLeaveTyping(callable $callback): self {
