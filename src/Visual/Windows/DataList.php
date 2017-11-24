@@ -39,6 +39,6 @@ class DataList extends Window {
 	
 	public function createActionsMenu(callable $fn) {
 		$this->toolBar->createDropDown('Acciones')->onContextMenu($fn);
-		$this->listado->onContextMenu($fn);
+		$this->dataTable->onContextMenu($fn);
 	}
 }
