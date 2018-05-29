@@ -196,12 +196,15 @@ trait FormContainer {
 	}
 	
 	/**
-	 * 
+	 * @todo I don't remember why re-height container window...
 	 * @param array $options
 	 * @return Controls\Tree
 	 */
 	public function createTree(array $options = array()): Tree {
-		$this->getParentWindow()->height = $this->topControl + ($options['height'] ?? 300) + 40;
+		$parentWindow = $this->getParentWindow();
+		if ($parentWindow->bottom != 0 && $parentWindow->top!=0) {
+			$this->getParentWindow()->height = $this->topControl + ($options['height'] ?? 300) + 40;
+		}
 		return $this->createObject(Tree::class, $options);
 	}
 	
