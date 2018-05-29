@@ -416,9 +416,17 @@ abstract class VisualObject extends BaseObject {
 				$styles['position'] = 'absolute';
 			}
 		}
+		
 		if (!empty($attrs['position']) && $attrs['position'] == 'fixed') {
 			$styles['position'] = 'fixed';
 		}
+		
+		if (isset($styles['top']) && isset($styles['bottom'])) {
+			if ($styles['top']==0 && $styles['bottom']==0) {
+				unset($styles['height']);
+			}
+		}
+		
 		$stylesString = self::getAsStyles($styles);
 
 		if (strlen($stylesString)) {
