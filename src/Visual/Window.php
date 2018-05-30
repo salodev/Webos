@@ -282,8 +282,8 @@ class Window extends Container {
 		return $this;
 	}
 	
-	public function onNewData(callable $function): self {
-		$this->bind('newData', $function);
+	public function onNewData(callable $function, bool $persistent = true, array $context = []): self {
+		$this->bind('newData', $function, $persistent, $context);
 		return $this;
 	}
 	

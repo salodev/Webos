@@ -5,6 +5,11 @@ use Webos\Visual\Window;
 
 class DataList extends Window {
 	public $toolBar   = null;
+	
+	/**
+	 *
+	 * @var Webos\Visual\Controls\TextBox 
+	 */
 	public $txtSearch = null;
 	public $btnSearch = null;
 	public $dataTable = null;

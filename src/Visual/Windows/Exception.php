@@ -2,7 +2,7 @@
 namespace Webos\Visual\Windows;
 
 use Webos\Visual\Window;
-use Exception;
+use Exception as ExceptionClass;
 
 class Exception extends Window {
 
@@ -46,7 +46,7 @@ class Exception extends Window {
 	 * @param \Exception $e
 	 * @return array
 	 */
-	static public function ParseException(Exception $e): array {
+	static public function ParseException(ExceptionClass $e): array {
 		$exceptionClass = get_class($e);
 		$message = "'{$e->getMessage()}' in file {$e->getFile()} ({$e->getLine()})";
 		$rsTrace = [];

@@ -16,6 +16,7 @@ abstract class Application {
 	protected $_workSpace           = null;
 	protected $_eventsHandler       = null;
 	protected $_systemEventsHandler = null;
+	protected $_params              = [];
 	
 	final public function __construct(WorkSpace $workSpace) {
 
@@ -284,6 +285,16 @@ abstract class Application {
 			'objectId' => $objectId
 		));
 		return $this;
+	}
+	
+	
+	public function setParams(array $params = []) {
+		$this->_params = $params;
+		return $this;
+	}
+	
+	public function getParams(): array {
+		return $this->_params;
 	}
 
 	/* Información sobre la aplicación */

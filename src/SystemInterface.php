@@ -83,14 +83,14 @@ class SystemInterface {
 			$this->_callAction($actionName, $objectID, $parameters, $ignoreUpdateObject);
 		} catch (Exception $e) {
 			$app = $this->getActiveApplication();
-			$app->openMessageWindow('Opps', $e->getMessage());
+			// $app->openMessageWindow('Opps', $e->getMessage());
 			
 			// @todo: decide about it.
-			/*if (ENV==ENV_DEV) {
+			if (ENV==ENV_DEV) {
 				$app->openExceptionWindow($e);
 			} else {
 				$app->openMessageWindow('Opps', $e->getMessage());
-			}*/
+			}
 		}
 		return $this->getParsedNotifications();
 		

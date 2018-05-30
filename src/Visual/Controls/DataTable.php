@@ -216,10 +216,24 @@ class DataTable extends Control {
 			foreach($this->columns as $column) {
 				
 				$linkable = ($column->linkable) ? ' linkable' : '';
-				if (empty($row[$column->fieldName])) {
+				
+				/**
+				 * Esta porción intenta obtener el valor de una estructura
+				 * de varios niveles.
+				 * Para ello, los niveles se separan con . y aquí el código
+				 * va iterando y excavando los niveles hasta obtener el valor.
+				 */
+				$rowValue = $row;
+				$fieldParts = explode('.', $column->fieldName);
+				foreach($fieldParts as $fieldPart) {
+					$rowValue = $rowValue[$fieldPart];
+				}
+				// fin de obtención del valor de la columna.
+				
+				if (empty($rowValue)) {
 					$value = '&nbsp;';
 				} else {
-					$value = $column->renderValue($row[$column->fieldName]);
+					$value = $column->renderValue($rowValue);
 				}
 				$html .= 
 					"<div class=\"DataTableCell{$linkable} no-break\" " .

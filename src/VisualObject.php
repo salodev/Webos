@@ -386,6 +386,7 @@ abstract class VisualObject extends BaseObject {
 			'border',
 			'text-align',
 			'backgroundImage',
+			'overflow-x',
 		);
 
 		foreach($visualAttributesList as $name) {

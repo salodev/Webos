@@ -60,6 +60,7 @@ class WorkSpace {
 		$appClassName = $name;// . 'Application';
 
 		$application = new $appClassName($this);
+		$application->setParams($params);
 		
 		$this->triggerEvent('startApplication', $this, array(
 			'object' => $application,
@@ -156,7 +157,7 @@ class WorkSpace {
 
 		/**
 		 * Como estoy dando soporte a la capa de transporte a acceder a
-		 * los eventos del sistema, encuentro que algunos del WorkSPace
+		 * los eventos del sistema, encuentro que algunos del WorkSpace
 		 * son útiles y necesarios para mejorar la inteligencia de esa capa.
 		 * 
 		 * Entonces necesito comunicar algunos eventos al sistema.
