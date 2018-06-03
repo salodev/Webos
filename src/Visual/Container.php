@@ -8,6 +8,8 @@ use Webos\Application;
  */
 abstract class Container extends VisualObject {
 	
+	use FormContainer;
+	
 	protected $_embed = false;
 
 	final public function __construct(Application $application, array $initialAttributes = array(), bool $embed = false) {

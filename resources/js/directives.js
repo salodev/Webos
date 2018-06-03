@@ -208,6 +208,60 @@ Directives.register('move', function(el) {
 	});
 });
 
+Directives.register('drag-horizontal', function(el) {
+	var $el = $(el);
+	$el.easydrag();
+	var top = $el.offset().top;
+	$el.mousedown(function(e) {
+		$el.offset({top:top});
+	});
+	$el.ondrag(function(e) {
+		$el.offset({top:top});
+	});
+	$el.ondrop(function() {
+		console.log('drop', $el.offset());
+	});
+});
+
+Directives.register('ondrag-horizontal', function(el) {
+	var $el = $(el);
+	var $prev = $el.prev();
+	var $next = $el.next();
+	$el.ondrag(function(e) {
+		var w = $el.offset().left - $prev.offset().left;
+		$prev.width(w);
+		var l = $el.offset().left + $el.width();
+		$next.offset({left:l});
+	});
+});
+
+Directives.register('drag-vertical', function(el) {
+	var $el = $(el);
+	$el.easydrag();
+	var left = $el.offset().left;
+	$el.mousedown(function(e) {
+		$el.offset({left:left});
+	});
+	$el.ondrag(function(e) {
+		$el.offset({left:left});
+	});
+	$el.ondrop(function() {
+		console.log('drop', $el.offset());
+	});
+});
+
+Directives.register('ondrag-vertical', function(el) {
+	var $el = $(el);
+	var $prev = $el.prev();
+	var $next = $el.next();
+	$el.ondrag(function(e) {
+		var h = $el.offset().top - $prev.offset().top;
+		$prev.height(h);
+		var t = $el.offset().top + $el.height();
+		$next.offset({top:t});
+	});
+});
+
 Directives.register('set-object-pos', function(el) {
 	var id = $(el).attr('id') || $(el).parents('[id]').attr('id');
 	var pos = $(el).offset();

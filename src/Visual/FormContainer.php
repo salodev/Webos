@@ -1,5 +1,8 @@
 <?php
 namespace Webos\Visual;
+use Webos\VisualObject;
+use Webos\Visual\Controls\VerticalSeparator;
+use Webos\Visual\Controls\HorizontalSeparator;
 use Webos\Visual\Controls\Field;
 use Webos\Visual\Controls\TextBox;
 use Webos\Visual\Controls\PasswordBox;
@@ -20,17 +23,17 @@ trait FormContainer {
 	protected $widthLabelControl = 75;
 	protected $widthFieldControl = 75;
 	protected $showTitleControls = true;
-	protected $controlProperties = array();
+	protected $controlProperties = [];
 	protected $controlClassName  = TextBox::class;
 	protected $hasHorizontalButtons = false;
 	protected $hasWindowButtons  = false;
 
-	protected function setControlProperties(array $properties = array()) {
+	protected function setControlProperties(array $properties = []): void {
 		$this->controlProperties = $properties;
 	}
 
-	protected function clearControlProperties() {
-		$this->controlProperties = array();
+	protected function clearControlProperties(): void {
+		$this->controlProperties = [];
 	}
 	
 	/**
@@ -42,7 +45,7 @@ trait FormContainer {
 	 * @param bool $attachToContainer
 	 * @return \Webos\Visual\Control
 	 */
-	public function createControl(string $label, string $name, string $className = TextBox::class, array $options = array(), bool $attachToContainer = true): Control {
+	public function createControl(string $label, string $name, string $className = TextBox::class, array $options = [], bool $attachToContainer = true): Control {
 		if (isset($options['top'])) {
 			$this->topControl = $options['top'];
 		}
@@ -94,7 +97,7 @@ trait FormContainer {
 	 * @param array $options
 	 * @return \Webos\Visual\Controls\TextBox
 	 */
-	public function createTextBox(string $label, string $name, array $options = array()): TextBox {
+	public function createTextBox(string $label, string $name, array $options = []): TextBox {
 		return $this->createControl($label, $name, TextBox::class, $options);
 	}
 	
@@ -109,7 +112,7 @@ trait FormContainer {
 	 * @param array $options
 	 * @return \Webos\Visual\Controls\Label
 	 */
-	public function createLabelBox(string $label, string $name, array $options = array()): Label {
+	public function createLabelBox(string $label, string $name, array $options = []): Label {
 		return $this->createControl($label, $name, Label::class, $options);
 	}
 	
@@ -119,7 +122,7 @@ trait FormContainer {
 	 * @param array $options
 	 * @return \Webos\Visual\Controls\Label
 	 */
-	public function createLabel(string $text, array $options = array()) {
+	public function createLabel(string $text, array $options = []): Label {
 		return $this->createObject(Label::class, array_merge($options, array('text'=>$text)));
 	}
 	
@@ -130,7 +133,7 @@ trait FormContainer {
 	 * @param array $options
 	 * @return \Webos\Visual\Controls\ComboBox
 	 */
-	public function createComboBox(string $label, string $name, array $options = array()): ComboBox {
+	public function createComboBox(string $label, string $name, array $options = []): ComboBox {
 		return $this->createControl($label, $name, ComboBox::class, $options);
 	}
 	
@@ -140,7 +143,7 @@ trait FormContainer {
 	 * @param array $options
 	 * @return \Webos\Visual\Controls\Button
 	 */
-	public function createButton(string $label, array $options = array()): Button {
+	public function createButton(string $label, array $options = []): Button {
 		return $this->createObject(Button::class, array_merge($options, ['value'=>$label]));
 	}
 	
@@ -160,7 +163,7 @@ trait FormContainer {
 			'top' =>   0,
 			'left' =>  0,
 			'right' => 0,
-		],$params));
+		], $params));
 	}
 	
 	public function createButtonsBar(): ToolBar {
@@ -183,15 +186,17 @@ trait FormContainer {
 	 * @param type $options
 	 * @return \Webos\Visual\Controls\DataTable
 	 */
-	public function createDataTable(array $options = array()): DataTable {
-		$initialOptions = array(
-			'top' => $this->maxTopControl,
-			'left' => $this->leftControl,
-			'right' => '0',
-			'bottom' => '0',
-		);
+	public function createDataTable(array $options = []): DataTable {
+		$initialOptions = [
+			'top'    => $this->maxTopControl,
+			'left'   => $this->leftControl,
+			'right'  => 0,
+			'bottom' => 0,
+		];
 		$options = array_merge($initialOptions, $options);
-		$this->getParentWindow()->height = $this->topControl + ($options['height'] ?? 300) + 40;
+		if (isset($options['height']) && is_numeric($options['height'])) {
+			$this->getParentWindow()->height = $this->topControl + ($options['height'] ?? 300) + 40;
+		}
 		return $this->createObject(DataTable::class, $options);
 	}
 	
@@ -200,7 +205,7 @@ trait FormContainer {
 	 * @param array $options
 	 * @return Controls\Tree
 	 */
-	public function createTree(array $options = array()): Tree {
+	public function createTree(array $options = []): Tree {
 		$parentWindow = $this->getParentWindow();
 		if ($parentWindow->bottom != 0 && $parentWindow->top!=0) {
 			$this->getParentWindow()->height = $this->topControl + ($options['height'] ?? 300) + 40;
@@ -213,7 +218,7 @@ trait FormContainer {
 	 * @param array $options
 	 * @return Controls\Frame
 	 */
-	public function createFrame(array $options = array()): Frame {
+	public function createFrame(array $options = []): Frame {
 		return $this->createObject(Frame::class, $options);
 	}
 	
@@ -228,7 +233,7 @@ trait FormContainer {
 	 * @param array $params
 	 * @return \Webos\Visual\Controls\Button
 	 */
-	public function addHorizontalButton($caption, $width = 80, array $params = array()): Button {
+	public function addHorizontalButton($caption, $width = 80, array $params = []): Button {
 		if (!$this->hasHorizontalButtons) {
 			$this->hasHorizontalButtons = true;
 			$this->topHorizontalButtons = $this->maxTopControl + 10;
@@ -244,12 +249,12 @@ trait FormContainer {
 		}
 		$left = $this->leftButton/1;
 		$width = empty($params['width']) ? $width : $params['width'];
-		$button = $this->createObject(Button::class, array_merge($params, array(
+		$button = $this->createObject(Button::class, array_merge($params, [
 			'top'   => $this->topHorizontalButtons,
 			'left'  => $left,
 			'width' => $width,
 			'value' => $caption,
-		)));
+		]));
 		$this->leftButton = ($this->leftButton/1) + 10 + ($width*1); // + ($width/1) + 10;
 		return $button;
 	}
@@ -262,7 +267,7 @@ trait FormContainer {
 		return $this->buttonsBar->addButton($label, $options);
 	}
 
-	public function setFormData(array $data) {
+	public function setFormData(array $data): void {
 		if (array_key_exists(0, $data)) {
 			$this->_formData = $data[0];
 		} else {
@@ -278,7 +283,7 @@ trait FormContainer {
 		}
 	}
 	
-	public function clearFormData() {
+	public function clearFormData(): void {
 		$objects = $this->getChildObjects();
 		foreach($objects as $object) {
 			if ($object instanceOf Field) {
@@ -290,7 +295,7 @@ trait FormContainer {
 	/**
 	 * @return array
 	 */
-	public function getFormData(array $merge = array()) {
+	public function getFormData(array $merge = []): array {
 		$formData = array();
 		$objects = $this->getChildObjects();
 		foreach($objects as $childObject){
@@ -301,7 +306,7 @@ trait FormContainer {
 		return array_merge($formData, $merge);
 	}
 	
-	public function enableForm() {
+	public function enableForm(): void {
 		$objects = $this->getChildObjects();
 		foreach($objects as $object) {
 			if ($object instanceOf Field) {
@@ -310,7 +315,7 @@ trait FormContainer {
 		};
 	}
 	
-	public function disableForm() {
+	public function disableForm(): void {
 		$objects = $this->getChildObjects();
 		foreach($objects as $object) {
 			if ($object instanceOf Field) {
@@ -319,7 +324,33 @@ trait FormContainer {
 		};
 	}
 	
-	public function fixWindowHeight() {
+	public function fixWindowHeight(): void {
 		$this->getParentWindow()->height = $this->maxTopControl + 45;
+	}
+	
+	public function splitVertical(): VisualObject {
+		$this->leftPanel = $this->createObject(Frame::class, [
+			'top'=>0, 'bottom'=>0, 'left'=>0, 'width'=>200,
+		]);
+		$this->createObject(VerticalSeparator::class, [
+			'left'=>200, 'width'=>5,
+		]);
+		$this->rightPanel = $this->createObject(Frame::class, [
+			'top'=>0, 'bottom'=>0, 'left'=>205, 'right'=>0,
+		]);
+		return $this;
+	}
+	
+	public function splitHorizontal(): VisualObject {
+		$this->topPanel = $this->createObject(Frame::class, [
+			'top'=>0, 'left'=>0, 'right'=>0, 'height'=>200,
+		]);
+		$this->createObject(HorizontalSeparator::class, [
+			'top'=>200, 'height'=>5,
+		]);
+		$this->bottomPanel = $this->createObject(Frame::class, [
+			'left'=>0, 'right'=>0, 'bottom'=>0, 'top'=>205,
+		]);
+		return $this;
 	}
 }

@@ -19,32 +19,42 @@ class Column {
 		$this->fieldName = $fieldName;
 	}
 	
-	public function width($value) {
+	public function label(string $value): self {
+		$this->label = $value;
+		return $this;
+	}
+	
+	public function fieldName(string $value): self {
+		$this->fieldName = $value;
+		return $this;
+	}
+	
+	public function width(int $value): self {
 		$this->width = $value;
 		return $this;
 	}
 	
-	public function allowOrder($value) {
+	public function allowOrder(bool $value): self {
 		$this->allowOrder = $value;
 		return $this;
 	}
 	
-	public function linkable($value) {
+	public function linkable(bool $value): self {
 		$this->linkable = $value;
 		return $this;
 	}
 	
-	public function align($value) {
+	public function align(string $value): self {
 		$this->align = $value;
 		return $this;
 	}
 	
-	public function format($value) {
+	public function format(string $value): self {
 		$this->format = $value;
 		return $this;
 	}
 	
-	public function decimal($decimals = 2, $decimalsGlue = '.', $thousandsGlue = '') {
+	public function decimal($decimals = 2, $decimalsGlue = '.', $thousandsGlue = ''): self {
 		$this->decimals = $decimals;
 		$this->decimalsGlue = $decimalsGlue;
 		$this->thousandsGlue = $thousandsGlue;
@@ -52,7 +62,7 @@ class Column {
 		return $this;
 	}
 	
-	public function dateFormat($format) {
+	public function dateFormat(string $format): self {
 		$this->dateFormat = $format;
 		return $this;
 	}

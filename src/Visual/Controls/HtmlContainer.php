@@ -4,7 +4,6 @@ namespace Webos\Visual\Controls;
 
 use Webos\Visual\Control;
 use Webos\Visual\FormContainer;
-use Webos\Visual\Controls\HtmlContainerNode;
 
 class HtmlContainer extends Control {
 	use FormContainer;
@@ -15,6 +14,10 @@ class HtmlContainer extends Control {
 	
 	public function h1(string $text = ''): HtmlContainerNode {
 		return $this->createTag('h1', $text);
+	}
+	
+	public function h2(string $text = ''): HtmlContainerNode {
+		return $this->createTag('h2', $text);
 	}
 	
 	public function blockquote(string $text = ''): HtmlContainerNode {
@@ -35,7 +38,7 @@ class HtmlContainer extends Control {
 		]);
 	}
 	
-	public function scroll() {
+	public function scroll(): void {
 		$this->triggerEvent('scroll');
 	}
 	
@@ -43,9 +46,13 @@ class HtmlContainer extends Control {
 		return array_merge(parent::getAllowedActions(), ['scroll']);
 	}
 	
+	public function getAvailableEvents(): array {
+		return array_merge(parent::getAvailableEvents(), ['scroll']);
+	}
+	
 	public function render(): string {
 		$scrollTop  = $this->scrollTop  ?? 0;
 		$scrollLeft = $this->scrollLeft ?? 0;
-		return "<div {$this->getInlineStyle(true)} webos set-scroll-values=\"{$scrollTop},{$scrollLeft}\">" . $this->getChildObjects()->render() . '</div>';
+		return "<div class=\"HtmlContainer\" id=\"{$this->getObjectID()}\" {$this->getInlineStyle(true)} webos set-scroll-values=\"{$scrollTop},{$scrollLeft}\">" . $this->getChildObjects()->render() . '</div>';
 	}
 }

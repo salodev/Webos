@@ -2,9 +2,7 @@
 
 namespace Webos\Visual\Controls;
 
-use Webos\Visual\Control;
-
-class HtmlContainerNode extends Control {
+class HtmlContainerNode extends HtmlContainer {
 		
 	public function render(): string {
 		$content = $this->getChildObjects()->render();

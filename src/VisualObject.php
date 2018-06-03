@@ -387,6 +387,11 @@ abstract class VisualObject extends BaseObject {
 			'text-align',
 			'backgroundImage',
 			'overflow-x',
+			'margin-top',
+			'margin-bottom',
+			'margin-left',
+			'margin-right',
+			'margin',
 		);
 
 		foreach($visualAttributesList as $name) {
@@ -444,7 +449,7 @@ abstract class VisualObject extends BaseObject {
 		$strings = array();
 		foreach($styles as $name=>$value) {
 			$unit = '';
-			if (in_array($name, ['top','bottom','left','right','width','height'])) {
+			if (in_array($name, ['top','bottom','left','right','width','height','margin-top'])) {
 				$unit = 'px';
 			}
 			if (strpos($value, '%')!==false) {

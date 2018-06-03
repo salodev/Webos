@@ -8,12 +8,10 @@ use Webos\Visual\Windows\Prompt;
 use Webos\Visual\Windows\Confirm;
 use Webos\Visual\Control;
 use Webos\Visual\Controls\Menu\ListItems;
-use Webos\Visual\Controls\Menu\Item;
 use Webos\Exceptions\Collection\NotFound;
 use Webos\StringChar;
 
 class Window extends Container {
-	use FormContainer;
 
 	protected $allowClose    = true;
 	protected $allowMaximize = true;
@@ -267,7 +265,7 @@ class Window extends Container {
 		return $this->messageWindow($text, 'Message')->onClose($cb);
 	}
 	
-	public function onReady(callable $cb): self {
+	public function onReady(callable $cb, bool $persistent = true, array $context = []): self {
 		$this->bind('ready', $cb);
 		return $this;
 	}

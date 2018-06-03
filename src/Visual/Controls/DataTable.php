@@ -10,24 +10,24 @@ use Webos\Visual\Control;
 class DataTable extends Control {
 	// public $rowIndex = null;
 	public function initialize() {
-		$this->rows = array();
-		$this->columns = new Collection();
-		$this->rowIndex = null;
+		$this->rows       = array();
+		$this->columns    = new Collection();
+		$this->rowIndex   = null;
 		$this->columInded = null;
 	}
 
 	public function getInitialAttributes(): array {
-		return array(
+		return [
 			'top'        => 0,
 			'bottom'     => 0,
 			'left'       => 0,
 			'right'      => 0,
 			'scrollTop'  => 0,
 			'scrollLeft' => 0,
-		);
+		];
 	}
 
-	public function addColumn(string $fieldName, string $label, int $width=100, bool $allowOrder=false, bool $linkable=false, string $align = 'left'): Column {
+	public function addColumn(string $fieldName = '', string $label = '', int $width=100, bool $allowOrder=false, bool $linkable=false, string $align = 'left'): Column {
 		// $column = new ColumnDataTable();
 		$column = new Column($label, $fieldName);
 		$column->width      = $width;
@@ -48,7 +48,7 @@ class DataTable extends Control {
 		}
 	}
 
-	public function getSelectedRowData(string $fieldName = null) {
+	public function getSelectedRowData(string $fieldName = null): array {
 		if ($this->rowIndex !== null) {
 			$rowData = $this->getRowData($this->rowIndex/1);
 			if ($fieldName) {
@@ -59,7 +59,7 @@ class DataTable extends Control {
 			}
 			return $rowData;
 		}
-		return null;
+		return [];
 	}
 
 	public function getRowData(int $rowIndex): array {
@@ -73,7 +73,7 @@ class DataTable extends Control {
 		throw new Exception('Requested row does not exists');
 	}
 
-	public function rowClick(array $params = array()) {
+	public function rowClick(array $params = []): void {
 		if (!isset($params['row'])) {
 			throw new Exception('The \'rowClick\' event needs a \'row\' parameter');
 		}
@@ -101,7 +101,7 @@ class DataTable extends Control {
 		));
 	}
 
-	public function rowDoubleClick(array $params = array()) {
+	public function rowDoubleClick(array $params = []): void {
 		if (!isset($params['row'])) {
 			throw new Exception('The \'rowDoubleClick\' event needs a \'row\' parameter');
 		}
@@ -109,7 +109,7 @@ class DataTable extends Control {
 		$this->triggerEvent('rowDoubleClick', array('row'=>$params['row']));
 	}
 
-	public function scroll(array $params = array()) {
+	public function scroll(array $params = []): void {
 		//echo "hola";
 		$this->scrollTop  = $params['top' ] ?? 0;
 		$this->scrollLeft = $params['left'] ?? 0;
@@ -117,7 +117,7 @@ class DataTable extends Control {
 	
 	
 	
-	public function contextMenu($params) {
+	public function contextMenu(array $params): void {
 		if (empty($params['top']) || empty($params['left'])) {
 			return;
 		}
@@ -141,27 +141,27 @@ class DataTable extends Control {
 	}
 
 	public function getAllowedActions(): array {
-		return array(
+		return [
 			'rowClick',
 			'rowDoubleClick',
 			'scroll',
 			'contextMenu',
-		);
+		];
 	}
 
 	public function getAvailableEvents(): array {
-		return array(
+		return [
 			'rowClick',
 			'rowDoubleClick',
 			'contextMenu',
-		);
+		];
 	}
 	
-	public function onRowClick(callable $eventListener, bool $persistent = true, array $contextData = []) {
+	public function onRowClick(callable $eventListener, bool $persistent = true, array $contextData = []): void {
 		$this->bind('rowClick', $eventListener, $persistent, $contextData);
 	}
 	
-	public function onRowDoubleClick(callable $eventListener, bool $persistent = true, array $contextData = []) {
+	public function onRowDoubleClick(callable $eventListener, bool $persistent = true, array $contextData = []): void {
 		$this->bind('rowDoubleClick', $eventListener, $persistent, $contextData);
 	}
 	
