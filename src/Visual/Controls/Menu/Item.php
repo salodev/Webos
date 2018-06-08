@@ -33,6 +33,20 @@ class Item extends Control {
 		}
 	}
 	
+	function openWindow(string $className, array $params = []): self {
+		$this->onClick(function($context) {
+			$this->getApplication()->openWindow($context[0], $context[1]);
+		}, [$className, $params]);
+		return $this;
+	}
+	
+	function finishApplication(): self {
+		$this->onClick(function() {
+			$this->getApplication()->finish();
+		});
+		return $this;
+	}
+	
 	function createItem(string $text, string $shortCut = '', array $params = []): Item {
 		$listItems = $this->_getListItems();
 		return $listItems->createItem($text, $shortCut, $params);

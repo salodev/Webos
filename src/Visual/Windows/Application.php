@@ -14,7 +14,7 @@ class Application extends Window {
 	
 	public function render(): string {
 		$stylesString = $this->getInlineStyle(true);
-		$html  = '<div id="'.$this->getObjectID().'">';
+		$html  = '<div id="'.$this->getObjectID(). '" ' . $stylesString .'>';
 		$html .= '<div class="container" ' . $stylesString . '>';
 		$html .= $this->getChildObjects()->render();
 		

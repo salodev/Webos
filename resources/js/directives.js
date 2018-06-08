@@ -219,7 +219,7 @@ Directives.register('drag-horizontal', function(el) {
 		$el.offset({top:top});
 	});
 	$el.ondrop(function() {
-		console.log('drop', $el.offset());
+		$el.offset({top:top});
 	});
 });
 
@@ -246,7 +246,7 @@ Directives.register('drag-vertical', function(el) {
 		$el.offset({left:left});
 	});
 	$el.ondrop(function() {
-		console.log('drop', $el.offset());
+		$el.offset({left:left});
 	});
 });
 
@@ -287,6 +287,16 @@ Directives.register('toggle-class', function(el) {
 		}
 		$el.toggleClass(className);
 	});
+});
+
+Directives.register('ondrop', function(el) {
+	$(el).ondrop(function() {
+		var id = $(el).attr('id') || $(el).parents('[id]').attr('id');
+		var data = $(el).position();
+		data.ignoreUpdate = $(el).attr('ignore-update-object')? true: false;
+		Webos.action('drop', id, data);
+	});
+	
 });
 
 $(function() {

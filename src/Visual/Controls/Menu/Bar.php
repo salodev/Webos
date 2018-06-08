@@ -17,6 +17,13 @@ class Bar extends Control {
 		}
 	}
 	
+	public function initialize() {
+		$this->height = 26;
+		$this->top    = 0;
+		$this->left   = 0;
+		$this->right  = 0;
+	}
+	
 	public function getSelectedButton() {
 		return $this->_selectedButton;
 	}
@@ -34,7 +41,7 @@ class Bar extends Control {
 	}
 	
 	public function render(): string {
-		$html  = '<div id="'.$this->getObjectID().'" class="MenuBar container">';
+		$html  = '<div id="'.$this->getObjectID().'" '.$this->getInlineStyle(true).' class="MenuBar container">';
 		$html .= $this->getChildObjects()->render();
 		$html .= '</div>';
 		return $html;

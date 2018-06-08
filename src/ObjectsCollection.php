@@ -140,4 +140,30 @@ class ObjectsCollection extends Collection {
 		}
 		return $ret;
 	}
+	
+	public function getPreviousTo(VisualObject $object): VisualObject {
+		foreach($this as $test) {
+			if ($test===$object) {
+				$newKey = $this->key() -1;
+				if (!isset($this->_data[$newKey])) {
+					throw new NotFound('No previous object');
+				}
+				return $this->_data[$newKey];
+			}
+		}
+		throw new NotFound('No previous object');
+	}
+	
+	public function getNextTo(VisualObject $object): VisualObject {
+		foreach($this as $test) {
+			if ($test===$object) {
+				$newKey = $this->key() +1;
+				if (!isset($this->_data[$newKey])) {
+					throw new NotFound('No previous object');
+				}
+				return $this->_data[$newKey];
+			}
+		}
+		throw new NotFound('No previous object');
+	}
 }

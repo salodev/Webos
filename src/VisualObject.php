@@ -5,6 +5,7 @@ use Webos\StringChar;
 use Webos\Visual\Window;
 use Exception;
 use Webos\Exceptions\Collection\NotFound;
+use Webos\Implementations\Rendering;
 
 /**
  * Un VisualObject es subtipo de BaseObject porque puede ser representado
@@ -101,7 +102,7 @@ abstract class VisualObject extends BaseObject {
 	 * cual es su aspecto visual, u objeto de representación visual asociado.
 	 **/
 	final public function getClassName(): string {
-		return get_class($this);
+		return static::class;
 	}
 	
 	public function getClassNameForRender(): string {
@@ -358,6 +359,7 @@ abstract class VisualObject extends BaseObject {
 	 * @return string
 	 */
 	public function render(): string {
+		return Rendering::Render($this);
 		$htmlChilds = $childObjects = $this->getChildObjects()->render();
 		$html  = '';
 		$html .= '<div>';
@@ -475,5 +477,13 @@ abstract class VisualObject extends BaseObject {
 	 */
 	public function getAvailableEvents(): array {
 		return array();
+	}
+	
+	public function getPrevious() {
+		return $this->getParent()->getChildObjects()->getPreviousTo($this);
+	}
+	
+	public function getNext() {
+		return $this->getParent()->getChildObjects()->getNextTo($this);
 	}
 }

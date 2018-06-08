@@ -1,9 +1,14 @@
 <?php
 
-namespace Webos\Service;
-use Webos\Webos;
+namespace Webos\Implementations;
+use Webos\Service\DevInterface;
+use Webos\Service\ProductionInterface;
+use Webos\Service\AuthInterface;
+use Webos\Service\UserInterface;
+use Webos\Implementations\Authentication;
+use Webos\Apps\Auth as AuthApplication;
 
-class Implementation {
+class Service {
 	static public $dev = true;
 	static public function CreateInterface(string $user, string $applicationName, array $applicationParams = []): UserInterface {
 		if (self::$dev) {
@@ -13,13 +18,19 @@ class Implementation {
 		}
 	}
 	
-	static public function Start(string $applicationName, array $applicationParams = [], string $location = null, $debug = false) {
+	static public function CreateAuthInterface(): UserInterface {
+		return new AuthInterface('', Authentication::GetApplicationName(), Authentication::GetApplicationParams());
+	}
+	
+	static public function Start(string $applicationName, array $applicationParams = [], $debug = false) {
 		if (empty($_SESSION['username'])) {
-			self::GetLogin($location);
+			// self::GetLogin($location);
+			$interface = self::CreateAuthInterface();
+		} else {
+			$userName = $_SESSION['username'];
+
+			$interface = self::CreateInterface($userName, $applicationName, $applicationParams);
 		}
-		$userName = $_SESSION['username'];
-		
-		$interface = self::CreateInterface($userName, $applicationName, $applicationParams);
 		
 		if ($debug) {
 			self::Debug($interface);

@@ -27,7 +27,7 @@ abstract class Application {
 		$this->_systemEventsHandler = new EventsHandler();
 	}
 
-	abstract public function main(array $data = array());
+	abstract public function main(array $data = []);
 	
 	/**
 	 * Each time a workspace is loaded, WebOS call setup() for all applications

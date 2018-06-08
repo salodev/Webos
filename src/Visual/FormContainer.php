@@ -178,6 +178,8 @@ trait FormContainer {
 	 * @return \Webos\Visual\Controls\Menu\Bar
 	 */
 	public function createMenuBar(): MenuBar {
+		$this->topControl += 20;
+		$this->maxTopControl += 20;
 		return $this->createObject(MenuBar::class);
 	}
 	
@@ -219,6 +221,12 @@ trait FormContainer {
 	 * @return Controls\Frame
 	 */
 	public function createFrame(array $options = []): Frame {
+		$options = array_merge([
+			'top' => $this->maxTopControl,
+			'left' => 0,
+			'right' => 0,
+			'bottom' => 0,
+		], $options);
 		return $this->createObject(Frame::class, $options);
 	}
 	
@@ -329,26 +337,34 @@ trait FormContainer {
 	}
 	
 	public function splitVertical(): VisualObject {
-		$this->leftPanel = $this->createObject(Frame::class, [
+		$container = $this;
+		if ($this instanceof Window) {
+			$container = $this->createFrame();
+		}
+		$this->leftPanel = $container->createObject(Frame::class, [
 			'top'=>0, 'bottom'=>0, 'left'=>0, 'width'=>200,
 		]);
-		$this->createObject(VerticalSeparator::class, [
+		$container->createObject(VerticalSeparator::class, [
 			'left'=>200, 'width'=>5,
 		]);
-		$this->rightPanel = $this->createObject(Frame::class, [
+		$this->rightPanel = $container->createObject(Frame::class, [
 			'top'=>0, 'bottom'=>0, 'left'=>205, 'right'=>0,
 		]);
 		return $this;
 	}
 	
 	public function splitHorizontal(): VisualObject {
-		$this->topPanel = $this->createObject(Frame::class, [
+		$container = $this;
+		if ($this instanceof \Webos\Visual\Window) {
+			$container = $this->createFrame();
+		}
+		$this->topPanel = $container->createObject(Frame::class, [
 			'top'=>0, 'left'=>0, 'right'=>0, 'height'=>200,
 		]);
-		$this->createObject(HorizontalSeparator::class, [
+		$container->createObject(HorizontalSeparator::class, [
 			'top'=>200, 'height'=>5,
 		]);
-		$this->bottomPanel = $this->createObject(Frame::class, [
+		$this->bottomPanel = $container->createObject(Frame::class, [
 			'left'=>0, 'right'=>0, 'bottom'=>0, 'top'=>205,
 		]);
 		return $this;

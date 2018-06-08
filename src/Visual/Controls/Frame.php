@@ -12,8 +12,10 @@ class Frame extends Control {
 
 	public function setInitialAttributes(array $userAttrs = array()){
 		$attrs = array(
-			'width' => 400,
-			'height' => 100,
+			'top'    => 0,
+			'right'  => 0,
+			'bottom' => 0,
+			'left'   => 0,
 		);
 
 		$this->_attributes = array_merge($attrs, $userAttrs);
