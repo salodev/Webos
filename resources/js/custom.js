@@ -50,10 +50,13 @@ Webos.bind('removeElements', function(data) {
 });
 
 Webos.bind('authUser', function() {
-	location.href='/landing.php?p=login';
+	location.reload();
 });
 Webos.bind('changeEnterprise', function() {
 	location.href='empresa.php';
+});
+Webos.bind('loggedIn', function() {
+	location.reload();
 });
 
 /**

@@ -30,8 +30,13 @@ class Service {
 		return new AuthService('', Authentication::GetApplicationName(), Authentication::GetApplicationParams());
 	}
 	
-	static public function Start() {
+	static public function Start(): void {
 		if (empty($_SESSION['username'])) {
+			if (empty($_SESSION['ws'])) {
+				if (($_SERVER['HTTP_X_REQUESTED_WITH']??null)=='XMLHttpRequest') {
+					self::GetLogin();
+				}			
+			}
 			// self::GetLogin($location);
 			$service = self::CreateAuth();
 		} else {
@@ -52,7 +57,7 @@ class Service {
 		}
 	}
 	
-	static public function DoAction(UserService $service) {
+	static public function DoAction(UserService $service): void {
 		$actionName   = $_REQUEST['actionName'];
 		$objectID     = $_REQUEST['objectID'  ];
 		$params       = $_REQUEST['params'    ] ?? [];
@@ -63,27 +68,21 @@ class Service {
 		self::SendJson($response);
 	}
 	
-	static public function RenderAll(UserService $service) {
+	static public function RenderAll(UserService $service): void {
 		echo $service->renderAll();
 		die();
 	}
 	
-	static public function Debug(UserService $service) {
+	static public function Debug(UserService $service): void {
 		$service->debug();
 		die();
 	}
 	
-	static public function GetLogin(string $location = null) {
-		
-		if (($_SERVER['HTTP_X_REQUESTED_WITH']??null)=='XMLHttpRequest') {
-			self::SendJson(['events'=>[['name'=>'authUser']]]);
-		}
-		
-		header('location: ' . $location ?? '/');
-		die();
+	static public function GetLogin(): void {
+		self::SendJson(['events'=>[['name'=>'authUser']]]);
 	}
 	
-	static public function SendJson($json) {
+	static public function SendJson($json): void {
 		header('Content-Type: text/json');
 		die(json_encode($json));
 	}
