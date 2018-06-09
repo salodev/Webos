@@ -48,7 +48,14 @@ class DataTable extends Control {
 		}
 	}
 
-	public function getSelectedRowData(string $fieldName = null): array {
+	/**
+	 * @todo: make it better.
+	 * returns array or string.. Should be only one type.
+	 * @param string $fieldName
+	 * @return type
+	 * @throws Alert
+	 */
+	public function getSelectedRowData(string $fieldName = null) {
 		if ($this->rowIndex !== null) {
 			$rowData = $this->getRowData($this->rowIndex/1);
 			if ($fieldName) {
@@ -226,7 +233,7 @@ class DataTable extends Control {
 				$rowValue = $row;
 				$fieldParts = explode('.', $column->fieldName);
 				foreach($fieldParts as $fieldPart) {
-					$rowValue = $rowValue[$fieldPart];
+					$rowValue = $rowValue[$fieldPart]??'';
 				}
 				// fin de obtención del valor de la columna.
 				
