@@ -5,7 +5,7 @@ use Exception;
 use Webos\SystemInterface;
 use Webos\WorkSpaceHandlers\FileSystem AS FileSystemHanlder;
 
-class ProductionInterface implements UserInterface {
+class ProductionService extends UserService {
 	
 	private $_client = null;
 	private $_userName = null;

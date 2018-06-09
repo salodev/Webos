@@ -5,7 +5,7 @@ use Webos\SystemInterface;
 use Webos\WorkSpaceHandlers\FileSystem AS FileSystemHanlder;
 use salodev\Debug\ObjectInspector;
 
-class DevInterface implements UserInterface {
+class DevService extends UserService {
 	
 	private $_user            = null;
 	public  $_applicationName = null;

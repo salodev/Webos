@@ -7,7 +7,7 @@ use Webos\Apps\Auth as AuthApplication;
 
 use salodev\Debug\ObjectInspector;
 
-class AuthInterface implements UserInterface {
+class AuthService extends UserService {
 	
 	private $_user            = null;
 	public  $_applicationName = null;

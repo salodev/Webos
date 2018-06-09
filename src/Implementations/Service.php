@@ -1,67 +1,75 @@
 <?php
 
 namespace Webos\Implementations;
-use Webos\Service\DevInterface;
-use Webos\Service\ProductionInterface;
-use Webos\Service\AuthInterface;
-use Webos\Service\UserInterface;
+use Webos\Service\DevService;
+use Webos\Service\ProductionService;
+use Webos\Service\AuthService;
+use Webos\Service\UserService;
 use Webos\Implementations\Authentication;
 use Webos\Apps\Auth as AuthApplication;
 
 class Service {
 	static public $dev = true;
-	static public function CreateInterface(string $user, string $applicationName, array $applicationParams = []): UserInterface {
+	static private $_applicationName = '';
+	static private $_applicationParams = [];
+	
+	static public function SetApplication(string $className, array $params = []): void {
+		self::$_applicationName   = $className;
+		self::$_applicationParams = $params;
+	}
+	
+	static public function Create(string $user, string $applicationName, array $applicationParams = []): UserService {
 		if (self::$dev) {
-			return new DevInterface($user, $applicationName, $applicationParams);
+			return new DevService($user, $applicationName, $applicationParams);
 		} else {
-			return new ProductionInterface($user, $applicationName, $applicationParams);
+			return new ProductionService($user, $applicationName, $applicationParams);
 		}
 	}
 	
-	static public function CreateAuthInterface(): UserInterface {
-		return new AuthInterface('', Authentication::GetApplicationName(), Authentication::GetApplicationParams());
+	static public function CreateAuth(): UserService {
+		return new AuthService('', Authentication::GetApplicationName(), Authentication::GetApplicationParams());
 	}
 	
-	static public function Start(string $applicationName, array $applicationParams = [], $debug = false) {
+	static public function Start() {
 		if (empty($_SESSION['username'])) {
 			// self::GetLogin($location);
-			$interface = self::CreateAuthInterface();
+			$service = self::CreateAuth();
 		} else {
 			$userName = $_SESSION['username'];
 
-			$interface = self::CreateInterface($userName, $applicationName, $applicationParams);
+			$service = self::Create($userName, self::$_applicationName, self::$_applicationParams);
 		}
 		
-		if ($debug) {
-			self::Debug($interface);
+		if (!empty($_REQUEST['DEBUG'])) {
+			self::Debug($service);
 		}
 		
 		if(!empty($_REQUEST['actionName'])) {
-			self::DoAction($interface);
+			self::DoAction($service);
 			return;
 		} else {
-			self::RenderAll($interface);
+			self::RenderAll($service);
 		}
 	}
 	
-	static public function DoAction(UserInterface $interface) {
+	static public function DoAction(UserService $service) {
 		$actionName   = $_REQUEST['actionName'];
 		$objectID     = $_REQUEST['objectID'  ];
 		$params       = $_REQUEST['params'    ] ?? [];
 		$ignoreUpdate = $params['ignoreUpdateObject'] ?? false;
 		
-		$response = $interface->action($actionName, $objectID, $params, $ignoreUpdate);
+		$response = $service->action($actionName, $objectID, $params, $ignoreUpdate);
 		
 		self::SendJson($response);
 	}
 	
-	static public function RenderAll(UserInterface $interface) {
-		echo $interface->renderAll();
+	static public function RenderAll(UserService $service) {
+		echo $service->renderAll();
 		die();
 	}
 	
-	static public function Debug(UserInterface $interface) {
-		$interface->debug();
+	static public function Debug(UserService $service) {
+		$service->debug();
 		die();
 	}
 	

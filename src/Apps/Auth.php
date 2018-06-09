@@ -29,6 +29,7 @@ class Auth extends Application {
 				return;
 			}
 			$_SESSION['username'] = $formData['username'];
+			$this->getWorkSpace()->getSystemEnvironment()->triggerEvent('loggedIn', $this);
 			$this->finish();
 		});
 		
