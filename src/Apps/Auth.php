@@ -11,7 +11,7 @@ class Auth extends Application {
 		$this->authWindow = $w;
 		
 		$w->showControls = false;
-		$w->title = 'Please identifiy';
+		$w->title = 'Please identify';
 		$w->width = 380;
 		
 		$t = $w->createTabsFolder();
