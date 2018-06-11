@@ -41,6 +41,11 @@ class TextBox extends Field {
 		return $html;
 	}
 	
+	public function multiline(bool $value): self {
+		$this->multiline = $value;
+		return self;
+	}
+	
 	public function setValue($mixed) {
 		if ($this->disabled) { return; }
 		parent::setValue($mixed);

@@ -14,6 +14,34 @@ class HorizontalSeparator extends Control {
 		$this->enableEvent('drop');
 	}
 	
+	public function __set_top($value) {
+		$this->getPrevious()->top    = 0;
+		$this->getPrevious()->bottom = null;
+		$this->getPrevious()->height = $value;
+		try {
+			$this->getNext()->top    = $value + $this->height;
+			$this->getNext()->bottom = 0;
+			$this->getNext()->height = null;
+		} catch (\Exception $e) {
+			
+		}
+		return $value;
+	}
+	
+	public function __set_bottom($value) {
+		$this->getPrevious()->top    = 0;
+		$this->getPrevious()->bottom = $value + $this->height;
+		$this->getPrevious()->height = null;
+		try {
+			$this->getNext()->top    = null;
+			$this->getNext()->bottom = 0;
+			$this->getNext()->height = $value;
+		} catch (\Exception $e) {
+			
+		}
+		return $value;
+	}
+	
 	public function getAllowedActions(): array {
 		return array_merge(parent::getAllowedActions(), ['drop']);
 	}
@@ -23,8 +51,6 @@ class HorizontalSeparator extends Control {
 			throw new Exception('Missing top parameter');
 		}
 		$this->top = $params['top']/1;
-		$this->getPrevious()->height = $this->top;
-		$this->getNext()->top = $this->top + $this->height;
 		$this->triggerEvent('drop', $params);
 	}
 	

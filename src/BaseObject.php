@@ -6,9 +6,9 @@ namespace Webos;
  */
 class BaseObject {
 
-	protected $_attributes = array();
+	protected $_attributes = [];
 
-	public function __construct(array $data = array()) {
+	public function __construct(array $data = []) {
 		if (!empty($data)) {
 			$this->_attributes = $data;
 		}
@@ -25,7 +25,7 @@ class BaseObject {
 	 */
 	public function __get($name) {
 		$getterMethod = '__get_' . $name;
-		if (is_callable(array($this, $getterMethod))) {			
+		if (is_callable([$this, $getterMethod])) {			
 			return $this->$getterMethod();
 		}
 		
@@ -47,7 +47,8 @@ class BaseObject {
 	 */
 	public function __set($name, $value) {
 		$setterMethod = '__set_' . $name;
-		if (is_callable(array($this, $setterMethod))) {
+		if (is_callable([$this, $setterMethod])) {
+			// echo "EXISTE!!\n";
 			$tValue = $this->$setterMethod($value);
 
 			// Si la función no retorna un valor,
@@ -74,7 +75,9 @@ class BaseObject {
 	 * @return <type>
 	 */
 	public function isAttribute(string $name): bool {
-		if (isset($this->_attributes[$name])) return true;
+		if (isset($this->_attributes[$name])) {
+			return true;
+		}
 
 		return false;
 	}
@@ -85,7 +88,7 @@ class BaseObject {
 	 *
 	 * @param array Atributos de la forma attributo=>valor
 	 */
-	final public function setAttributes(array $attributes) {
+	final public function setAttributes(array $attributes): void {
 		$this->_attributes = array_merge($this->_attributes, $attributes);
 	}
 

@@ -15,6 +15,7 @@ use Webos\Visual\Controls\Tree;
 use Webos\Visual\Controls\Frame;
 use Webos\Visual\Controls\Menu\Bar as MenuBar;
 use Webos\Visual\Controls\MultiTab;
+use Webos\Visual\Window;
 
 trait FormContainer {
 	protected $maxTopControl     = 15;
@@ -336,37 +337,50 @@ trait FormContainer {
 		$this->getParentWindow()->height = $this->maxTopControl + 45;
 	}
 	
-	public function splitVertical(): VisualObject {
+	public function splitVertical(int $distribution = 200): VisualObject {
 		$container = $this;
 		if ($this instanceof Window) {
 			$container = $this->createFrame();
 		}
 		$this->leftPanel = $container->createObject(Frame::class, [
-			'top'=>0, 'bottom'=>0, 'left'=>0, 'width'=>200,
+			'top'=>0, 'bottom'=>0
 		]);
-		$container->createObject(VerticalSeparator::class, [
-			'left'=>200, 'width'=>5,
+		$this->verticalSeparator = $container->createObject(VerticalSeparator::class, [
+			'width'=>5, 'top' => 0, 'bottom' => 0,
 		]);
 		$this->rightPanel = $container->createObject(Frame::class, [
-			'top'=>0, 'bottom'=>0, 'left'=>205, 'right'=>0,
+			'top'=>0, 'bottom'=>0
 		]);
+		if ($distribution<0) {
+			$this->verticalSeparator->right = abs($distribution);
+		}
+		if ($distribution>0) {
+			// echo "SETEAMOS \$this->verticalSeparator->left = abs($distribution);\n";
+			$this->verticalSeparator->left = abs($distribution);
+		}
 		return $this;
 	}
 	
-	public function splitHorizontal(): VisualObject {
+	public function splitHorizontal(int $distribution = 200): VisualObject {
 		$container = $this;
-		if ($this instanceof \Webos\Visual\Window) {
+		if ($this instanceof Window) {
 			$container = $this->createFrame();
 		}
 		$this->topPanel = $container->createObject(Frame::class, [
-			'top'=>0, 'left'=>0, 'right'=>0, 'height'=>200,
+			'top'=>0, 'left'=>0, 'right'=>0,
 		]);
-		$container->createObject(HorizontalSeparator::class, [
-			'top'=>200, 'height'=>5,
+		$this->horizontallSeparator = $container->createObject(HorizontalSeparator::class, [
+			'height'=>5, 'left' => 0, 'right' => 0,
 		]);
 		$this->bottomPanel = $container->createObject(Frame::class, [
-			'left'=>0, 'right'=>0, 'bottom'=>0, 'top'=>205,
+			'left'=>0, 'right'=>0, 'bottom'=>0,
 		]);
+		if ($distribution<0) {
+			$this->horizontallSeparator->bottom = abs($distribution);
+		}
+		if ($distribution>0) {
+			$this->horizontallSeparator->top = abs($distribution);
+		}
 		return $this;
 	}
 }

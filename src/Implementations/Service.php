@@ -45,7 +45,7 @@ class Service {
 			$service = self::Create($userName, self::$_applicationName, self::$_applicationParams);
 		}
 		
-		if (!empty($_REQUEST['DEBUG'])) {
+		if (!empty($_REQUEST['debug'])) {
 			self::Debug($service);
 		}
 		

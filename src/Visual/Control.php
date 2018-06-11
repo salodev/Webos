@@ -7,7 +7,7 @@ use Exception;
 
 abstract class Control extends VisualObject {
 
-	final public function __construct(Application $application, VisualObject $parent, array $initialAttributes = array()) {
+	final public function __construct(Application $application, VisualObject $parent, array $initialAttributes = []) {
 		parent::__construct($application, $initialAttributes);
 
 		$this->_parentObject = $parent;
@@ -58,6 +58,36 @@ abstract class Control extends VisualObject {
 	
 	public function onFocus(callable $eventListener, array $contextData = []): self {
 		$this->bind('foucs', $eventListener, true, $contextData);
+		return $this;
+	}
+	
+	public function width(int $value): self {
+		$this->width = $value;
+		return $this;
+	}
+	
+	public function height(int $value): self {
+		$this->height = $value;
+		return $this;
+	}
+	
+	public function left(int $value): self {
+		$this->left = $value;
+		return $this;
+	}
+	
+	public function right(int $value): self {
+		$this->right = $value;
+		return $this;
+	}
+	
+	public function top(int $value): self {
+		$this->top = $value;
+		return $this;
+	}
+	
+	public function bottom(int $value): self {
+		$this->bottom = $value;
 		return $this;
 	}
 }
