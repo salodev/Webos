@@ -108,7 +108,7 @@ Directives.register('contextmenu', function(el){
 			left: ev.clientX,
 			data: value.length ? value : undefined
 		});
-	})
+	});
 });
 
 Directives.register('resize', function(el) {
@@ -304,9 +304,7 @@ Directives.register('ondrop', function(el) {
 
 Directives.register('key-press', function(el) {
 	var $el = $(el).is('[id]')?$(el):$(el).parents('[id]');
-	console.log('key-press', $el);
 	$el.unbind('keydown').keydown(function(ev) {
-		console.log('keydown', ev.key);
 		var allowedKeys = ($el.attr('key-press')||'').split(',');
 		var keyName, i;
 		for (i in allowedKeys) {
