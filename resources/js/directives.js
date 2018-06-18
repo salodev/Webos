@@ -60,7 +60,10 @@ Directives.register('ready', function(el) {
 
 Directives.register('update-value', function(el) {
 	$(el).unbind('change').bind('change', function() {
-		Webos.action('setValue', $(el).attr('id'), {value:$(el).val()});
+		Webos.action('setValue', $(el).attr('id'), {
+			value:$(el).val(),
+			ignoreUpdateObject: true
+		});
 	});
 });
 
@@ -293,10 +296,36 @@ Directives.register('ondrop', function(el) {
 	$(el).ondrop(function() {
 		var id = $(el).attr('id') || $(el).parents('[id]').attr('id');
 		var data = $(el).position();
-		data.ignoreUpdate = $(el).attr('ignore-update-object')? true: false;
+		data.ignoreUpdateObject = $(el).attr('ignore-update-object')? true: false;
 		Webos.action('drop', id, data);
 	});
 	
+});
+
+Directives.register('key-press', function(el) {
+	var $el = $(el).is('[id]')?$(el):$(el).parents('[id]');
+	console.log('key-press', $el);
+	$el.unbind('keydown').keydown(function(ev) {
+		console.log('keydown', ev.key);
+		var allowedKeys = ($el.attr('key-press')||'').split(',');
+		var keyName, i;
+		for (i in allowedKeys) {
+			keyName = allowedKeys[i];
+			if(ev.key==keyName) {
+				ev.preventDefault();
+				Webos.action($el.attr('key-press-action')||'keyPress', $el.attr('id'), {
+					ignoreUpdateObject: true,
+					key: ev.key 
+				});
+				break;
+			}
+		}
+	});
+});
+
+Directives.register('focus', function(el) {
+	console.log('focus', $(el).find('a,button,input').eq(0));
+	$(el).find('a,button,input').eq(0).focus();
 });
 
 $(function() {

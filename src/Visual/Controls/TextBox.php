@@ -11,7 +11,7 @@ class TextBox extends Field {
 			$html =  new StringChar(
 				'<textarea id="__id__" ' .
 					'class="TextFieldControl"__style__ ' .
-					'webos update-value __leavetyping__ ' .
+					'webos leavetyping ' .
 					'placeholder="__placeholder__" ' .
 					'name="__name__"__disabled__>__value__</textarea>'
 			);
@@ -20,7 +20,7 @@ class TextBox extends Field {
 				'<input id="__id__" ' .
 					'class="TextFieldControl"__style__ ' .
 					'type="text" ' .
-					'webos update-value __leavetyping__ ' .
+					'webos leavetyping ' .
 					'name="__name__" ' .
 					'placeholder="__placeholder__" ' .
 					'value="__value__"__disabled__ />'

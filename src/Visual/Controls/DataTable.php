@@ -115,14 +115,6 @@ class DataTable extends Control {
 		$this->rowIndex = $params['row'];
 		$this->triggerEvent('rowDoubleClick', array('row'=>$params['row']));
 	}
-
-	public function scroll(array $params = []): void {
-		//echo "hola";
-		$this->scrollTop  = $params['top' ] ?? 0;
-		$this->scrollLeft = $params['left'] ?? 0;
-	}
-	
-	
 	
 	public function contextMenu(array $params): void {
 		if (empty($params['top']) || empty($params['left'])) {
@@ -161,6 +153,7 @@ class DataTable extends Control {
 			'rowClick',
 			'rowDoubleClick',
 			'contextMenu',
+			'scroll',
 		];
 	}
 	

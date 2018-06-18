@@ -152,13 +152,13 @@ trait FormContainer {
 	 * @return \Webos\Visual\Controls\ToolBar
 	 */
 	public function createToolBar(array $params = []): ToolBar {
-		$this->topControl += 20;
-		$this->maxTopControl += 20;
+		$this->topControl += 15;
+		$this->maxTopControl += 15;
 		$parentWindow = $this->getParentWindow();
 		if (($params['fixedTo']??'top')=='bottom') {
 			$parentWindow->height = $this->topControl + 80;
 		} else {
-			$parentWindow->height = $parentWindow->height + $this->topControl + 20 + 40;
+			$parentWindow->height = $parentWindow->height + $this->topControl + 15 + 40;
 		}
 		return $this->createObject(ToolBar::class, array_merge([
 			'top' =>   0,
@@ -179,8 +179,8 @@ trait FormContainer {
 	 * @return \Webos\Visual\Controls\Menu\Bar
 	 */
 	public function createMenuBar(): MenuBar {
-		$this->topControl += 20;
-		$this->maxTopControl += 20;
+		$this->topControl += 16;
+		$this->maxTopControl += 16;
 		return $this->createObject(MenuBar::class);
 	}
 	
@@ -340,7 +340,12 @@ trait FormContainer {
 	public function splitVertical(int $distribution = 200): VisualObject {
 		$container = $this;
 		if ($this instanceof Window) {
-			$container = $this->createFrame();
+			$container = $this->createFrame([
+				// 'top'    => $this->maxTopControl>15??20,
+				'left'   => 5,
+				'right'  => 5,
+				'bottom' => 5,
+			]);
 		}
 		$this->leftPanel = $container->createObject(Frame::class, [
 			'top'=>0, 'bottom'=>0

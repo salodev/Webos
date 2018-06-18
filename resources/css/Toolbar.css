@@ -1,5 +1,5 @@
 .Toolbar {
-	height:36px;
+	height:31px;
 	left:0;
 	right:0;
 	position:absolute;
@@ -8,15 +8,29 @@
 	top: 0;
 	border-bottom:solid 1px #CCC;
 }
+.Toolbar.top > * {
+	margin-bottom: 5px;
+}
 .Toolbar.bottom {
 	bottom: 0;
 	border-top:solid 1px #CCC;
 }
+.Toolbar.bottom > * {
+	margin-top: 5px;
+}
 .Toolbar.contentRight {
 	text-align: right;
 }
+.Toolbar.contentRight > * {
+	margin-right: 0;
+	margin-left: 5px;
+}
 .Toolbar.contentLeft {
 	text-align: left;
+}
+.Toolbar.contentLeft > * {
+	margin-right: 5px;
+	margin-left: 0;
 }
 
 .Toolbar > * {
@@ -25,9 +39,12 @@
 	box-sizing:border-box;
 	height:25px;
 	padding: 3px 8px;
-	margin: 5px 5px 5px 0;
+	margin: 0 5px 0 0;
 }
-
+.Toolbar.bottom > * {
+	margin-top: 5px;
+	margin-bottom: 0;
+}
 .Toolbar .LabelControl:first-child {padding: 3px 8px 3px 0; }
 
 .VerticalSeparator {

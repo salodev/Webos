@@ -129,4 +129,11 @@ class EventsHandler {
 		$di = new DependencyInjector();
 		return $di->buildDependenciesFromArray($list, $dependencies);
 	}
+	
+	public function getListenersFor($eventName): array {
+		if (!array_key_exists($eventName, $this->events)) {
+			return [];
+		}
+		return $this->events[$eventName];
+	}
 }

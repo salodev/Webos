@@ -56,6 +56,33 @@ class Window extends Container {
 			'focus',
 			'contextMenu',
 			'newData',
+			'keyPress',
+			'keyPressEscape',
+			'keyPressEnter',
+			'keyPressF1',
+			'keyPressF2',
+			'keyPressF3',
+			'keyPressF4',
+			'keyPressF5',
+			'keyPressF6',
+			'keyPressF7',
+			'keyPressF8',
+			'keyPressF9',
+			'keyPressF10',
+			'keyPressF11',
+			'keyPressF12',
+			'keyPressArrowUp',
+			'keyPressArrowDown',
+			'keyPressArrowLeft',
+			'keyPressPageDown',
+			'keyPressPageUp',
+			'keyPressHome',
+			'keyPressEnd',
+			'keyPressInsert',
+			'keyPressDelete',
+			'keyPressShift',
+			'keyPressControl',
+			'keyPressAlt',
 		);
 	}
 
@@ -70,6 +97,7 @@ class Window extends Container {
 			'focus',
 			'ready',
 			'contextMenu',
+			'keyPress',
 		);
 	}
 	
@@ -137,6 +165,14 @@ class Window extends Container {
 
 	public function focus() {
 		$this->triggerEvent('focus');
+	}
+	
+	public function keyPress(array $params = []) {
+		$this->triggerEvent('keyPress', [
+			'key' => $params['key'],
+		]);
+		
+		$this->triggerEvent("keyPress{$params['key']}");
 	}
 	
 	public function isActive() {
@@ -285,6 +321,20 @@ class Window extends Container {
 		return $this;
 	}
 	
+	public function onKeyPress(callable $function, bool $persistent = true, array $context = []): self {
+		$this->bind('keyPress', $function, $persistent, $context);
+		return $this;
+	}
+	
+	public function onKeyEscape(callable $function, bool $persistent = true, array $context = []): self {
+		$this->bind('keyPressEscape', $function, $persistent, $context);
+		return $this;
+	}
+	public function onKeyF1(callable $function, bool $persistent = true, array $context = []): self {
+		$this->bind('keyPressF1', $function, $persistent, $context);
+		return $this;
+	}
+	
 	public function render(): string {
 		$html = $this->_getRenderTemplate();
 		$content = $this->text ?? '';
@@ -298,11 +348,33 @@ class Window extends Container {
 	 * @return \Webos\StringChar
 	 */
 	protected function _getRenderTemplate(): StringChar {
+		$keys = [];
+		$directives = [
+			'resize',
+			'focus',
+		];
+		if ($this->hasListenerFor('keyPressEscape')) {
+			$keys[] = 'Escape';
+		}
+		if ($this->hasListenerFor('keyPressF1')) {
+			$keys[] = 'F1';
+		}
+
+		if (count($keys)) {
+			$keys = implode(',', array_unique($keys));
+			$directives[] = "key-press=\"{$keys}\"";
+		}
+		if ($this->hasListenerFor('ready')) {
+			$directives[] = 'ready';
+		}
+		if ($this->allowResize) {
+			$directives[] = 'resize';
+		}
 		$html = new StringChar(
 			'<div 
 				id="__ID__" 
 				class="Window form-wrapper__ACTIVE____STATUS__"
-				style="__STYLE__"__READY__' . (($this->allowResize ?? true) ? ' webos resize' : '') .
+				style="__STYLE__"__READY__ __DIRECTIVES__' .
 			'>' .
 				'<div class="form-titlebar">' .
 					($this->showTitle ?
@@ -338,7 +410,7 @@ class Window extends Container {
 					
 		}
 		
-		$hasReadyListeners = $this->_eventsHandler->hasListenersForEventName('ready');
+		$hasReadyListeners = $this->hasListenerFor('ready');
 		
 
 		$styles = array(
@@ -357,13 +429,14 @@ class Window extends Container {
 		}
 		
 		$html->replaces(array(
-			'__ID__'        => $this->getObjectID(),
-			'__ACTIVE__'    => $active,
-			'__STATUS__'    => $status,
-			'__TITLE__'     => $this->title,
-			'__STYLE__'     => $this->getAsStyles($styles),
-			'__AUTOFOCUS__' => $autofocus,
-			'__READY__'     => $hasReadyListeners ? 'webos ready': '',
+			'__ID__'         => $this->getObjectID(),
+			'__ACTIVE__'     => $active,
+			'__STATUS__'     => $status,
+			'__TITLE__'      => $this->title,
+			'__STYLE__'      => $this->getAsStyles($styles),
+			'__AUTOFOCUS__'  => $autofocus,
+			'__READY__'      => $hasReadyListeners ? 'webos ready': '',
+			'__DIRECTIVES__' => count($directives) ? 'webos ' . implode(' ', $directives): '',
 		));
 
 		return $html;

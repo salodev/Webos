@@ -36,12 +36,6 @@ class Tree extends Control {
 		return $this->_selectedNode instanceof TreeNode;
 	}
 	
-	public function scroll(array $params = array()) {
-		//echo "hola";
-		$this->scrollTop  = $params['top' ] ?? 0;
-		$this->scrollLeft = $params['left'] ?? 0;
-	}
-	
 	public function getAllowedActions(): array {
 		return array('scroll');
 	}
@@ -51,6 +45,7 @@ class Tree extends Control {
 			'nodeToggled',
 			'nodeSelected',
 			'contextMenu',
+			'scroll',
 		];
 	}
 	/**

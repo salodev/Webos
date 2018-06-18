@@ -3,7 +3,7 @@ namespace Webos\Visual\Controls;
 
 use Webos\StringChar;
 
-class PasswordBox extends Field {
+class PasswordBox extends TextBox {
 	public function render(): string {
 		$html = new StringChar(
 			'<input ' .
@@ -12,7 +12,7 @@ class PasswordBox extends Field {
 				'__style__ ' .
 				'type="password" ' .
 				'name="__name__" ' .
-				'webos update-value ' .
+				'webos leavetyping ' .
 				'value="__value__" ' .
 			'/>'
 		);

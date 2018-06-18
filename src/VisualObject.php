@@ -319,6 +319,12 @@ abstract class VisualObject extends BaseObject {
 			throw new Exception("Action $name not allowed by " . get_class($this) . " object.");
 		}
 	}
+	
+	public function scroll(array $params = []): void {
+		$this->scrollTop  = $params['top' ] ?? 0;
+		$this->scrollLeft = $params['left'] ?? 0;
+		$this->triggerEvent('scroll');
+	}
 
 	/* IWithEvents */
 	public function bind(string $eventName, $eventListener, bool $persistent = true, array $contextData = []): self {

@@ -38,10 +38,6 @@ class HtmlContainer extends Control {
 		]);
 	}
 	
-	public function scroll(): void {
-		$this->triggerEvent('scroll');
-	}
-	
 	public function getAllowedActions(): array {
 		return array_merge(parent::getAllowedActions(), ['scroll']);
 	}

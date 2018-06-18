@@ -136,7 +136,7 @@ class SystemInterface {
 
 	public function addCreateNotification(VisualObject $object): self {
 		
-		Log::write('CREATE: ' . $object->getObjectID() . "\n");
+		// Log::write('CREATE: ' . $object->getObjectID() . "\n");
 		// Verifica si tiene que agregar a la lista de notificaciones.
 		if ($this->checkNeccessary($object->getObjectID())) {
 			$this->_notifications['create'][] = $object;
@@ -148,7 +148,9 @@ class SystemInterface {
 	public function addUpdateNotification(VisualObject $object): self {
 		// $e = new Exception();
 		// Log::write('UPDATE: ' . $object->getObjectID() . "\n" . 'parent: ' . $object->getParentWindow()->getObjectId() . "\n\n" . $e->getTraceAsString() . "\n--------------------------------------\n\n");
-		Log::write('UPDATE: ' . $object->getObjectID() . "\n" . 'parent: ' . $object->getParentWindow()->getObjectId());
+		// Log::write('UPDATE: ' . $object->getObjectID() . "\n" . 'parent: ' . $object->getParentWindow()->getObjectId());
+		//Log::write((new Exception)->getTraceAsString());
+		//Log::write("---------------------------------------\n");
 		// Verifica si tiene que agregar a la lista de notificaciones.
 		if ($this->checkNeccessary($object->getObjectID())) {
 			$this->_notifications['update'][] = $object;
@@ -372,7 +374,6 @@ class SystemInterface {
 			case 'updateObject':
 				if (isset($params['object'])){
 					$this->addUpdateNotification($params['object']);
-
 				}
 			break;
 		}
