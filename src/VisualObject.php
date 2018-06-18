@@ -30,15 +30,8 @@ abstract class VisualObject extends BaseObject {
 		$this->_application = $application;
 		
 		$this->checkRequiredParams($data);
-
-		$initialAttributes = $this->getInitialAttributes();
-
-		// Me aseguro que
-		if (is_array($initialAttributes)) {
-			$data = array_merge($this->getInitialAttributes(), $data);
-		} else {
-			throw new Exception(__CLASS__ . '::getInitialAttributes() must return an array.');
-		}
+		
+		$data = array_merge($this->getInitialAttributes(), $data);
 
 		parent::__construct($data);
 		
@@ -53,7 +46,7 @@ abstract class VisualObject extends BaseObject {
 		$requiredParams = $this->getRequiredParams();
 		foreach($requiredParams as $name) {
 			if (!isset($params[$name])) {
-				throw new Exception('Missing required param to initialize object.');
+				throw new Exception("Missing required param to initialize object: '{$name}'");
 			}
 		}
 	}
