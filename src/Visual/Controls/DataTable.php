@@ -10,10 +10,11 @@ use Webos\Visual\Control;
 class DataTable extends Control {
 	// public $rowIndex = null;
 	public function initialize() {
-		$this->rows       = array();
-		$this->columns    = new Collection();
-		$this->rowIndex   = null;
-		$this->columInded = null;
+		$this->rows        = [];
+		$this->columns     = new Collection();
+		$this->rowIndex    = null;
+		$this->columnIndex = null;
+		$this->columnName  = null;
 	}
 
 	public function getInitialAttributes(): array {
@@ -97,6 +98,7 @@ class DataTable extends Control {
 
 		$row       = $params['row'];
 		$fieldName = $params['fieldName'];
+		$this->columnName = $fieldName;
 		$rowData   = $this->getRowData($row);
 		$cellValue = &$rowData[$fieldName];
 		
@@ -254,5 +256,9 @@ class DataTable extends Control {
 		$html .= '</div>'; // end DataTable
 
 		return $html;
+	}
+	
+	public function getColumnName(): string {
+		return $this->columnName;
 	}
 }

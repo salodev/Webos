@@ -23,11 +23,14 @@ class Embedder extends Window {
 	
 	public function tabWindow(string $title, string $windowClass, array $params = []) {
 		$tab = $this->tabs->addTab($title);
-		$tab->embedWindowOnSelect($windowClass, $params);
 		$tab->onEmbedded(function($data) {
 			$data['window']->onNewData(function() {
 				$this->newData();
 			});
+			$data['window']->onClose(function() {
+				$this->close();
+			});
 		});
+		$tab->embedWindowOnSelect($windowClass, $params);
 	}	
 }

@@ -18,7 +18,7 @@ class Auth extends Application {
 		
 		$tlogin = $t->addTab('Login');
 		$this->tlogin = $tlogin;
-		$tlogin->createTextBox('Username', 'username', ['width'=>200, 'labelWidth' => 130]);
+		$u = $tlogin->createTextBox('Username', 'username', ['width'=>200, 'labelWidth' => 130]);
 		$tlogin->createPasswordBox('Password', 'password');
 		
 		$tlogin->createWindowButton('Login')->onClick(function() {
@@ -67,6 +67,8 @@ class Auth extends Application {
 		$treg->onSelect(function() {
 			$this->authWindow->height = 320;
 		});
+		
+		$u->focus();
 	}
 	
 	public function getProvider(): string {

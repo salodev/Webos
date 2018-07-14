@@ -20,7 +20,8 @@
 	box-sizing:border-box !important;
 }
 body{
-    background:#f6f6f6;
+    background-color:#f6f6f6;
+    background-image:url('/img/bg.png');
     font-family:Helvetica;
     font-size:14px;
     margin:0;

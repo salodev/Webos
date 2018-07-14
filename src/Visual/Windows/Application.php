@@ -10,6 +10,7 @@ class Application extends Window {
 		$this->bottom = 0;
 		$this->right  = 0;
 		$this->left   = 0;
+		$this->backgroundColor = '#f9f9f9';
 	}
 	
 	public function render(): string {

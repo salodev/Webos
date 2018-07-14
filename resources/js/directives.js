@@ -320,10 +320,14 @@ Directives.register('key-press', function(el) {
 		}
 	});
 });
+Directives.register('capture-typing', function(el) {
+	/**
+	 * nothing yet.
+	 */
+});
 
 Directives.register('focus', function(el) {
-	console.log('focus', $(el).find('a,button,input').eq(0));
-	$(el).find('a,button,input').eq(0).focus();
+	($(el).is('[id]')?$(el):$(el).parents('[id]')).focus();
 });
 
 $(function() {

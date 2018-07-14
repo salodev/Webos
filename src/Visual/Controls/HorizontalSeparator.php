@@ -47,6 +47,9 @@ class HorizontalSeparator extends Control {
 	}
 	
 	public function drop($params) {
+		if (!$this->draggable) {
+			return;
+		}
 		if (!isset($params['top'])) {
 			throw new Exception('Missing top parameter');
 		}
@@ -55,7 +58,9 @@ class HorizontalSeparator extends Control {
 	}
 	
 	public function render(): string {
-		$style = $this->getInlineStyle(true);
-		return "<div class=\"resize-vertical\" id=\"{$this->getObjectID()}\" webos drag-vertical ondrag-vertical ondrop ignore-update-object=\"yes\" {$style} >&nbsp;</div>";
+		$style      = $this->getInlineStyle(true);
+		$directives = $this->draggable ? 'webos drag-vertical ondrag-vertical ondrop ignore-update-object="yes"' : '';
+		$class      = $this->draggable ? 'resize-vertical' : '';
+		return "<div class=\"{$class}\" id=\"{$this->getObjectID()}\" {$directives} {$style} >&nbsp;</div>";
 	}
 }

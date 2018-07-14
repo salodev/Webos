@@ -337,11 +337,10 @@ trait FormContainer {
 		$this->getParentWindow()->height = $this->maxTopControl + 45;
 	}
 	
-	public function splitVertical(int $distribution = 200): VisualObject {
+	public function splitVertical(int $distribution = 200, bool $draggable = true): VisualObject {
 		$container = $this;
 		if ($this instanceof Window) {
 			$container = $this->createFrame([
-				// 'top'    => $this->maxTopControl>15??20,
 				'left'   => 5,
 				'right'  => 5,
 				'bottom' => 5,
@@ -351,7 +350,7 @@ trait FormContainer {
 			'top'=>0, 'bottom'=>0
 		]);
 		$this->verticalSeparator = $container->createObject(VerticalSeparator::class, [
-			'width'=>5, 'top' => 0, 'bottom' => 0,
+			'width'=>5, 'top' => 0, 'bottom' => 0, 'draggable' => $draggable,
 		]);
 		$this->rightPanel = $container->createObject(Frame::class, [
 			'top'=>0, 'bottom'=>0
@@ -360,13 +359,12 @@ trait FormContainer {
 			$this->verticalSeparator->right = abs($distribution);
 		}
 		if ($distribution>0) {
-			// echo "SETEAMOS \$this->verticalSeparator->left = abs($distribution);\n";
 			$this->verticalSeparator->left = abs($distribution);
 		}
 		return $this;
 	}
 	
-	public function splitHorizontal(int $distribution = 200): VisualObject {
+	public function splitHorizontal(int $distribution = 200, bool $draggable = true): VisualObject {
 		$container = $this;
 		if ($this instanceof Window) {
 			$container = $this->createFrame();
@@ -375,7 +373,7 @@ trait FormContainer {
 			'top'=>0, 'left'=>0, 'right'=>0,
 		]);
 		$this->horizontallSeparator = $container->createObject(HorizontalSeparator::class, [
-			'height'=>5, 'left' => 0, 'right' => 0,
+			'height'=>5, 'left' => 0, 'right' => 0, 'draggable' => $draggable,
 		]);
 		$this->bottomPanel = $container->createObject(Frame::class, [
 			'left'=>0, 'right'=>0, 'bottom'=>0,

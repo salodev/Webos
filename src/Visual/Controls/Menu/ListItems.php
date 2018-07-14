@@ -38,6 +38,12 @@ class ListItems extends Control {
 			'shortCut' => $shortCut,
 		)));
 	}
+	public function createControlItem($className, array $params = []): Control {
+		$item = $this->createObject(ControlItem::class);
+		$control = $item->createObject($className, $params);
+		$control->focus();
+		return $control;
+	}
 	
 	public function createSeparator() {
 		return $this->createObject(Separator::class);

@@ -387,6 +387,7 @@ abstract class VisualObject extends BaseObject {
 			'border',
 			'text-align',
 			'backgroundImage',
+			'backgroundColor',
 			'overflow-x',
 			'margin-top',
 			'margin-bottom',
@@ -409,6 +410,9 @@ abstract class VisualObject extends BaseObject {
 			if ($name == 'backgroundImage') {
 				$name = 'background-image';
 				$value = "url({$value})";
+			}
+			if ($name == 'backgroundColor') {
+				$name = 'background-color';
 			}
 			if (strlen("$value")) {
 				$styles[$name] = $value;

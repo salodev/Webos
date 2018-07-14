@@ -46,9 +46,19 @@ class Window extends Container {
 	public function controls() {
 		return $this->_childObjects;
 	}
+	
+	protected function _getKeysForEvents(): array {
+		return [
+			'Escape','Enter',
+			'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
+			'ArrowUp','ArrowDown','ArrowLeft','PageDown','PageUp',
+			'Home','End','Insert','Delete',
+			'Shift','Control','Alt',			
+		];
+	}
 
 	public function getAvailableEvents(): array {
-		return array(
+		$eventNames = [
 			'move',
 			'click',
 			'close',
@@ -57,33 +67,11 @@ class Window extends Container {
 			'contextMenu',
 			'newData',
 			'keyPress',
-			'keyPressEscape',
-			'keyPressEnter',
-			'keyPressF1',
-			'keyPressF2',
-			'keyPressF3',
-			'keyPressF4',
-			'keyPressF5',
-			'keyPressF6',
-			'keyPressF7',
-			'keyPressF8',
-			'keyPressF9',
-			'keyPressF10',
-			'keyPressF11',
-			'keyPressF12',
-			'keyPressArrowUp',
-			'keyPressArrowDown',
-			'keyPressArrowLeft',
-			'keyPressPageDown',
-			'keyPressPageUp',
-			'keyPressHome',
-			'keyPressEnd',
-			'keyPressInsert',
-			'keyPressDelete',
-			'keyPressShift',
-			'keyPressControl',
-			'keyPressAlt',
-		);
+		];
+		foreach($this->_getKeysForEvents() as $keyName) {
+			$eventNames[] = "keyPress{$keyName}";
+		}
+		return $eventNames;
 	}
 
 	public function getAllowedActions(): array {
@@ -334,6 +322,14 @@ class Window extends Container {
 		$this->bind('keyPressF1', $function, $persistent, $context);
 		return $this;
 	}
+	public function onKeyF5(callable $function, bool $persistent = true, array $context = []): self {
+		$this->bind('keyPressF5', $function, $persistent, $context);
+		return $this;
+	}
+	public function onKeyPageDown(callable $function, bool $persistent = true, array $context = []): self {
+		$this->bind('keyPressPageDown', $function, $persistent, $context);
+		return $this;
+	}
 	
 	public function render(): string {
 		$html = $this->_getRenderTemplate();
@@ -351,13 +347,13 @@ class Window extends Container {
 		$keys = [];
 		$directives = [
 			'resize',
-			'focus',
+			// 'focus',
 		];
-		if ($this->hasListenerFor('keyPressEscape')) {
-			$keys[] = 'Escape';
-		}
-		if ($this->hasListenerFor('keyPressF1')) {
-			$keys[] = 'F1';
+		foreach($this->_getKeysForEvents() as $keyName) {
+			$eventName = "keyPress{$keyName}";
+			if ($this->hasListenerFor($eventName)) {
+				$keys[] = $keyName;
+			}
 		}
 
 		if (count($keys)) {

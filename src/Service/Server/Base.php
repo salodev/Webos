@@ -27,6 +27,10 @@ class Base {
 		self::$_actionHandlers[$name] = $handler;
 	}
 	
+	static public function GetActionsList(): array {
+		return array_keys(self::$_actionHandlers);
+	}
+	
 	static public function Call($name, $token, array $data = [])  {
 		if (self::$_token) {
 			if (!$token) {

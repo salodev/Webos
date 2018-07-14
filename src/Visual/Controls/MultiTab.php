@@ -18,6 +18,7 @@ class MultiTab extends Control {
 			throw new Exception('Missing index param');
 		}
 		$this->setActiveTab($this->getChildObjects()->item($params['index']));
+		$this->modified();
 		return $this;
 	}
 	

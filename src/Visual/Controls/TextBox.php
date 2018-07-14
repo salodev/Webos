@@ -11,7 +11,7 @@ class TextBox extends Field {
 			$html =  new StringChar(
 				'<textarea id="__id__" ' .
 					'class="TextFieldControl"__style__ ' .
-					'webos leavetyping ' .
+					'webos leavetyping __focus__ __captureTyping__ ' .
 					'placeholder="__placeholder__" ' .
 					'name="__name__"__disabled__>__value__</textarea>'
 			);
@@ -20,7 +20,7 @@ class TextBox extends Field {
 				'<input id="__id__" ' .
 					'class="TextFieldControl"__style__ ' .
 					'type="text" ' .
-					'webos leavetyping ' .
+					'webos leavetyping __focus__ __captureTyping__ ' .
 					'name="__name__" ' .
 					'placeholder="__placeholder__" ' .
 					'value="__value__"__disabled__ />'
@@ -36,6 +36,8 @@ class TextBox extends Field {
 			'__style__'       => $this->getInlineStyle(),
 			'__disabled__'    => $this->disabled ? ' disabled="disabled"' : '',
 			'__leavetyping__' => $hasLeaveTypingEvent ? ' leavetyping' : '',
+			'__focus__'       => $this->hasFocus() ? 'focus' : '',
+			' __captureTyping__'=> $this->captureTyping() ? 'capture-typing' : '',
 		));
 
 		return $html;

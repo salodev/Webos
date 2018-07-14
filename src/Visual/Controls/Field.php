@@ -5,6 +5,7 @@ use Webos\Visual\Control;
 
 abstract class Field extends Control {
 	protected $_linkedField = null;
+	protected $_captureTyping = false;
 
 	public function setLinkedField(&$field){
 		$this->_linkedField = $field;
@@ -80,6 +81,13 @@ abstract class Field extends Control {
 	public function onUpdateValue(callable $callback): Field {
 		$this->bind('updateValue', $callback);
 		return $this;
+	}
+	
+	public function captureTyping(bool $value = null): bool {
+		if ($value !== null) {
+			$this->_captureTyping = $value;
+		}
+		return $this->_captureTyping;
 	}
 	
 	/**

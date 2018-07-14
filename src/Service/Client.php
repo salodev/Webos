@@ -1,7 +1,7 @@
 <?php
 namespace Webos\Service;
 use Exception;
-use salodev\ClientSocket as Socket;
+use salodev\IO\ClientSocket as Socket;
 
 class Client {
 	

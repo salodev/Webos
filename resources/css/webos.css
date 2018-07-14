@@ -1,3 +1,12 @@
+body{
+    background:#f6f6f6;
+    font-family:Helvetica;
+    font-size:14px;
+    margin:0;
+}
+* {
+	box-sizing: border-box;
+}
 
 .filled {
 	background-color:#4285f4;
@@ -14,8 +23,8 @@
 	margin: 5px !important;
 }
 
-* {
+.text-container {
 	border:none;
-	padding:5px;
+	padding:8px;
 	margin: 0;
 }

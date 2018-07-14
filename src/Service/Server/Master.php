@@ -6,9 +6,9 @@ use Exception;
 use Webos\Service\Server\Base as BaseServer;
 use Webos\Service\Server\User as UserServer;
 use Webos\Service\Client;
-use salodev\Thread;
-use salodev\Child;
-use salodev\ClientSocket;
+use salodev\Pcntl\Thread;
+use salodev\Pcntl\Child;
+use salodev\IO\ClientSocket;
 
 class Master {
 	
@@ -30,8 +30,11 @@ class Master {
 		];
 	}
 	
-	static public function GetUserInfo($userName) {
-		return self::$_usersInfo[$userName] ?? false;
+	static public function GetUserInfo(string $userName): array {
+		if (!isset(self::$_usersInfo[$userName])) {
+			throw new Exception('User info not found');
+		}
+		return self::$_usersInfo[$userName];
 	}
 	
 	static private function _SelectNewPort($userPort) {
@@ -47,8 +50,9 @@ class Master {
 	
 	static public function CheckUserService($userName) {
 		echo "looking for '{$userName}' service info...";
-		$userInfo = self::GetUserInfo($userName);
-		if (!$userInfo) {
+		try {
+			$userInfo = self::GetUserInfo($userName);
+		} catch (Exception $e) {
 			echo "NOT FOUND\n";
 			return false;
 		}
@@ -56,7 +60,7 @@ class Master {
 		
 		$port = $userInfo['port'];
 		try {
-			echo "making connection test for {$username} in port no:{$port}...";
+			echo "making connection test for {$userName} in port no:{$port}...";
 			$socket = ClientSocket::Create('127.0.0.1', $port, 0.5);
 			$socket->close();
 			echo "OK\n";
@@ -128,9 +132,6 @@ class Master {
 	
 	static public function RemoveUserService($userName) {
 		$userInfo = self::GetUserInfo($userName);
-		if (!$userInfo) {
-			throw new Exception('User service not found');
-		}
 		$userInfo['child']->kill();
 		unset(self::$_usersInfo[$userName]);
 		return true;
@@ -193,6 +194,16 @@ class Master {
 				];
 			}
 			return $rs;
+		});
+		
+		BaseServer::RegisterActionHandler('safeReload', function(array $data) {
+			if (empty($data['userName'])) {
+				throw new Exception('Missing userName param');
+			}
+		});
+		
+		BaseServer::RegisterActionHandler('listCommands', function() {
+			return BaseServer::GetActionsList();
 		});
 		
 		BaseServer::Listen($host, $port);

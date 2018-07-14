@@ -31,6 +31,11 @@ class Service {
 	}
 	
 	static public function Start(): void {
+		$uri = $_SERVER['REQUEST_URI'];
+		if (preg_match('/^\/(img|js|css|fonts)\/.*/', $uri, $matches)) {
+			ResourcesLoader::ServeFile($matches[1], $matches[0]);
+		}
+		
 		if (empty($_SESSION['username'])) {
 			if (empty($_SESSION['ws'])) {
 				if (($_SERVER['HTTP_X_REQUESTED_WITH']??null)=='XMLHttpRequest') {
