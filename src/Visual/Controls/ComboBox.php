@@ -61,4 +61,14 @@ class ComboBox extends Field {
 		$html .='</select>';
 		return $html;
 	}
+	
+	public function options(array $options = []): self {
+		$this->options = $options;
+		return $this;
+	}
+	
+	public function assoc(bool $value): self {
+		$this->assoc = $value;
+		return $this;
+	}
 }

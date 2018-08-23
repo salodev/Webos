@@ -172,11 +172,11 @@ abstract class VisualObject extends BaseObject {
 		return $object instanceof VisualObject;
 	}
 
-	final public function getObjectsByClassName($className): ObjectsCollection {
+	final public function getObjectsByClassName(string $className): ObjectsCollection {
 		return $this->_childObjects->getObjectsByClassName($className);
 	}
 
-	final public function getObjectsFromAttributes($params): ObjectsCollection {
+	final public function getObjectsFromAttributes(array $params): ObjectsCollection {
 		return $this->_childObjects->getObjectsFromAttributes($params);
 	}
 
@@ -290,7 +290,7 @@ abstract class VisualObject extends BaseObject {
 		}
 	}
 
-	public function getParentByClassName($className): VisualObject {
+	public function getParentByClassName(string $className): VisualObject {
 		$parent = $this->_parentObject;
 		if (!($parent instanceof VisualObject)) {
 			return null;
@@ -368,7 +368,7 @@ abstract class VisualObject extends BaseObject {
 		return $html;
 	}
 	
-	public function getInlineStyle($absolutize = true): string {
+	public function getInlineStyle(bool $absolutize = true): string {
 		
 		$attrs = $this->getAttributes();
 
