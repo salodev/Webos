@@ -2,22 +2,23 @@
 
 namespace Webos\FrontEnd;
 
-class Page {
+class Page implements PageWrapper {
 	private $body = null;
 
-	public function setContent($html) {
+	public function setContent(string $html): PageWrapper {
 		$this->body = $html;
+		return $this;
 	}
 
-	public function show() {
+	public function show(): void {
 		echo $this->renderTemplate($this->body);
 	}
 	
-	public function getHTML() {
+	public function getHTML(): string {
 		return $this->renderTemplate($this->body);
 	}
 
-	private function renderTemplate($content) {
+	private function renderTemplate(string $content): string {
 		$html =
 			'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' .
 			'<html xmlns="http://www.w3.org/1999/xhtml">' .

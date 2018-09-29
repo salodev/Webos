@@ -90,6 +90,16 @@ abstract class Field extends Control {
 		return $this->_captureTyping;
 	}
 	
+	public function enable(bool $value = true): self {
+		$this->disabled = !$value;
+		return $this;
+	}
+	
+	public function disable(bool $value = true): self {
+		$this->disabled = $value;
+		return $this;
+	}
+	
 	/**
 	 * Alias for onUpdateValue. Easy to remember by using of jQuery or
 	 * HTML DOM events.

@@ -74,7 +74,7 @@ class DataTable extends Control {
 		$i = 0;
 		foreach($this->rows as $row) {
 			if ($i==$rowIndex) {
-				return $row;
+				return (array) $row;
 			}
 			$i++;
 		}
@@ -225,7 +225,7 @@ class DataTable extends Control {
 				 * Para ello, los niveles se separan con . y aquí el código
 				 * va iterando y excavando los niveles hasta obtener el valor.
 				 */
-				$rowValue = $row;
+				$rowValue = (array)$row;
 				$fieldParts = explode('.', $column->fieldName);
 				foreach($fieldParts as $fieldPart) {
 					$rowValue = $rowValue[$fieldPart]??'';

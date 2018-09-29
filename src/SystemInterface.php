@@ -97,14 +97,7 @@ class SystemInterface {
 	}
 	
 	public function renderAll(): string {
-		$html = $this->getWorkSpace()
-				->getApplications()
-				->getVisualObjects()
-				->render();
-		
-		$page = new Page();
-		$page->setContent($html);
-		return $page->getHTML();
+		return $this->getWorkSpace()->renderAll();
 	}
 
 	public function getActiveApplication(): Application {

@@ -2,6 +2,8 @@
 namespace Webos;
 
 use Webos\Visual\Window;
+use Webos\FrontEnd\PageWrapper;
+use Webos\FrontEnd\Page;
 
 /**
  * El WorkSpace es el entorno donde se ejecutarán todas las posibles
@@ -10,14 +12,14 @@ use Webos\Visual\Window;
  * proporciona a las mismas acceso al objeto System que la contiene.
  **/
 class WorkSpace {
-	protected $_applications = null;
-	protected $_activeApplication = null;
-	protected $_eventsHandler = null;
-	protected $_name = null;
-	protected $_info = [];
-
-	protected $_systemEnvironment = null;
 	
+	protected $_applications      = null;
+	protected $_activeApplication = null;
+	protected $_eventsHandler     = null;
+	protected $_name              = null;
+	protected $_info              = [];
+	protected $_pageWrapper       = null;
+	protected $_systemEnvironment = null;
 	protected static $_current = null;
 	
 	static public function SetCurrent(self $workSpace) {
@@ -39,11 +41,12 @@ class WorkSpace {
 	public function getInfo($name) {
 		return $this->_info[$name];
 	}
-
+	
 	public function __construct(string $name) {
 		$this->_name = $name;
 		$this->_applications = new ApplicationsCollection();
 		$this->_eventsHandler = new EventsHandler();
+		$this->setPageWrapper(new Page);
 		return $this;
 	}
 	
@@ -165,5 +168,22 @@ class WorkSpace {
 		 **/
 		$this->getSystemEnvironment()->triggerEvent($eventName, $source, $params);		
 		return $this;
+	}
+	
+	public function setPageWrapper(PageWrapper $pageWrapper): void {
+		$this->_pageWrapper = $pageWrapper;
+	}
+	
+	public function getPageWrapper(): PageWrapper {
+		return $this->_pageWrapper;
+	}
+	
+	public function renderAll(): string {
+		$html = $this
+				->getApplications()
+				->getVisualObjects()
+				->render();
+		
+		return $this->getPageWrapper()->setContent($html)->getHTML();
 	}
 }

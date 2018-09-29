@@ -59,6 +59,7 @@ class Window extends Container {
 
 	public function getAvailableEvents(): array {
 		$eventNames = [
+			'open',
 			'move',
 			'click',
 			'close',
@@ -248,6 +249,10 @@ class Window extends Container {
 		]);
 	}
 	
+	public function promptWindow(string $message, string $defaultValue = null): Prompt {
+		return $this->getParentApp()->openPromptWindow($message, $defaultValue);
+	}
+	
 	public function waitWindow(string $message, callable $callback): Wait {
 		return $this->openWindow(Wait::class, [
 			'message' => $message
@@ -294,6 +299,11 @@ class Window extends Container {
 		return $this;
 	}
 	
+	public function onOpen(callable $cb): self {
+		$this->bind('open', $cb);
+		return $this;
+	}
+	
 	public function onClose(callable $cb): self {
 		$this->bind('close', $cb);
 		return $this;
@@ -301,6 +311,14 @@ class Window extends Container {
 	
 	public function newData(array $params = []): self {
 		$this->triggerEvent('newData', $params);
+		return $this;
+	}
+	
+	public function syncDataWith(VisualObject $syncWith): self {
+		$this->onNewData(function($context, $data) {
+			$object = $context['syncWith'];
+			$object->newData($data);
+		}, true, ['syncWith' => $syncWith]);
 		return $this;
 	}
 	

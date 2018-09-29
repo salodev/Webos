@@ -45,7 +45,7 @@ class TextBox extends Field {
 	
 	public function multiline(bool $value): self {
 		$this->multiline = $value;
-		return self;
+		return $this;
 	}
 	
 	public function setValue($mixed) {

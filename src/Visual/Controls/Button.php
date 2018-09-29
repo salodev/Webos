@@ -3,6 +3,8 @@ namespace Webos\Visual\Controls;
 
 use Webos\Visual\Control;
 use Webos\StringChar;
+use salodev\Deferred;
+use salodev\Promise;
 
 class Button extends Control {
 	public function getAllowedActions(): array {

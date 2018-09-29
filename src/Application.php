@@ -5,6 +5,7 @@ use Webos\Visual\Container;
 use Webos\Visual\Window;
 use Webos\Visual\Windows\Exception as ExceptionWindow;
 use Webos\Visual\Windows\Message as MessageWindow;
+use Webos\Visual\Windows\Prompt as PromptWindow;
 use Exception;
 
 abstract class Application {
@@ -178,6 +179,13 @@ abstract class Application {
 			'title' => $title,
 			'message' => $message,
 		), $this->getActiveWindow());
+	}
+	
+	public function openPromptWindow(string $message, string $defaultValue = null): PromptWindow {
+		return $this->openWindow(PromptWindow::class, [
+			'message'      => $message,
+			'defaultValue' => $defaultValue,
+		], $this->getActiveWindow());
 	}
 
 	/**
