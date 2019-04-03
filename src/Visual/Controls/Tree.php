@@ -3,10 +3,13 @@ namespace Webos\Visual\Controls;
 
 use Webos\Visual\Controls\DataTable\Column;
 use Webos\Visual\Control;
+use Webos\Visual\DataConsuming;
 use Webos\Collection;
 use Webos\StringChar;
 
 class Tree extends Control {
+	
+	use DataConsuming;
 
 	// private $_selectedNode = null;
 	
@@ -65,6 +68,14 @@ class Tree extends Control {
 		return $newNode;
 	}
 	
+	public function setData(array $data, $columnForLabel = 'title'): self {
+		foreach($data as $row) {
+			$text = $row[$columnForLabel]??'';
+			$this->addNode($text, $data);
+		}
+		return $this;
+	}
+	
 	/**
 	 * 
 	 * @param \Webos\Visual\Controls\TreeNode $node
@@ -80,6 +91,7 @@ class Tree extends Control {
 	}
 	
 	/**
+	 * @breakinChange: No parameter.
 	 * 
 	 * @param string $fieldName
 	 * @param string $label
@@ -89,23 +101,18 @@ class Tree extends Control {
 	 * @param string $align
 	 * @return Column
 	 */
-	public function addColumn(string $fieldName, string $label, int $width=100, bool $allowOrder=false, bool $linkable=false, string $align = 'left'): Column {
-		// $column = new ColumnDataTable();
+	public function addColumn($label = '', $fieldName = ''): Column {
 		$column = new Column($label, $fieldName);
-		$column->width      = $width;
-		$column->allowOrder = $allowOrder;
-		$column->linkable   = $linkable;
-		$column->align      = $align;
 		$this->columns->add($column);
 		return $column;
 	}
 	
-	public function onNodeToggled(callable $fn) {
+	public function onNodeToggled(callable $fn): self {
 		$this->bind('nodeToggled', $fn);
 		return $this;
 	}
 	
-	public function onNodeSelected(callable $fn) {
+	public function onNodeSelected(callable $fn): self {
 		$this->bind('nodeSelected', $fn);
 		return $this;
 	}

@@ -20,6 +20,7 @@ class TextBox extends Field {
 				'<input id="__id__" ' .
 					'class="TextFieldControl"__style__ ' .
 					'type="text" ' .
+					'autocomplete="off" ' .
 					'webos leavetyping __focus__ __captureTyping__ ' .
 					'name="__name__" ' .
 					'placeholder="__placeholder__" ' .

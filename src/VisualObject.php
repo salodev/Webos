@@ -306,11 +306,21 @@ abstract class VisualObject extends BaseObject {
 	/* Todos los objetos VisualObject deben implementar IActionInvoker
 	 * pero no necesariamente todos deben actuar en consecuencia. */
 	public function action(string $name, array $params = []) {
-		if (in_array($name,$this->getAllowedActions())){
-			$this->$name($params);
-		} else {
+		if (!in_array($name,$this->getAllowedActions())){
 			throw new Exception("Action $name not allowed by " . get_class($this) . " object.");
 		}
+		
+		if (
+			$this->visible  === false
+			||
+			$this->disabled === true
+			||
+			$this->enabled  === false
+		) {
+			throw new Exception("Can not call action.");
+		}
+		
+		$this->$name($params);
 	}
 	
 	public function scroll(array $params = []): void {
@@ -353,6 +363,10 @@ abstract class VisualObject extends BaseObject {
 		return $this->_eventsHandler->hasListenersForEventName($eventName);
 	}
 	
+	public function getEventsHandler(): EventsHandler {
+		return $this->_eventsHandler;
+	}
+	
 	/**
 	 * Método genérico de reperesentación.
 	 * @return string
@@ -368,12 +382,10 @@ abstract class VisualObject extends BaseObject {
 		return $html;
 	}
 	
-	public function getInlineStyle(bool $absolutize = true): string {
-		
-		$attrs = $this->getAttributes();
+	public function getInlineStyleFromArray(array $attributes, bool $absolutize = true): string {
 
 		$styles = array();
-		if (isset($attrs['top']) || isset($attrs['left'])) {
+		if (isset($attributes['top']) || isset($attributes['left'])) {
 			$styles['position'] = 'absolute';
 		}
 
@@ -397,7 +409,7 @@ abstract class VisualObject extends BaseObject {
 		);
 
 		foreach($visualAttributesList as $name) {
-			$value = &$attrs[$name];
+			$value = &$attributes[$name];
 			if (!isset($value)) { 
 				continue; 
 			}
@@ -428,7 +440,7 @@ abstract class VisualObject extends BaseObject {
 			}
 		}
 		
-		if (!empty($attrs['position']) && $attrs['position'] == 'fixed') {
+		if (!empty($attributes['position']) && $attributes['position'] == 'fixed') {
 			$styles['position'] = 'fixed';
 		}
 		
@@ -448,6 +460,12 @@ abstract class VisualObject extends BaseObject {
 		}
 
 		return $ret;
+		
+	}
+	
+	public function getInlineStyle(bool $absolutize = true): string {
+		$attributes = $this->getAttributes();
+		return $this->getInlineStyleFromArray($attributes, $absolutize);
 	}
 
 	static public function getAsStyles(array $styles): string {
@@ -488,5 +506,25 @@ abstract class VisualObject extends BaseObject {
 	
 	public function getNext() {
 		return $this->getParent()->getChildObjects()->getNextTo($this);
+	}
+	
+	public function getLastChild(): VisualObject {
+		return $this->getChildObjects()->getLastObject();
+	}
+	
+	public function isHidden(): bool {
+		if (!array_key_exists('hidden', $this->_attributes)) {
+			return false;
+		}
+		
+		return $this->hidden;
+	}
+	
+	public function hide() {
+		$this->hidden = true;
+	}
+	
+	public function show() {
+		$this->hidden = false;
 	}
 }

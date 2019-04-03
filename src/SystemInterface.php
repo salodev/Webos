@@ -1,5 +1,7 @@
 <?php
 namespace Webos;
+use Error;
+use ErrorException;
 use Exception;
 use Webos\VisualObject;
 use Webos\Application;
@@ -82,18 +84,24 @@ class SystemInterface {
 	public function action(string $actionName, string $objectID, array $parameters, bool $ignoreUpdateObject = false): array {
 		try {
 			$this->_callAction($actionName, $objectID, $parameters, $ignoreUpdateObject);
+		} catch (Error $e) {
+			$this->showError($e);
+		} catch (ErrorException $e) {
+			$this->showError($e);
 		} catch (Exception $e) {
-			$app = $this->getActiveApplication();
-			// $app->openMessageWindow('Opps', $e->getMessage());
-			
-			// @todo: decide about it.
-			if (ENV==ENV_DEV) {
-				$app->openExceptionWindow($e);
-			} else {
-				$app->openMessageWindow('Opps', $e->getMessage());
-			}
+			$this->showError($e);
 		}
 		return $this->getParsedNotifications();
+	}
+	
+	public function showError($e) {	
+		$app = $this->getActiveApplication();		
+		// @todo: decide about it.
+		if (ENV==ENV_DEV) {
+			$app->openExceptionWindow($e);
+		} else {
+			$app->openMessageWindow('Opps', $e->getMessage());
+		}
 	}
 	
 	public function renderAll(): string {

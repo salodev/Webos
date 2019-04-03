@@ -50,6 +50,11 @@ class Button extends Control {
 	}
 	
 	public function render(): string {
+		
+		if ($this->visible === false) {
+			return '';
+		}
+		
 		$html = new StringChar(
 			'<button id="__id__" class="__class__" type="button" name="__name__" webos click __style____disabled__>__value__</button>'
 		);

@@ -16,17 +16,15 @@ class Prompt extends Window {
 			$textBox->value = $params['defaultValue'];
 		}
 		
-		$buttonsBar = $this->createButtonsBar();
-		
 		// $this->height = 130;
 		
-		$buttonsBar->addButton('Confirmar')->onClick(function() {
+		$this->createWindowButton('Confirmar')->onClick(function() {
 			$this->close();
 			$this->triggerEvent('confirm', [
 				'value' => $this->textBox->value,
 			]);
 		});
-		$buttonsBar->addButton('Cancelar')->closeWindow();
+		$this->createWindowButton('Cancelar')->closeWindow();
 		$this->enableEvent('confirm');
 	}
 }

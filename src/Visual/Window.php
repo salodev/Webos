@@ -6,6 +6,7 @@ use Webos\Visual\Windows\Wait;
 use Webos\Visual\Windows\Message;
 use Webos\Visual\Windows\Prompt;
 use Webos\Visual\Windows\Confirm;
+use Webos\Visual\Windows\Question;
 use Webos\Visual\Control;
 use Webos\Visual\Controls\Menu\ListItems;
 use Webos\Exceptions\Collection\NotFound;
@@ -17,6 +18,8 @@ class Window extends Container {
 	protected $allowMaximize = true;
 	protected $activeControl = null;
 	public $windowStatus = 'normal';
+	
+	use KeysEvents;
 	
 	public function bind(string $eventName, $eventListener, bool $persistent = true, array $contextData = []): VisualObject {
 		if ($eventName=='ready') { $persistent = false; }
@@ -45,16 +48,6 @@ class Window extends Container {
 
 	public function controls() {
 		return $this->_childObjects;
-	}
-	
-	protected function _getKeysForEvents(): array {
-		return [
-			'Escape','Enter',
-			'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
-			'ArrowUp','ArrowDown','ArrowLeft','PageDown','PageUp',
-			'Home','End','Insert','Delete',
-			'Shift','Control','Alt',			
-		];
 	}
 
 	public function getAvailableEvents(): array {
@@ -232,7 +225,7 @@ class Window extends Container {
 	 * @return Window;
 	 */
 	public function openWindow(string $className = null, array $params = array()): Window {
-		return $this->getApplication()->openWindow($className, $params, $this);
+		return $this->getApplication()->openWindow($className, $params, $this)->syncDataWith($this);
 	}
 	
 	/**
@@ -246,6 +239,13 @@ class Window extends Container {
 			'title'   => $title,
 			'message' => $message,
 			'type'    => 'info',
+		]);
+	}
+	
+	public function questionWindow(string $questionMessage, string $title = 'Question'): Question {
+		return $this->openWindow(Question::class, [
+			'title'   => $title,
+			'message' => $questionMessage,
 		]);
 	}
 	
@@ -327,28 +327,6 @@ class Window extends Container {
 		return $this;
 	}
 	
-	public function onKeyPress(callable $function, bool $persistent = true, array $context = []): self {
-		$this->bind('keyPress', $function, $persistent, $context);
-		return $this;
-	}
-	
-	public function onKeyEscape(callable $function, bool $persistent = true, array $context = []): self {
-		$this->bind('keyPressEscape', $function, $persistent, $context);
-		return $this;
-	}
-	public function onKeyF1(callable $function, bool $persistent = true, array $context = []): self {
-		$this->bind('keyPressF1', $function, $persistent, $context);
-		return $this;
-	}
-	public function onKeyF5(callable $function, bool $persistent = true, array $context = []): self {
-		$this->bind('keyPressF5', $function, $persistent, $context);
-		return $this;
-	}
-	public function onKeyPageDown(callable $function, bool $persistent = true, array $context = []): self {
-		$this->bind('keyPressPageDown', $function, $persistent, $context);
-		return $this;
-	}
-	
 	public function render(): string {
 		$html = $this->_getRenderTemplate();
 		$content = $this->text ?? '';
@@ -364,7 +342,7 @@ class Window extends Container {
 	protected function _getRenderTemplate(): StringChar {
 		$keys = [];
 		$directives = [
-			'resize',
+			// 'resize',
 			// 'focus',
 		];
 		foreach($this->_getKeysForEvents() as $keyName) {
@@ -381,7 +359,7 @@ class Window extends Container {
 		if ($this->hasListenerFor('ready')) {
 			$directives[] = 'ready';
 		}
-		if ($this->allowResize) {
+		if ($this->allowResize && !$this->_embed) {
 			$directives[] = 'resize';
 		}
 		$html = new StringChar(
@@ -408,7 +386,7 @@ class Window extends Container {
 		);
 		
 		if ($this->_embed) {
-			$html = new StringChar('<div id="__ID__" __READY__ style="top:0;left:0;bottom:0;right:0;position:absolute;overflow:hidden;">__CONTENT____AUTOFOCUS__</div>');
+			$html = new StringChar('<div id="__ID__" __READY__ __DIRECTIVES__ style="top:0;left:0;bottom:0;right:0;position:absolute;overflow:hidden;">__CONTENT____AUTOFOCUS__</div>');
 		}
 		
 		$autofocus = '';

@@ -15,6 +15,8 @@ use Webos\Visual\Controls\Tree;
 use Webos\Visual\Controls\Frame;
 use Webos\Visual\Controls\Menu\Bar as MenuBar;
 use Webos\Visual\Controls\MultiTab;
+use Webos\Visual\Controls\Image;
+use Webos\Visual\Controls\HtmlContainer;
 use Webos\Visual\Window;
 
 trait FormContainer {
@@ -62,6 +64,7 @@ trait FormContainer {
 		}
 		$this->createObject(Label::class, array_merge(
 			$options, 
+			array('value'=>$label), // bugfix
 			array('text'=>$label), 
 			array(
 				'text-align' => 'left',
@@ -234,6 +237,12 @@ trait FormContainer {
 	public function createTabsFolder(array $params = []): MultiTab {
 		return $this->createObject(MultiTab::class, $params);
 	}
+	
+	public function createImage(string $filePath): Image {
+		return $this->createObject(Image::class, [
+			'filePath' => $filePath,
+		]);
+	}
 
 	/**
 	 * 
@@ -276,7 +285,7 @@ trait FormContainer {
 		return $this->buttonsBar->addButton($label, $options);
 	}
 
-	public function setFormData(array $data): void {
+	public function setFormData(array $data, bool $triggerUpdateValueEvent = false): void {
 		if (array_key_exists(0, $data)) {
 			$this->_formData = $data[0];
 		} else {
@@ -287,6 +296,9 @@ trait FormContainer {
 			foreach($objects as $childObject){
 				if ($childObject->name == $field) {
 					$childObject->value = $value;
+					if ($triggerUpdateValueEvent) {
+						$childObject->triggerEvent('updateValue');
+					}
 				}
 			}
 		}
@@ -372,18 +384,22 @@ trait FormContainer {
 		$this->topPanel = $container->createObject(Frame::class, [
 			'top'=>0, 'left'=>0, 'right'=>0,
 		]);
-		$this->horizontallSeparator = $container->createObject(HorizontalSeparator::class, [
+		$this->horizontalSeparator = $container->createObject(HorizontalSeparator::class, [
 			'height'=>5, 'left' => 0, 'right' => 0, 'draggable' => $draggable,
 		]);
 		$this->bottomPanel = $container->createObject(Frame::class, [
 			'left'=>0, 'right'=>0, 'bottom'=>0,
 		]);
 		if ($distribution<0) {
-			$this->horizontallSeparator->bottom = abs($distribution);
+			$this->horizontalSeparator->bottom = abs($distribution);
 		}
 		if ($distribution>0) {
-			$this->horizontallSeparator->top = abs($distribution);
+			$this->horizontalSeparator->top = abs($distribution);
 		}
 		return $this;
+	}
+	
+	public function createHTMLContainer(array $parameters = []): HtmlContainer {		
+		return $this->createObject(HtmlContainer::class);
 	}
 }

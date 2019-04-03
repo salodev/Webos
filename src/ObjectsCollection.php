@@ -9,7 +9,7 @@ class ObjectsCollection extends Collection {
 	/**
 	 * Éste metodo se reescribe para admitir sólamente instancias de VisualObject.
 	 *
-	 * @param <type> $obj
+	 * @param VisualObject $object
 	 **/
 	function addObject(VisualObject $object) {
 
@@ -136,7 +136,9 @@ class ObjectsCollection extends Collection {
 	public function render(): string {
 		$ret = '';
 		foreach($this->_data as $object) {
-			$ret .= $object->render();
+			if (!$object->isHidden()) {
+				$ret .= $object->render();
+			}
 		}
 		return $ret;
 	}
@@ -165,5 +167,9 @@ class ObjectsCollection extends Collection {
 			}
 		}
 		throw new NotFound('No previous object');
+	}
+	
+	public function getLastObject(): VisualObject {
+		return parent::getLastObject();
 	}
 }

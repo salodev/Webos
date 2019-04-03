@@ -4,6 +4,7 @@ namespace Webos\Visual\Windows;
 use Webos\Visual\Window;
 use Webos\Visual\Controls\DataTable\Column;
 use Webos\Visual\Controls\Button;
+use Webos\Visual\Controls\Menu\Item;
 
 class DataList extends Window {
 	
@@ -42,6 +43,15 @@ class DataList extends Window {
 		
 		$this->txtSearch->onLeaveTyping(function () {
 			$this->refreshList();
+		});
+		
+		$this->onKeyEscape(function() {
+			if ($this->txtSearch->value!==null) {
+				$this->txtSearch->value = null;
+				$this->refreshList();
+			} else {
+				$this->close();
+			}
 		});
 		
 		$this->btnSearch->onClick(function() {

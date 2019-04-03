@@ -34,8 +34,10 @@ class Frame extends Control {
 	}
 	
 	public function render(): string {
-		$html = new StringChar('<div class="FrameControl"__style__>__content__</div>');
+		
+		$html = new StringChar('<div id="__id__" class="FrameControl"__style__>__content__</div>');
 
+		$html->replace('__id__',  $this->getObjectID());
 		$html->replace('__style__',  $this->getInlineStyle(true));
 		$html->replace('__content__', $this->getChildObjects()->render());
 		return $html;

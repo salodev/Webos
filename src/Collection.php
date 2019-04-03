@@ -1,10 +1,13 @@
 <?php
 
 namespace Webos;
+
+use Webos\Exceptions\Collection\IsEmpty;
+
 /**
  * Cada elemento de esta colección puede ser de cualquier tipo.
  */
-class Collection implements \Iterator{
+class Collection implements \Iterator {
     protected $_position = 0;
 
     protected $_data = array();
@@ -89,6 +92,14 @@ class Collection implements \Iterator{
 
 	public function getFirstObject(){
 		return $this->_data[0];
+	}
+	
+	public function getLastObject() {
+		if (!count($this->_data)) {
+			throw new IsEmpty('Collection is empty');
+		}
+		end($this->_data);
+		return current($this->_data);
 	}
 
 	/**

@@ -2,7 +2,9 @@
 namespace Webos\Visual\Windows;
 
 use Webos\Visual\Window;
+use Webos\Visual\Controls\TextBox;
 use Exception as ExceptionClass;
+use Throwable;
 
 class Exception extends Window {
 
@@ -11,18 +13,26 @@ class Exception extends Window {
 		$this->width  = 800;
 		$this->height = 500;
 		
+		$this->splitHorizontal(60);
+		$this->bottomPanel->splitHorizontal(-100);
+		$this->panels = [
+			$this->topPanel,
+			$this->bottomPanel->topPanel,
+			$this->bottomPanel->bottomPanel,
+		];
+				
 		// $e = $this->exception = $params['e'];
 		$this->title = $params['class'] . ' thrown:';
-		$this->createLabel($params['message'],[
-			'top'   => 0,
-			'left'  => 0,
-			'right' => 0,
-		]);
-		$this->callStack = $this->createDataTable([
-			'top'    => 50,
-			'left'   => 0,
-			'right'  => 0,
-			'bottom' => 94,
+		$this->panels[0]->createObject(TextBox::class)
+			->value($params['message'])
+			->top(0)
+			->left(0)
+			->right(0)
+			->bottom(0)
+			->multiline(true)
+			->disable()->width='100%';
+		$this->callStack = $this->panels[1]->createDataTable([
+			'top'    => 0
 		]);
 		// $this->trace = $e->getTrace();
 		$this->callStack->addColumn('id', '#', 30, false, false, 'right');
@@ -30,14 +40,17 @@ class Exception extends Window {
 		$this->callStack->addColumn('location', 'Location', 300);
 		
 		$this->callStack->rows = $params['rsTrace'];
-		$this->callStack->bind('rowClick', [$this, 'onCallStackRowclick']);
-		$this->widthFieldControl = 400;
-		$this->widthLabelControl = 90;
-		$this->topControl = 368;
-		$this->createTextBox('File', 'file');
-		$this->createTextBox('Line', 'line');
-		$this->createTextBox('Function', 'function');
-		$this->disableForm();
+		$this->callStack->onRowClick(function() {
+			if ($this->callStack->hasSelectedRow()) {
+				$row = $this->callStack->getSelectedRowData();
+				$this->panels[2]->setFormData($row, true);
+			}
+		});
+		$this->panels[2]->createTextBox('File', 'file', ['width'=>600]);
+		$this->panels[2]->createTextBox('Line', 'line');
+		$this->panels[2]->createTextBox('Function', 'function');
+		$this->panels[2]->disableForm();
+		$this->height=500;
 	}
 	
 	/**
@@ -46,7 +59,7 @@ class Exception extends Window {
 	 * @param \Exception $e
 	 * @return array
 	 */
-	static public function ParseException(ExceptionClass $e): array {
+	static public function ParseException(Throwable $e): array {
 		$exceptionClass = get_class($e);
 		$message = "'{$e->getMessage()}' in file {$e->getFile()} ({$e->getLine()})";
 		$rsTrace = [];
@@ -92,13 +105,5 @@ class Exception extends Window {
 			'message' => $message,
 			'rsTrace' => $rsTrace,
 		];
-	}
-
-	public function onCallStackRowclick() {
-		
-		$row = $this->callStack->getSelectedRowData();
-		if ($row) {
-			$this->setFormData($row);
-		}
 	}
 }

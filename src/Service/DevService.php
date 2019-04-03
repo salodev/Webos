@@ -4,6 +4,7 @@ namespace Webos\Service;
 use Webos\SystemInterface;
 use Webos\WorkSpaceHandlers\FileSystem AS FileSystemHanlder;
 use salodev\Debug\ObjectInspector;
+use Webos\VisualObject;
 
 class DevService extends UserService {
 	
@@ -34,6 +35,14 @@ class DevService extends UserService {
 	
 	public function action(string $name, string $objectID, array $parameters, bool $ignoreUpdateObject = false): array {
 		return $this->_interface->action($name, $objectID, $parameters, $ignoreUpdateObject);
+	}
+	
+	public function getObjectByID(string $objectID): VisualObject {
+		return $this->_interface
+			->getSystemInstance()
+			->getWorkSpace()
+			->getApplications()
+			->getObjectByID($objectID);
 	}
 	
 	public function debug(): void {

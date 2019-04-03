@@ -35,16 +35,16 @@ abstract class Control extends VisualObject {
 		return $this->getParentWindow()->hasFocus($this);
 	}
 	
-	public function action(string $name, array $params = []) {
-		/**
-		 * Por razones de seguridad, si el objeto está deshabilitado,
-		 * se verifica y se frena la acción.
-		 */
-		if ($this->disabled == true) {
-			throw new Exception('Object disabled');
-		}
-		return parent::action($name, $params);
-	}
+//	public function action(string $name, array $params = []) {
+//		/**
+//		 * Por razones de seguridad, si el objeto está deshabilitado,
+//		 * se verifica y se frena la acción.
+//		 */
+//		if ($this->disabled == true) {
+//			throw new Exception('Object disabled');
+//		}
+//		return parent::action($name, $params);
+//	}
 	
 	/**
 	 * 
@@ -88,6 +88,11 @@ abstract class Control extends VisualObject {
 	
 	public function bottom(int $value): self {
 		$this->bottom = $value;
+		return $this;
+	}
+	
+	public function value($value): self {
+		$this->value = $value;
 		return $this;
 	}
 }

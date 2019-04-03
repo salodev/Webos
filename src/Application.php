@@ -7,6 +7,7 @@ use Webos\Visual\Windows\Exception as ExceptionWindow;
 use Webos\Visual\Windows\Message as MessageWindow;
 use Webos\Visual\Windows\Prompt as PromptWindow;
 use Exception;
+use Throwable;
 
 abstract class Application {
 
@@ -116,7 +117,7 @@ abstract class Application {
 	 * @param \Exception $e
 	 * @return Visual\Windows\Exception
 	 */
-	public function openExceptionWindow(Exception $e): ExceptionWindow {
+	public function openExceptionWindow(Throwable $e): ExceptionWindow {
 		$params = ExceptionWindow::ParseException($e);
 		return $this->openWindow(ExceptionWindow::class, $params, $this);
 	}

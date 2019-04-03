@@ -6,8 +6,12 @@ use Webos\Visual\Controls\DataTable\Column;
 use Webos\Exceptions\Alert;
 use Webos\Collection;
 use Webos\Visual\Control;
+use Webos\Visual\DataConsuming;
 
 class DataTable extends Control {
+	
+	use DataConsuming;
+	
 	// public $rowIndex = null;
 	public function initialize() {
 		$this->rows        = [];
@@ -257,7 +261,10 @@ class DataTable extends Control {
 
 		return $html;
 	}
-	
+
+	/**
+	 * Get last clicked column name.
+	 */
 	public function getColumnName(): string {
 		return $this->columnName;
 	}

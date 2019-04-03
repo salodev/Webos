@@ -2,10 +2,13 @@
 namespace Webos\Visual\Controls;
 
 use Webos\Visual\Control;
+use Webos\Visual\DataConsuming;
 use Webos\StringChar;
 use Exception;
 
 class TreeNode extends Control {
+	
+	use DataConsuming;
 	
 	/**
 	 * 
@@ -13,12 +16,24 @@ class TreeNode extends Control {
 	 * @param mixed $value
 	 * @return TreeNode
 	 */
-	public function addNode(string $text, array $data = []): TreeNode {
+	public function addNode(string $text, array $data = []): self {
 		return $this->createObject(TreeNode::class, [
 			'treeControl' => $this->treeControl,
 			'text'        => $text,
 			'data'        => $data,
 		]);
+	}
+	
+	public function setData(array $data, $columnForLabel = 'title'): self {
+		foreach($data as $row) {
+			$text = $row[$columnForLabel]??'';
+			$this->addNode($text, $data);
+		}
+		return $this;
+	}
+	
+	public function addData(array $data = []) {
+		throw new Exception('Not allowed');
 	}
 
 	public function __get_selected() {
@@ -52,7 +67,7 @@ class TreeNode extends Control {
 	 * 
 	 * @return $this
 	 */
-	public function toggle() {
+	public function toggle(): self {
 		$expanded = $this->expanded;
 		if ($expanded) {
 			$this->expanded = false;
@@ -69,7 +84,7 @@ class TreeNode extends Control {
 	 * 
 	 * @return $this
 	 */
-	public function click() {
+	public function click(): self {
 		$this->treeControl->setSelectedNode($this);
 		$this->treeControl->triggerEvent('nodeSelected',['node'=>$this]);
 		$this->triggerEvent('click', ['node' => $this]);
@@ -80,14 +95,14 @@ class TreeNode extends Control {
 	 * 
 	 * @return $this
 	 */
-	public function select() {
+	public function select(): self {
 		$this->treeControl->setSelectedNode($this);
 		$this->treeControl->triggerEvent('nodeSelected',['node'=>$this]);
 		$this->triggerEvent('click', ['node' => $this]);
 		return $this;
 	}
 	
-	public function contextMenu($params) {
+	public function contextMenu(array $params) {
 		if (empty($params['top']) || empty($params['left'])) {
 			return;
 		}
@@ -106,7 +121,7 @@ class TreeNode extends Control {
 		return $this;
 	}
 	
-	public function onExpand(callable $cb, $persistent = true):self {
+	public function onExpand(callable $cb, $persistent = true): self {
 		$this->bind('expanded', $cb, $persistent);
 		return $this;
 	}
