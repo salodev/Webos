@@ -18,6 +18,10 @@ class ResourcesLoader {
 		
 		$fullPath = "{$basePath}/resources/{$resourceFileName}";
 		
+		if (is_file("{$fullPath}.php")) {
+			$fullPath = "{$fullPath}.php";
+		}
+		
 		if (!is_file($fullPath)) {
 			throw new Exception('File does not exist.');
 		}
@@ -51,7 +55,8 @@ class ResourcesLoader {
 		}
 
 		header("Content-type: {$mimeType}");
-		readfile($fullPath);
+		require($fullPath);
+		//readfile($fullPath);
 		die();
 	}
 }

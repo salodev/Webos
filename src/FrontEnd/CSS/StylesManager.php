@@ -21,6 +21,14 @@ class StylesManager {
 		return $rule;
 	}
 	
+	public function defineColor(string $name, string $fgColor, string $bgColor = '#ffffff'): Definition {
+		$this->addPalette($name, $fgColor);
+		return $this->define($name, [
+			'color'      => $this->getPalette($name),
+			'background' => $bgColor,
+		]);
+	}
+	
 	public function getDefinition(string $name): Definition {
 		if (!array_key_exists($name, $this->_definitions)) {
 			throw new Exception('Definition not found');

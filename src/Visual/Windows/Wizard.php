@@ -27,6 +27,7 @@ class Wizard extends Window {
 		});
 		
 		$this->btnFinish->onClick(function() {
+			$this->close();
 			$this->triggerEvent('wizardFinished');
 		});
 		

@@ -35,6 +35,7 @@ class Page implements PageWrapper {
 					'<link rel="stylesheet" href="css/DataTable.css" />' .
 					'<link rel="stylesheet" href="css/TreeControl.css" />' .
 					'<link rel="stylesheet" href="css/menu.css" />' .
+					'<link rel="stylesheet" href="css/new.css" />' .
 					// '<link rel="stylesheet" href="css/webos.css" />' .
 				
 					// '<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>' .

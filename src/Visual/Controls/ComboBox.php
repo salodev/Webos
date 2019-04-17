@@ -46,7 +46,7 @@ class ComboBox extends Field {
 	
 	public function render(): string {
 		$disabled = $this->disabled ? ' disabled="disabled"' : '';
-		$html = '<select id="' . $this->getObjectID() . '" class="ComboFieldControl" onclick="onclick" webos update-value '.$this->getInlineStyle(). $disabled . '>';
+		$html = '<select id="' . $this->getObjectID() . '" class="Control Field ComboFieldControl" onclick="onclick" webos update-value '.$this->getInlineStyle(). $disabled . '>';
 		$assoc = $this->assoc;
 		foreach($this->options as $key => $option) {
 			$selected = '';

@@ -8,7 +8,7 @@ class PasswordBox extends TextBox {
 		$html = new StringChar(
 			'<input ' .
 				'id="__id__" ' .
-				'class="PasswordFieldControl"' .
+				'class="Control Field PasswordFieldControl"' .
 				'__style__ ' .
 				'type="password" ' .
 				'name="__name__" ' .

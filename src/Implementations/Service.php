@@ -7,6 +7,7 @@ use Webos\Service\AuthService;
 use Webos\Service\UserService;
 use Webos\Implementations\Authentication;
 use Webos\Apps\Auth as AuthApplication;
+use Webos\Stream\Content as StreamContent;
 
 class Service {
 	static public $dev = true;
@@ -57,6 +58,11 @@ class Service {
 		if(!empty($_REQUEST['actionName'])) {
 			self::DoAction($service);
 			return;
+		} elseif (!empty($_REQUEST['getOutputStream'])) {
+			self::GetOutputStream($service);
+			return;
+		} elseif (!empty($_REQUEST['getMediaContent'])) {
+			self::GetMediaContent($service);
 		} else {
 			self::RenderAll($service);
 		}
@@ -68,9 +74,38 @@ class Service {
 		$params       = $_REQUEST['params'    ] ?? [];
 		$ignoreUpdate = $params['ignoreUpdateObject'] ?? false;
 		
+		if (!empty($_FILES) && !empty($_FILES['file'])) {
+			$params['__uploadedFile'] = $_FILES['file']['tmp_name'];
+		}
+		
 		$response = $service->action($actionName, $objectID, $params, $ignoreUpdate);
+
+		
+		//print_r($response); die();
+		if (!empty($response['events'])) {
+			foreach($response['events'] as $event) {
+				if ($event['name']=='authUser' && !($service instanceof AuthService)) {
+					session_destroy();
+				}
+			}
+		}
 		
 		self::SendJson($response);
+	}
+	
+	static public function GetOutputStream(UserService $service): void {
+		$data = $service->getOutputStream();
+		$output = StreamContent::CreateFromArray($data);
+		$output->streamIt();
+		
+	}
+	
+	static public function GetMediaContent(UserService $service):void {
+		$objectID     = $_REQUEST['objectID'  ];
+		$params       = $_REQUEST['params'    ] ?? [];
+		$data = $service->getMediaContent($objectID, $params);
+		$output = StreamContent::CreateFromArray($data);
+		$output->streamIt();
 	}
 	
 	static public function RenderAll(UserService $service): void {

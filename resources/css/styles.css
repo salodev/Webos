@@ -99,28 +99,10 @@ input[type=button],button,input[type=text],input[type=password],select,.LabelCon
 }
 input[type=text], input[type=password] { padding:3px 8px; }
 
-input[type=button][disabled],
-input[type=text][disabled],
-select[disabled],
-button[disabled] {
-	color:#666;
-	background:#ffe;
-	border: solid 1px #ccc;
-}
-
-.DropDown .icon {
-    font-family: 'Glyphicons Halflings';
-    display: block;
-    float: right;
-    width: 19px;
-    padding: 0;
-    margin-left: 5px;
-    color: #999;
-    font-weight: 100;
-    border-left: solid 1px #ccc;
-    padding-left: 5px;
-}
-
 .DropDown .icon:before {
 	content:"\E114"
+}
+
+.Button {
+	padding: 3px 8px;
 }

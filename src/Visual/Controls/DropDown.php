@@ -46,7 +46,7 @@ class DropDown extends Control {
 	
 	public function render(): string {
 		$html = new StringChar(
-			'<button id="__id__" class="DropDown" type="button" name="__name__" webos set-object-pos action="click" __style____disabled__>__value__<span class="icon"></span></button>'
+			'<button id="__id__" class="Button DropDown" type="button" name="__name__" webos set-object-pos action="click" __style____disabled__>__value__<span class="icon"></span></button>'
 		);
 		
 		$html->replace('__style__', $this->getInLineStyle());

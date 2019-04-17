@@ -113,12 +113,12 @@ class System {
 		throw new Exception('No workspace loaded');
 	}
 
-	public function addEventListener($eventName, $eventListener, $persistent = true,  array $contextData = []): self {
+	public function addEventListener(string $eventName, $eventListener, $persistent = true,  array $contextData = []): self {
 		$this->_eventsHandler->addListener($eventName, $eventListener, $persistent, $contextData);
 		return $this;
 	}
 
-	public function triggerEvent($eventName, $source, $params = null): self {
+	public function triggerEvent(string $eventName, $source, array $params = []): self {
 		$this->_eventsHandler->trigger($eventName, $source, $params);
 		return $this;
 	}

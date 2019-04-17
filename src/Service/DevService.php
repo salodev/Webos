@@ -3,6 +3,7 @@
 namespace Webos\Service;
 use Webos\SystemInterface;
 use Webos\WorkSpaceHandlers\FileSystem AS FileSystemHanlder;
+use Webos\Stream\Content;
 use salodev\Debug\ObjectInspector;
 use Webos\VisualObject;
 
@@ -35,6 +36,18 @@ class DevService extends UserService {
 	
 	public function action(string $name, string $objectID, array $parameters, bool $ignoreUpdateObject = false): array {
 		return $this->_interface->action($name, $objectID, $parameters, $ignoreUpdateObject);
+	}
+	
+	public function getOutputStream(): array {
+		return $this->_interface->getOuputSteam();
+	}
+	
+	public function getMediaContent(string $objectID, array $params = []): array {
+		return $this->_interface->getMediaContent($objectID, $params);
+	}
+	
+	public function getFilestoreDirectory(): string {
+		return $this->_interface->getFilestoreDirectory();
 	}
 	
 	public function getObjectByID(string $objectID): VisualObject {

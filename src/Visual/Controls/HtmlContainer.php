@@ -53,12 +53,14 @@ class HtmlContainer extends Control {
 	}
 	
 	public function enableScroll(): self {
-		$this->_attributes['overflow-x'] = 'scroll';
+		$this->_attributes['overflowY'] = 'scroll';
+		$this->_attributes['overflowX'] = 'hidden';
 		return $this;
 	}
 	
 	public function disableScroll(): self {
-		unset($this->_attributes['overflow-x']);
+		unset($this->_attributes['overflowX']);
+		unset($this->_attributes['overflowY']);
 		return $this;
 	}
 	

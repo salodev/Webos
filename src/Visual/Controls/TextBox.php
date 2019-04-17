@@ -10,7 +10,7 @@ class TextBox extends Field {
 		if ($this->multiline) {
 			$html =  new StringChar(
 				'<textarea id="__id__" ' .
-					'class="TextFieldControl"__style__ ' .
+					'class="Control Field TextFieldControl"__style__ ' .
 					'webos leavetyping __focus__ __captureTyping__ ' .
 					'placeholder="__placeholder__" ' .
 					'name="__name__"__disabled__>__value__</textarea>'
@@ -18,7 +18,7 @@ class TextBox extends Field {
 		} else {
 			$html =  new StringChar(
 				'<input id="__id__" ' .
-					'class="TextFieldControl"__style__ ' .
+					'class="Control Field TextFieldControl"__style__ ' .
 					'type="text" ' .
 					'autocomplete="off" ' .
 					'webos leavetyping __focus__ __captureTyping__ ' .

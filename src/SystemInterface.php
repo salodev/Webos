@@ -6,6 +6,7 @@ use Exception;
 use Webos\VisualObject;
 use Webos\Application;
 use Webos\Visual\Window;
+use Webos\Visual\Windows\Exception as ExceptionWindow;
 use Webos\Exceptions\Collection\NotFound;
 use Webos\FrontEnd\Page;
 
@@ -31,9 +32,10 @@ class SystemInterface {
 		$system->addEventListener('removeObject',        [$this, 'onCRUObjects'     ]);
 		$system->addEventListener('updateObject',        [$this, 'onCRUObjects'     ]);
 		$system->addEventListener('loadedWorkSpace',     [$this, 'onLoadedWorkspace'], false);
-		$system->addEventListener('closeTerminalOption', [$this, 'onSystemEvent'    ]);
-		$system->addEventListener('closeSessionOption',  [$this, 'onSystemEvent'    ]);
+		$system->addEventListener('authUser',			 [$this, 'onSystemEvent'    ]);
+		$system->addEventListener('authUser',            [$this, 'onSystemEvent'    ]);
 		$system->addEventListener('loggedIn',            [$this, 'onSystemEvent'    ]);
+		$system->addEventListener('sendFileContent',     [$this, 'onSystemEvent'    ]);
 
 		$system->start();
 
@@ -45,10 +47,16 @@ class SystemInterface {
 		$this->lastObjectID = $objectID;
 		$this->ignoreUpdateObject = $ignoreUpdateObject;
 		$ws = $this->_system->getWorkSpace();
-		try {
-			$object = $ws->getApplications()->getObjectByID($objectID);
-		} catch (NotFound $e) {
-			throw new Exception('Object does not exist', null, $e);
+		
+		$object = $this->getObjectByID($objectID);
+		
+		// Security
+		if ($object->isDisabled()) {
+			throw new Exception('You can not call disabled object');
+		}
+		
+		if ($object->isHidden()) {
+			throw new Exception('You can not call hidden object');
 		}
 
 		// Se activa la aplicación antes de efectuar la acción. //
@@ -94,13 +102,33 @@ class SystemInterface {
 		return $this->getParsedNotifications();
 	}
 	
+	public function getOuputSteam(): array {
+		$ws = $this->_system->getWorkSpace();
+		return $ws->getFileContent()->getArray();
+	}
+	
+	public function getMediaContent(string $objectID, array $params = []): array {
+		$object = $this->getObjectByID($objectID);
+		return $object->getMediaContent($params)->getArray();
+	}
+	
+	public function getFilestoreDirectory(): string {
+		return $this->_system->getWorkSpace()->getFilestoreDirectory();
+	}
+	
 	public function showError($e) {	
 		$app = $this->getActiveApplication();		
 		// @todo: decide about it.
-		if (ENV==ENV_DEV) {
+		if (ENV==ENV_DEV && false) {
 			$app->openExceptionWindow($e);
 		} else {
-			$app->openMessageWindow('Opps', $e->getMessage());
+			$parsedException = ExceptionWindow::ParseException($e);
+			$w = $app->openMessageWindow('Opps', $e->getMessage());
+			$w->createWindowButton('Details')->onClick(function($context, $source) {
+				$source->getApplication()->openWindow(ExceptionWindow::class, $context['exception']);
+			}, [
+				'exception'=> $parsedException,
+			]);
 		}
 	}
 	
@@ -271,14 +299,12 @@ class SystemInterface {
 	
 	public function getParsedNotifications(): array {
 		$notif = $this->_notifications;
-		$parsed = [];
+		$parsed = [
+			'events' => [],
+		];
 		
-		if (isset($this->_notifications['general']['authUser'])) {
-			return [
-				'events' => [
-					['name'=>'authUser'],
-				]
-			];
+		foreach($this->_notifications['general'] as $name => $data) {
+			$parsed['events'][] = ['name'=>$name, 'data'=> $data];
 		}
 			
 		// Notificaciones: Actualización.
@@ -393,7 +419,19 @@ class SystemInterface {
 		));
 	}
 	
-	public function onSystemEvent(): void {
-		$this->addNotification('authUser', []);
+	public function onSystemEvent(string $eventName, array $params = []): void {
+		$this->addNotification($eventName, $params);
+	}
+	
+	public function getObjectByID(string $objectID): VisualObject {
+		$ws = $this->_system->getWorkSpace();
+
+		try {
+			$object = $ws->getApplications()->getObjectByID($objectID);
+		} catch (NotFound $e) {
+			throw new Exception('Object does not exist', null, $e);
+		}
+		
+		return $object;
 	}
 }

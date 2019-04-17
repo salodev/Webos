@@ -6,7 +6,8 @@ class HtmlContainerNode extends HtmlContainer {
 		
 	public function render(): string {
 		$content = $this->getChildObjects()->render();
-		return "<{$this->tagName} id=\"{$this->getObjectID()}\" webos click href=\"\">{$this->text}{$content}</{$this->tagName}>" ;
+		$clickDirective = $this->hasListenerFor('click') ? 'click' : '';
+		return "<{$this->tagName} id=\"{$this->getObjectID()}\" webos {$clickDirective} href=\"\">{$this->text}{$content}</{$this->tagName}>" ;
 	}
 	
 	public function getAvailableEvents(): array {

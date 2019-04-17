@@ -11,4 +11,12 @@ abstract class UserService {
 	abstract public function action(string $name, string $objectID, array $parameters, bool $ignoreUpdateObject = false): array;
 	
 	abstract public function debug(): void;
+	
+	public function getOutputStream(): array {
+		return [];
+	}
+	
+	public function getFilestoreDirectory(): string {
+		return '';
+	}
 }

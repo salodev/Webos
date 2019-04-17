@@ -13,6 +13,7 @@ class Wait extends Window {
 		$this->height      = $params['height' ] ?? 130;
 		$this->showTitle   = false;
 		$this->allowResize = false;
+		$this->enableEvent('error');
 	}
 
 	public function  getInitialAttributes(): array {
@@ -34,6 +35,7 @@ class Wait extends Window {
 			parent::ready();
 		} catch (Exception $e) {
 			$this->close();
+			$this->triggerEvent('error');
 			throw $e;
 		}
 		$this->close();

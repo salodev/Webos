@@ -6,6 +6,8 @@ use Webos\Visual\Window;
 use Exception;
 use Webos\Exceptions\Collection\NotFound;
 use Webos\Implementations\Rendering;
+use salodev\Utils;
+use Webos\Stream\Content;
 
 /**
  * Un VisualObject es subtipo de BaseObject porque puede ser representado
@@ -99,7 +101,7 @@ abstract class VisualObject extends BaseObject {
 	}
 	
 	public function getClassNameForRender(): string {
-		return str_replace(array('\Webos\Apps\\', '\Webos\Visual\Controls\\', '\\'), array('','','-'), get_class($this));
+		return str_replace(array('Webos\Apps\\', 'Webos\Visual\Controls\\', '\\'), array('','','-'), get_class($this));
 	}
 	
 	/**
@@ -397,18 +399,22 @@ abstract class VisualObject extends BaseObject {
 			'width',
 			'height',
 			'border',
-			'text-align',
+			'textAlign',
 			'backgroundImage',
 			'backgroundColor',
-			'overflow-x',
-			'margin-top',
-			'margin-bottom',
-			'margin-left',
-			'margin-right',
+			'overflowX',
+			'overflowY',
+			'marginTop',
+			'marginBottom',
+			'marginLeft',
+			'marginRight',
 			'margin',
 		);
 
 		foreach($visualAttributesList as $name) {
+			
+			$hyphenName = Utils::Hyphenize($name);
+			
 			$value = &$attributes[$name];
 			if (!isset($value)) { 
 				continue; 
@@ -420,14 +426,10 @@ abstract class VisualObject extends BaseObject {
 			}
 
 			if ($name == 'backgroundImage') {
-				$name = 'background-image';
 				$value = "url({$value})";
 			}
-			if ($name == 'backgroundColor') {
-				$name = 'background-color';
-			}
 			if (strlen("$value")) {
-				$styles[$name] = $value;
+				$styles[$hyphenName] = $value;
 			}
 			
 		}
@@ -520,11 +522,31 @@ abstract class VisualObject extends BaseObject {
 		return $this->hidden;
 	}
 	
+	public function isDisabled(): bool {
+		if (!array_key_exists('disabled', $this->_attributes)) {
+			return false;
+		}
+		
+		return $this->disabled;
+	}
+	
 	public function hide() {
 		$this->hidden = true;
 	}
 	
 	public function show() {
 		$this->hidden = false;
+	}
+	
+	public function disable() {
+		$this->disabled = true;
+	}
+	
+	public function enable() {
+		$this->disabled = false;
+	}
+	
+	public function getMediaContent(array $parameters = []): Content {
+		throw new \Exception('No content for this object');
 	}
 }

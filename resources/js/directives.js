@@ -111,6 +111,25 @@ Directives.register('contextmenu', function(el){
 	});
 });
 
+Directives.register('filepicker', function(el) {
+	var $el     = $(el);
+	var $form   = $el.find('form');
+	var $input  = $form.find('input');
+	var $iframe = $el.find('iframe');
+	
+	$input.change(function() {
+		$form.submit();
+		$input.attr('disabled', 'disabled');
+	});
+	
+	$iframe.on('load', function(ev) {
+		$input.removeAttr('disabled');
+		var rawResponse = $(ev.target.contentDocument.body).find('*')[0].innerHTML;
+		var decodedResponse = $('<textarea />').html(rawResponse).text();
+		Webos.parseResponse(JSON.parse(decodedResponse));
+	});
+});
+
 Directives.register('resize', function(el) {
 	var id = $(el).attr('id') || $(el).parents('[id]').attr('id');
 	var $el = $(el);

@@ -52,6 +52,9 @@ Webos.bind('removeElements', function(data) {
 Webos.bind('authUser', function() {
 	location.reload();
 });
+Webos.bind('sendFileContent', function() {
+	location.search = '?getOutputStream=true';
+});
 Webos.bind('changeEnterprise', function() {
 	location.href='empresa.php';
 });

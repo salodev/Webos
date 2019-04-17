@@ -19,7 +19,13 @@ class WorkSpace {
 	protected $_name              = null;
 	protected $_info              = [];
 	protected $_pageWrapper       = null;
+	/**
+	 *
+	 * @var Webos\System; 
+	 */
 	protected $_systemEnvironment = null;
+	protected $_outputStream = null;
+	protected $_inputStream  = null;
 	protected static $_current = null;
 	
 	static public function SetCurrent(self $workSpace) {
@@ -44,9 +50,11 @@ class WorkSpace {
 	
 	public function __construct(string $name) {
 		$this->_name = $name;
-		$this->_applications = new ApplicationsCollection();
+		$this->_applications  = new ApplicationsCollection();
 		$this->_eventsHandler = new EventsHandler();
 		$this->setPageWrapper(new Page);
+		$this->_outputStream  = new Stream\Handler();
+		$this->_inputStream   = new Stream\Handler();
 		return $this;
 	}
 	
@@ -63,7 +71,7 @@ class WorkSpace {
 		$appClassName = $name;// . 'Application';
 
 		$application = new $appClassName($this);
-		$application->setParams($params);
+		$application->setParams($params);		
 		
 		$this->triggerEvent('startApplication', $this, array(
 			'object' => $application,
@@ -185,5 +193,28 @@ class WorkSpace {
 				->render();
 		
 		return $this->getPageWrapper()->setContent($html)->getHTML();
+	}
+	
+	public function streamContent(string $content = null, string $mimeType = null, string $name = null): self {
+		$stream = new Stream\Content($content, $mimeType, $name);
+		$this->_outputStream->addContent($stream);
+		$this->triggerEvent('sendFileContent', $this, []);
+		return $this;
+	}
+	
+	public function streamFile(string $path): self {
+		$this->_outputStream->addContent(new Stream\Content('', '', '', $path));
+		$this->triggerEvent('sendFileContent', $this, []);
+		return $this;
+	}
+	
+	public function getFileContent(): Stream\Content {
+		return $this->_outputStream->getLastAndRemove();
+	}
+	
+	public function getFilestoreDirectory(): string {
+		$configPath = $this->_systemEnvironment->getConfig('path/workspaces');
+		
+		return "{$configPath}{$this->_name}/files/";
 	}
 }

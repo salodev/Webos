@@ -46,10 +46,6 @@ class Window extends Container {
 	
 	public function initialize(array $params = []) {}
 
-	public function controls() {
-		return $this->_childObjects;
-	}
-
 	public function getAvailableEvents(): array {
 		$eventNames = [
 			'open',

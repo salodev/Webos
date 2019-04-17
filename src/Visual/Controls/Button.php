@@ -56,14 +56,14 @@ class Button extends Control {
 		}
 		
 		$html = new StringChar(
-			'<button id="__id__" class="__class__" type="button" name="__name__" webos click __style____disabled__>__value__</button>'
+			'<button id="__id__" class="Control __class__" type="button" name="__name__" webos click __style____disabled__>__value__</button>'
 		);
 		
 		$html->replace('__style__', $this->getInLineStyle());
 			
 		$html->replaces(array(
 			'__id__'      => $this->getObjectID(),
-			'__class__'   => self::class,
+			'__class__'   => $this->getClassNameForRender(),
 			'__name__'    => $this->name,
 			'__value__'   => $this->getChildObjects()->render() . $this->value,
 			'__disabled__' => $this->disabled ? 'disabled="disabled"' : '',

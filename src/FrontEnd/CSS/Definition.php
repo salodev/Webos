@@ -35,11 +35,16 @@ class Definition {
 		return $this;
 	}
 	
-	public function like(string ...$ruleNames) {
+	public function like(string ...$ruleNames): self {
 		foreach($ruleNames as $ruleName) {
 			$rule = StylesManager::Instance()->getRule($ruleName);
 			$this->_rules = array_merge($this->_rules, $rule->getArray());
 		}
+		return $this;
+	}
+	
+	public function important($name): self {
+		$this->_rules[$name] .= ' !important';
 		return $this;
 	}
 }

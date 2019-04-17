@@ -18,6 +18,7 @@ use Webos\Visual\Controls\MultiTab;
 use Webos\Visual\Controls\Image;
 use Webos\Visual\Controls\HtmlContainer;
 use Webos\Visual\Window;
+use Webos\Visual\Controls\FilePicker;
 
 trait FormContainer {
 	protected $maxTopControl     = 15;
@@ -238,10 +239,8 @@ trait FormContainer {
 		return $this->createObject(MultiTab::class, $params);
 	}
 	
-	public function createImage(string $filePath): Image {
-		return $this->createObject(Image::class, [
-			'filePath' => $filePath,
-		]);
+	public function createImage(string $filePath, array $params = []): Image {
+		return $this->createObject(Image::class, $params)->setFilePath($filePath);
 	}
 
 	/**
@@ -401,5 +400,9 @@ trait FormContainer {
 	
 	public function createHTMLContainer(array $parameters = []): HtmlContainer {		
 		return $this->createObject(HtmlContainer::class);
+	}
+	
+	public function createFilePicker(string $label = '', array $params = []): FilePicker {
+		return $this->createControl($label, '', FilePicker::class, $params);
 	}
 }

@@ -2,9 +2,10 @@
 namespace Webos\Visual\Controls;
 
 use Webos\Visual\Control;
+use salodev\Validator;
 
 abstract class Field extends Control {
-	protected $_linkedField = null;
+	protected $_linkedField   = null;
 	protected $_captureTyping = false;
 
 	public function setLinkedField(&$field){

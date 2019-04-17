@@ -279,6 +279,16 @@ abstract class Application {
 		$this->_notifyRemove($objectId);
 		return $this;
 	}
+		
+	public function streamContent(string $content, string $mimetype = null, string $fileName = null): self {
+		$this->getWorkSpace()->streamContent($content, $mimetype, $fileName);
+		return $this;
+	}
+	
+	public function streamFile(string $path): self {
+		$this->getWorkSpace()->streamFile($path);
+		return $this;
+	}
 
 	final public function getObjectByID(string $id, bool $horizontal = true): VisualObject {
 		return $this->_visualObjects->getObjectByID($id, $horizontal);

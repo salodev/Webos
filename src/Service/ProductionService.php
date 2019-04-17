@@ -68,6 +68,15 @@ class ProductionService extends UserService {
 		return $ret;
 	}
 	
+	public function getOutputStream(): array {
+		throw new \Exception('Not implemented!');
+		// return [];
+	}
+	
+	public function getFilestoreDirectory(): string {
+		throw new \Exception('Not implemented!');
+	}
+	
 	public function debug():void {
 		$html = $this->_client->call('debug', [
 			'path' => $_REQUEST['__path'] ?? null,
