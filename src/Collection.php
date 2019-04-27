@@ -7,7 +7,7 @@ use Webos\Exceptions\Collection\IsEmpty;
 /**
  * Cada elemento de esta colección puede ser de cualquier tipo.
  */
-class Collection implements \Iterator {
+class Collection implements \Iterator, \Countable {
     protected $_position = 0;
 
     protected $_data = array();
