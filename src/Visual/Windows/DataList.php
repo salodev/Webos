@@ -6,7 +6,7 @@ use Webos\Visual\Controls\DataTable\Column;
 use Webos\Visual\Controls\Button;
 use Webos\Visual\Controls\Menu\Item;
 
-class DataList extends Window {
+abstract class DataList extends Window {
 	
 	/**
 	 *
@@ -32,14 +32,13 @@ class DataList extends Window {
 	 */
 	public $dataTable = null;
 	
-	public function initialize(array $params = []) {
+	public function preInitialize() {
+		parent::preInitialize();
 		$this->width     = 600;
 		$this->toolBar   = $this->createToolBar();
 		$this->txtSearch = $this->toolBar->createTextBox(['placeholder'=>'...']);
 		$this->btnSearch = $this->toolBar->createButton('Search');
 		$this->dataTable = $this->createDataTable();
-		
-		$this->refreshList();
 		
 		$this->txtSearch->onLeaveTyping(function () {
 			$this->refreshList();
@@ -65,14 +64,17 @@ class DataList extends Window {
 		$this->txtSearch->focus();
 	}
 	
+	public function afterInitialize() {
+		parent::afterInitialize();
+		$this->refreshList();
+	}
+	
 	public function refreshList() {
 		$rs = $this->getData();
 		$this->dataTable->rows = $rs;
 	}
 	
-	public function getData(): array {
-		return [];
-	}
+	abstract public function getData(): array;
 	
 	/**
 	 * Usage example:
@@ -92,8 +94,8 @@ class DataList extends Window {
 		return $this;
 	}
 	
-	public function addColumn(): Column {
-		return $this->dataTable->addColumn();
+	public function addColumn(string $fieldName = '', string $label = '', int $width=100, bool $allowOrder=false, bool $linkable=false, string $align = 'left'): Column {
+		return $this->dataTable->addColumn($fieldName, $label, $width, $allowOrder, $linkable, $align);
 	}
 	
 	public function addToolButton(string $title): Button {

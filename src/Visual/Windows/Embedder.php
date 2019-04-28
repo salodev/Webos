@@ -7,7 +7,8 @@ class Embedder extends Window {
 	
 	public $tabs = null;
 	
-	public function initialize(array $params = []) {
+	public function preInitialize() {
+		parent::preInitialize();
 		$this->tabs = $this->createTabsFolder();
 		
 		$this->onNewData(function() {

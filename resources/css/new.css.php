@@ -4,14 +4,21 @@ use Webos\FrontEnd\CSS\StylesManager;
 
 $sm = StylesManager::Instance();
 
+$sm->defineColor('yellow',   '#f5b400');
+// $sm->defineColor('blue',     '#5589e1');
+$sm->defineColor('blue',     '#4a78c5');
+$sm->defineColor('red',      '#dc4437');
+$sm->defineColor('green',    '#56a845');
+$sm->defineColor('paper',    '#555555', '#ffffff');
+$sm->defineColor('gray',     '#cdcdcd', '#ffffff');
+$sm->defineColor('gray1',    '#eeeeee', '#ffffff');
+$sm->defineColor('gray2',    '#dbe2e5', '#ffffff');
+$sm->defineColor('gray3',    '#5C5F69', '#ffffff');
+$sm->defineColor('gray4',    '#555555', '#ffffff');
+$sm->defineColor('gray5',    '#28292d', '#ffffff');
+$sm->defineColor('darkgray', '#666666', '#ffffff');
 $sm->addPalette('white', '#ffffff');
 $sm->addPalette('black', '#000000');
-$sm->defineColor('blue',  '#3344cc');
-$sm->defineColor('red',   '#663333');
-$sm->defineColor('green', '#339933');
-$sm->defineColor('paper', '#666666', '#ffffff');
-$sm->defineColor('gray',  '#cdcdcd', '#ffffff');
-$sm->defineColor('darkgray',  '#666666', '#ffffff');
 
 $sm->define('noborder', [
 	'border' => 'none',
@@ -55,7 +62,23 @@ $sm->define('icon-chevron-down', [
 	'content' => '"\E114"',
 ])->import('icon');
 
-$sm->addRule('.Button', ['border-radius'=>'2px'])->import('blue')->invert()->import('noborder', 'box', 'click');
+$sm->addRule('.Button', [
+	'border-radius' => '2px',
+	'height'        => '25px',
+	'font-size'     => '13.33px',
+	'outline'       => 'none',
+])->import('blue')->invert()->import('noborder', 'box', 'click');
+$sm->addRule('.Button:focus', [
+	'filter' => 'brightness(90%)',
+]);
+$sm->addRule('.Button:active', [
+	'filter' => 'brightness(110%)',
+]);
+
+$sm->addRule('.LinkButton', [
+	'text-decoration' => 'none',
+])->like('.Button')->set('padding', '5px 9px');
+
 $sm->addRule('.DropDown .icon', [
 	'font-family' => 'Glyphicons Halflings',
     'display' => 'block',
@@ -68,8 +91,8 @@ $sm->addRule('.DropDown .icon', [
     'padding-left' => '5px',
 ]);
 $sm->addRule('.Window')->import('paper');
-$sm->addRule('.Window .form-titlebar .title')->import('darkgray');
-$sm->addRule('.Window .form-titlebar .controls *')->import('darkgray')->important('background');
+$sm->addRule('.Window .form-titlebar .title')->import('gray4');
+$sm->addRule('.Window .form-titlebar .controls *')->import('gray4')->important('background');
 
 
 

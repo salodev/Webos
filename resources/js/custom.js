@@ -55,11 +55,22 @@ Webos.bind('authUser', function() {
 Webos.bind('sendFileContent', function() {
 	location.search = '?getOutputStream=true';
 });
-Webos.bind('changeEnterprise', function() {
-	location.href='empresa.php';
+Webos.bind('navigateURL', function(data) {
+	location = data.url;
 });
 Webos.bind('loggedIn', function() {
 	location.reload();
+});
+Webos.bind('printContent', function(data) {
+	var i = document.createElement('iframe');
+	i.setAttribute('src', 'javascript:void(0);');
+	i.setAttribute('width', '0');
+	i.setAttribute('height', '0');
+	i.setAttribute('frameborder', '0');
+	document.body.appendChild(i);
+	i.contentWindow.document.write(data.content);
+	i.contentWindow.print();
+	document.body.removeChild(i);
 });
 
 /**

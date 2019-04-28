@@ -409,6 +409,8 @@ abstract class VisualObject extends BaseObject {
 			'marginLeft',
 			'marginRight',
 			'margin',
+			'fontSize',
+			'padding',
 		);
 
 		foreach($visualAttributesList as $name) {

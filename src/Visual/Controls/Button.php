@@ -3,8 +3,6 @@ namespace Webos\Visual\Controls;
 
 use Webos\Visual\Control;
 use Webos\StringChar;
-use salodev\Deferred;
-use salodev\Promise;
 
 class Button extends Control {
 	public function getAllowedActions(): array {
@@ -30,11 +28,12 @@ class Button extends Control {
 	 * @return $this
 	 */
 	public function openWindow(string $className, array $parameters = []): self {
-		$this->_openWindowClassName  = $className;
-		$this->_openWindowParameters = $parameters;
-		$this->onClick(function() {
-			$this->getApplication()->openWindow($this->_openWindowClassName, $this->_openWindowParameters, $this->getParentWindow());
-		});
+		$this->onClick(function($context) {
+			$this->getApplication()->openWindow($context['className'], $context['parameters'], $this->getParentWindow());
+		}, [
+			'className' => $className,
+			'parameters' => $parameters
+		]);
 		return $this;
 	}
 	

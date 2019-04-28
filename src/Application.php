@@ -289,6 +289,11 @@ abstract class Application {
 		$this->getWorkSpace()->streamFile($path);
 		return $this;
 	}
+	
+	public function printContent(string $content): self {
+		$this->getWorkSpace()->printContent($content);
+		return $this;
+	}
 
 	final public function getObjectByID(string $id, bool $horizontal = true): VisualObject {
 		return $this->_visualObjects->getObjectByID($id, $horizontal);
@@ -314,6 +319,12 @@ abstract class Application {
 	
 	public function getParams(): array {
 		return $this->_params;
+	}
+	
+	public function finishTerminal(): self {
+		$system = $this->getWorkSpace()->getSystemEnvironment();
+		$system->triggerEvent('authUser', $this);
+		return $this;
 	}
 
 	/* Información sobre la aplicación */

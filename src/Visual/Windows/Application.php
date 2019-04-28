@@ -2,6 +2,7 @@
 namespace Webos\Visual\Windows;
 
 use Webos\Visual\Window;
+use Webos\Visual\Controls\Menu\ListItems;
 
 class Application extends Window {
 	
@@ -22,5 +23,12 @@ class Application extends Window {
 		$html .= '</div>';
 		$html .= '</div>';
 		return $html;
+	}
+	
+	public function createMenu($text): ListItems {
+		if (!$this->menuBar) {
+			$this->menuBar = $this->createMenuBar();
+		}
+		return $this->menuBar->createButton($text);
 	}
 }

@@ -31,6 +31,10 @@ class Exception extends Window {
 			->bottom(0)
 			->multiline(true)
 			->disable()->width='100%';
+		
+		/**
+		 * @var \Webos\Visual\Controls\DataTable
+		 */
 		$this->callStack = $this->panels[1]->createDataTable([
 			'top'    => 0
 		]);
@@ -51,6 +55,56 @@ class Exception extends Window {
 		$this->panels[2]->createTextBox('Function', 'function');
 		$this->panels[2]->disableForm();
 		$this->height=500;
+		
+		$this->callStack->onContextMenu(function($data) {
+			$menu = $data['menu'];
+			$menu->createItem('Ampliar...')->onClick(function() {
+				$desc = $this->callStack->getSelectedRowData('function');
+				// malísimo. Sólo par salir del paso.
+				$w = $this->messageWindow("<div style=\"overflow-x:scroll; position:absolute;left:0;right:0;top:0;bottom:30px;\"><pre>{$desc}</pre></div>");
+				$w->title = 'Detalle';
+				$w->height = 250;
+			});
+		});
+	}
+	
+	static public function ParseValue($value, $maxDepth = 5, $maxCount = 10, $depth = 0) {
+		
+		if (is_string($value)) {
+			$parsed = "'{$value}'";
+		} elseif (is_numeric($value)) {
+			$parsed = "{$value}";
+		} elseif(is_callable($value)) {
+			$parsed = "function() {}";
+		} elseif (is_object($value)) {
+			$parsed = get_class($value)."(...)";
+		} elseif (is_array($value)) {
+		
+			if ($depth >= $maxDepth) {
+				return '[ ... ]	';
+			}
+			$parsed = "[\n";
+			if (count($value)) {
+				if (range(0, count($value)-1) == array_keys($value)) {
+					foreach($value as $v) {
+						$parsed .= str_repeat("\t", $depth + 1) . self::ParseValue($v, $maxDepth, $maxCount, $depth+1) . ",\n";
+					}
+				} else {
+					foreach($value as $k => $v) {
+						$parsed .= str_repeat("\t", $depth + 1) . "{$k} => " . self::ParseValue($v, $maxDepth, $maxCount, $depth+1) . ", \n";
+					}
+				}
+			}
+			$parsed .= str_repeat("\t", $depth) .']';
+		} elseif (is_null($value)) {
+			$parsed = 'NULL';
+		} elseif (is_bool($value)) {
+			$parsed = $value ? 'TRUE' : 'FALSE';
+		} else {
+			$parsed = '??'. gettype($value).'??';
+		}
+		
+		return $parsed;
 	}
 	
 	/**
@@ -70,21 +124,7 @@ class Exception extends Window {
 			$argsList = [];
 			if (!empty($info['args'])) {
 				foreach($info['args'] as $arg) {
-					if (is_string($arg)) {
-						$argsList[] = "'{$arg}'";
-					} elseif (is_numeric($arg)) {
-						$argsList[] = "{$arg}";
-					} elseif(is_callable($arg)) {
-						$argsList[] = "closure()";
-					} elseif (is_object($arg)) {
-						$argsList[] = get_class($arg)."(...)";
-					} elseif (is_array($arg)) {
-						$argsList[] = 'array('.count($arg).')';
-					} elseif (is_null($arg)) {
-						$argsList[] = 'NULL';
-					} else {
-						$argsList[] = '??'. gettype($arg).'??';
-					}
+					$argsList[] = self::ParseValue($arg, 10);
 				}
 				$argumentsString = implode(', ', $argsList);
 			}

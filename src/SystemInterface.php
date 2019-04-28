@@ -36,6 +36,8 @@ class SystemInterface {
 		$system->addEventListener('authUser',            [$this, 'onSystemEvent'    ]);
 		$system->addEventListener('loggedIn',            [$this, 'onSystemEvent'    ]);
 		$system->addEventListener('sendFileContent',     [$this, 'onSystemEvent'    ]);
+		$system->addEventListener('navigateURL',         [$this, 'onSystemEvent'    ]);
+		$system->addEventListener('printContent',        [$this, 'onSystemEvent'    ]);
 
 		$system->start();
 

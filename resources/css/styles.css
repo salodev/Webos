@@ -23,7 +23,7 @@ body{
     background-color:#f6f6f6;
     background-image:url('/img/bg.png');
     font-family:Helvetica;
-    font-size:14px;
+    font-size:14px !important;
     margin:0;
 }
 .no-break { overflow: hidden;  /*text-overflow: ellipsis;*/ white-space: nowrap; }

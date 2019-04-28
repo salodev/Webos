@@ -8,6 +8,8 @@ use Webos\Visual\Controls\TextBox;
 use Webos\Visual\Controls\PasswordBox;
 use Webos\Visual\Controls\Label;
 use Webos\Visual\Controls\Button;
+use Webos\Visual\Controls\LinkButton;
+use Webos\Visual\Controls\Link;
 use Webos\Visual\Controls\ComboBox;
 use Webos\Visual\Controls\ToolBar;
 use Webos\Visual\Controls\DataTable;
@@ -153,6 +155,20 @@ trait FormContainer {
 	}
 	
 	/**
+	 * 
+	 * @param string $text
+	 * @param array $options
+	 * @return \Webos\Visual\Controls\Button
+	 */
+	public function createLinkButton(string $text, string $url, array $options = []): LinkButton {
+		return $this->createObject(LinkButton::class, array_merge($options, ['text'=> $text, 'url' => $url]));
+	}
+	
+	public function createLink(string $text, string $url, array $options = []): Link {
+		return $this->createObject(Link::class, array_merge($options, ['text'=> $text, 'url' => $url]));
+	}
+	
+	/**
 	 * @return \Webos\Visual\Controls\ToolBar
 	 */
 	public function createToolBar(array $params = []): ToolBar {
@@ -176,6 +192,14 @@ trait FormContainer {
 			'fixedTo' => 'bottom',
 			'horizontalAlign' => 'right',
 		]);
+	}
+	
+	public function createGetButtonsBar(): ToolBar {
+		if (!$this->hasWindowButtons) {
+			$this->hasWindowButtons = true;
+			$this->buttonsBar = $this->createButtonsBar();
+		}
+		return $this->buttonsBar;
 	}
 	
 	/**
@@ -276,12 +300,12 @@ trait FormContainer {
 		return $button;
 	}
 	
+	public function createWindowLink(string $label, string $url, array $options = []): Link {
+		return $this->createGetButtonsBar()->createLink($label, $url, $options);
+	}
+	
 	public function createWindowButton($label, array $options = []): Button {
-		if (!$this->hasWindowButtons) {
-			$this->hasWindowButtons = true;
-			$this->buttonsBar = $this->createButtonsBar();
-		}
-		return $this->buttonsBar->addButton($label, $options);
+		return $this->createGetButtonsBar()->addButton($label, $options);
 	}
 
 	public function setFormData(array $data, bool $triggerUpdateValueEvent = false): void {

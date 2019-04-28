@@ -22,7 +22,10 @@ abstract class Container extends VisualObject {
 		$this->preInitialize();
 
 		$this->initialize($initialAttributes);
+		
+		$this->afterInitialize();
 	}
 	public function preInitialize() {}
 	public function initialize(array $params = []) {}
+	public function afterInitialize() {}
 }

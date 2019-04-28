@@ -4,6 +4,7 @@ namespace Webos\Visual;
 use Webos\Visual\Controls\TextBox;
 use Webos\Visual\Controls\ComboBox;
 use Webos\Visual\Controls\Button;
+use Webos\Visual\Controls\Link;
 use Webos\Visual\Controls\DropDown;
 
 /**
@@ -28,6 +29,10 @@ trait ControlsFactory {
 	public function createButton(string $text = 'Button', array $params = []): Button {
 		$params['value'] = $params['value'] ?? $text;
 		return $this->createObject(Button::class, $params);
+	}
+	
+	public function createLink(string $label, string $url, array $options = []): Link {
+		return $this->createObject(Link::class, array_merge($options, ['text'=>$label, 'url' => $url]));
 	}
 	
 	public function createDropDown(string $text = 'DropDown', array $params = []): DropDown {

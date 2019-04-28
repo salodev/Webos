@@ -1,5 +1,5 @@
 var Webos = {};
-Webos.endPoint = '/';
+Webos.endPoint = '';
 
 Webos.parseResponse = function(data) {
 	if (typeof(data.events) != 'undefined') {

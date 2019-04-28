@@ -323,6 +323,15 @@ class Window extends Container {
 		return $this;
 	}
 	
+	public function navigateURL(string $url, array $data = []): self {
+		$this->getParentApp()->triggerSystemEvent('navigateURL', $this, [
+			'url' => $url,
+			'data' => $data,
+		]);
+		
+		return $this;
+	}
+	
 	public function render(): string {
 		$html = $this->_getRenderTemplate();
 		$content = $this->text ?? '';

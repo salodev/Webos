@@ -208,6 +208,13 @@ class WorkSpace {
 		return $this;
 	}
 	
+	public function printContent(string $content): self {
+		$this->triggerEvent('printContent', $this, [
+			'content' => $content,
+		]);
+		return $this;
+	}
+	
 	public function getFileContent(): Stream\Content {
 		return $this->_outputStream->getLastAndRemove();
 	}

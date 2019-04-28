@@ -47,4 +47,9 @@ class Definition {
 		$this->_rules[$name] .= ' !important';
 		return $this;
 	}
+	
+	public function set(string $name, string $value): self {
+		$this->_rules[$name] = $value;
+		return $this;
+	}
 }
