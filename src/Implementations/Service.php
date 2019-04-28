@@ -13,6 +13,15 @@ class Service {
 	static public $dev = true;
 	static private $_applicationName = '';
 	static private $_applicationParams = [];
+	static private $_url = '';
+	
+	static public function SetUrl(string $url): void {
+		self::$_url = $url;
+	}
+	
+	static public function GetUrl(): string {
+		return self::$_url;
+	}
 	
 	static public function SetApplication(string $className, array $params = []): void {
 		self::$_applicationName   = $className;

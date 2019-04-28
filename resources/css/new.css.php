@@ -123,5 +123,9 @@ $sm->addRule('.MultiTab > .Tabs > .tab:hover', [
 	'border-bottom' => 'solid 2px ' . $sm->getPalette('green'),
 ]);
 
+$sm->addRule('.FrameControl', [ 
+    'overflow'=> 'hidden',
+]);
+
 
 echo $sm->getStyles(false);

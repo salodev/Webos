@@ -28,7 +28,6 @@ class Page implements PageWrapper {
 					'<link rel="stylesheet" href="css/Window.css" />' .
 					'<link rel="stylesheet" href="css/Toolbar.css" />' .
 					'<link rel="stylesheet" href="css/styles.css" />' .
-					'<link rel="stylesheet" href="css/forms.css" />' .
 					'<link rel="stylesheet" href="css/Grid.css" />' .
 					'<link rel="stylesheet" href="css/Desktop.css" />' .
 					'<link rel="stylesheet" href="css/MultiTab.css" />' .
