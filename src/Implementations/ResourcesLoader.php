@@ -55,6 +55,7 @@ class ResourcesLoader {
 		}
 
 		header("Content-type: {$mimeType}");
+		header('Cache-Control: public');
 		require($fullPath);
 		//readfile($fullPath);
 		die();
