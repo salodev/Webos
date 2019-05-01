@@ -56,6 +56,7 @@ class ResourcesLoader {
 
 		header("Content-type: {$mimeType}");
 		header('Cache-Control: public');
+		header('Expires: ' . gmdate('D, d M Y H:i:s T', time() + 31536000)); // 1 year
 		require($fullPath);
 		//readfile($fullPath);
 		die();
