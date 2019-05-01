@@ -53,11 +53,12 @@ class ResourcesLoader {
 				finfo_close($finfo);
 				break;
 		}
-
+		ob_start('ob_gzhandler');
 		header("Content-type: {$mimeType}");
 		header('Cache-Control: public');
 		header('Expires: ' . gmdate('D, d M Y H:i:s T', time() + 31536000)); // 1 year
 		require($fullPath);
+		ob_end_flush();
 		//readfile($fullPath);
 		die();
 	}
