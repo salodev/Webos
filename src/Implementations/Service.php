@@ -119,6 +119,7 @@ class Service {
 	}
 	
 	static public function RenderAll(UserService $service): void {
+		ob_start('ob_gzhandler');
 		echo $service->renderAll();
 		die();
 	}
@@ -133,6 +134,7 @@ class Service {
 	}
 	
 	static public function SendJson($json): void {
+		ob_start('ob_gzhandler');
 		header('Content-Type: text/json');
 		die(json_encode($json));
 	}
