@@ -65,7 +65,10 @@ $sm->define('icon-chevron-down', [
 $sm->addRule('.Button', [
 	'border-radius' => '2px',
 	'height'        => '25px',
-	'font-size'     => '13.33px',
+	// 'font-size'     => '13.33px',
+	'font-size'     => '14px',
+	'line-height'     => '13px',
+	'font-variant'  => 'small-caps',
 	'outline'       => 'none',
 ])->import('blue')->invert()->import('noborder', 'box', 'click');
 $sm->addRule('.Button:focus', [
