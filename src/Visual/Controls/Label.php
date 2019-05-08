@@ -1,10 +1,9 @@
 <?php
 namespace Webos\Visual\Controls;
 
-use Webos\Visual\Control;
 use Webos\StringChar;
 
-class Label extends Control {
+class Label extends Field {
 	public function render(): string {
 		$html = new StringChar('<div id="__ID__" class="LabelControl"__style__>__text__</div>');
 		

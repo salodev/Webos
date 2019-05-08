@@ -4,6 +4,7 @@ namespace Webos\Visual\Windows;
 use Webos\Visual\Window;
 use Webos\StringChar;
 use Exception;
+use Error;
 
 class Wait extends Window {
 
@@ -33,12 +34,21 @@ class Wait extends Window {
 	public function ready() {
 		try {
 			parent::ready();
+		} catch (Error $e) {
+			$this->close();
+			$this->triggerEvent('error');
+			throw $e;
 		} catch (Exception $e) {
 			$this->close();
 			$this->triggerEvent('error');
 			throw $e;
 		}
 		$this->close();
+	}
+	
+	public function onError(callable $eventListener): self {
+		$this->bind('error', $eventListener);
+		return $this;
 	}
 	
 	public function render(): string {

@@ -63,7 +63,7 @@ class Image extends Control {
 			$encodedContent = base64_encode($file->getAllContent());
 			$src  = "data:{$mimeType};base64, {$encodedContent}";
 		} else {
-			$src  = '/?getMediaContent=true&objectID=' . $this->getObjectID();
+			$src  = '?getMediaContent=true&objectID=' . $this->getObjectID();
 		}
 		$directive = '';
 		if ($this->hasListenerFor('click')) {
