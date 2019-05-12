@@ -3,9 +3,6 @@ namespace Webos\Visual\Controls\Menu;
 use Webos\StringChar;
 
 class ControlItem extends Item {
-	public function click() {		
-		$this->triggerEvent('click');
-	}
 	
 	public function render(): string {
 		$selected = '';

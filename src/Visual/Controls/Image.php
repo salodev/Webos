@@ -47,10 +47,6 @@ class Image extends Control {
 	public function getFile(): File {
 		return $this->file;
 	}
-
-	public function click() {
-		$this->triggerEvent('click');
-	}
 	
 	public function getMediaContent(array $parameters = []): Content {
 		return Content::CreateFileContent($this->getFile()->getFullPath());

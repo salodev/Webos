@@ -28,7 +28,7 @@ abstract class VisualObject extends BaseObject {
 	 */
 	protected $_eventsHandler = null;
 
-	public function __construct(Application $application, array $data = array()) {
+	public function __construct(Application $application, array $data = []) {
 		$this->_application = $application;
 		
 		$this->checkRequiredParams($data);
@@ -82,7 +82,7 @@ abstract class VisualObject extends BaseObject {
 	 * Si estos son especificados al construir el objeto, serán reemplazados.
 	 */
 	public function getInitialAttributes(): array {
-		return array();
+		return [];
 	}
 	
 	/**
@@ -129,7 +129,7 @@ abstract class VisualObject extends BaseObject {
 	 * @param array $initialAttributes
 	 * @return \Webos\VisualObject
 	 */
-	public function createObject(string $className, array $initialAttributes = array()): self {
+	public function createObject(string $className, array $initialAttributes = []): self {
 		$object = new $className($this->_application, $this, $initialAttributes);
 
 		$this->getApplication()->triggerSystemEvent('createObject', $this, array(
@@ -386,7 +386,7 @@ abstract class VisualObject extends BaseObject {
 	
 	public function getInlineStyleFromArray(array $attributes, bool $absolutize = true): string {
 
-		$styles = array();
+		$styles = [];
 		if (isset($attributes['top']) || isset($attributes['left'])) {
 			$styles['position'] = 'absolute';
 		}
@@ -411,6 +411,8 @@ abstract class VisualObject extends BaseObject {
 			'margin',
 			'fontSize',
 			'padding',
+			'color',
+			'textDecoration',
 		);
 
 		foreach($visualAttributesList as $name) {
@@ -473,10 +475,10 @@ abstract class VisualObject extends BaseObject {
 	}
 
 	static public function getAsStyles(array $styles): string {
-		$strings = array();
+		$strings = [];
 		foreach($styles as $name=>$value) {
 			$unit = '';
-			if (in_array($name, ['top','bottom','left','right','width','height','margin-top'])) {
+			if (in_array($name, ['top','bottom','left','right','width','height','margin-top','font-size'])) {
 				$unit = 'px';
 			}
 			if (strpos($value, '%')!==false) {
@@ -493,7 +495,7 @@ abstract class VisualObject extends BaseObject {
 	 * El objeto sólo admite un conjunto de acciones.
 	 **/
 	public function getAllowedActions(): array {
-		return array();
+		return [];
 	}
 
 	/**
@@ -501,7 +503,7 @@ abstract class VisualObject extends BaseObject {
 	 * @return array Lista de nombres de eventos disponibles.
 	 */
 	public function getAvailableEvents(): array {
-		return array();
+		return [];
 	}
 	
 	public function getPrevious() {

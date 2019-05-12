@@ -1,6 +1,8 @@
 <?php
 namespace Webos\Visual\Controls\DataTable;
 
+use Webos\Closure;
+
 class Column {
 	public $label;
 	public $fieldName;
@@ -13,6 +15,7 @@ class Column {
 	public $decimalsGlue  = null;
 	public $thousandsGlue = null;
 	public $dateFormat    = null;
+	public $renderFn      = null;
 	
 	public function __construct($label, $fieldName) {
 		$this->label     = $label;
@@ -67,7 +70,17 @@ class Column {
 		return $this;
 	}
 	
-	public function renderValue($value) {
+	public function setRenderFn(callable $fn) {
+		$this->renderFn = new Closure($fn);
+	}
+	
+	public function renderValue($value, array $row = []) {
+		
+		if ($this->renderFn instanceof Closure) {
+			$fn = $this->renderFn;
+			return $fn($value, $row);
+		}
+		
 		if ($this->decimals !== null) {
 			if (is_numeric($value)) {
 				return number_format($value/1, $this->decimals, $this->decimalsGlue, $this->thousandsGlue);

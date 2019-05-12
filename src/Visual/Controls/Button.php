@@ -16,10 +16,6 @@ class Button extends Control {
 			'click',
 		);
 	}
-
-	public function click() {
-		$this->triggerEvent('click');
-	}
 	
 	/**
 	 * 

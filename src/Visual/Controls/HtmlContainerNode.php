@@ -17,8 +17,4 @@ class HtmlContainerNode extends HtmlContainer {
 	public function getAllowedActions(): array {
 		return array_merge(parent::getAllowedActions(), ['click']);
 	}
-	
-	public function click() {
-		$this->triggerEvent('click');
-	}
 }

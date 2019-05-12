@@ -5,6 +5,7 @@ use Webos\VisualObject;
 use Webos\Visual\Windows\Wait;
 use Webos\Visual\Windows\Message;
 use Webos\Visual\Windows\Prompt;
+use Webos\Visual\Windows\PasswordPrompt;
 use Webos\Visual\Windows\Confirm;
 use Webos\Visual\Windows\Question;
 use Webos\Visual\Control;
@@ -275,6 +276,19 @@ class Window extends Container {
 	 */
 	public function onPrompt(string $text, callable $onConfirmCallback, string $defaultValue = null): Prompt {
 		return $this->openWindow(Prompt::class, [
+			'message'      => $text,
+			'defaultValue' => $defaultValue,
+		])->bind('confirm', $onConfirmCallback);
+	}
+	
+	/**
+	 * 
+	 * @param type $text
+	 * @param \Webos\Visual\callable $onConfirmCallback
+	 * @return Window
+	 */
+	public function onPasswordPrompt(string $text, callable $onConfirmCallback, string $defaultValue = null): PasswordPrompt {
+		return $this->openWindow(PasswordPrompt::class, [
 			'message'      => $text,
 			'defaultValue' => $defaultValue,
 		])->bind('confirm', $onConfirmCallback);

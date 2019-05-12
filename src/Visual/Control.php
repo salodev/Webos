@@ -45,6 +45,10 @@ abstract class Control extends VisualObject {
 //		}
 //		return parent::action($name, $params);
 //	}
+
+	public function click() {
+		$this->triggerEvent('click');
+	}
 	
 	/**
 	 * 

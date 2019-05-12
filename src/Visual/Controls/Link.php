@@ -19,14 +19,38 @@ use Webos\StringChar;
 class Link extends Control {
 	//put your code here
 	
+	public function initialize() {
+		$this->enableEvent('click');
+	}
+	
 	public function getRequiredParams(): array {
 		return array_merge(parent::getRequiredParams(), ['url']);
 	}
 	
+	public function getAllowedActions(): array {
+		return ['click'];
+	}
+	
 	public function render(): string {
-		return (new StringChar("<a href=\"{$this->url}\" __STYLE__ >{$this->text}</a>"))
-			->replaces([
-				'__STYLE__' => $this->getInlineStyle(true),
-			]);
+		if ($this->hasListenerFor('click')) {
+			$html = new StringChar(
+				'<a id="__id__" href="" class="Control __class__" webos click __style____disabled__>__text__</a>'
+			);
+
+		} else {
+			$html = new StringChar("<a class=\"Control __class__\" href=\"{$this->url}\" __style__ >__text__</a>");
+		}
+
+			$html->replace('__style__', $this->getInLineStyle());
+
+			$html->replaces(array(
+				'__id__'      => $this->getObjectID(),
+				'__class__'   => $this->getClassNameForRender(),
+				'__text__'   => $this->getChildObjects()->render() . $this->text,
+				'__disabled__' => $this->disabled ? 'disabled="disabled"' : '',
+				'__style__' => $this->getInlineStyle(true),
+			));
+			
+			return $html;
 	}
 }

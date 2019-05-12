@@ -6,10 +6,6 @@ use Webos\StringChar;
 
 class ToolItem extends Control {
 
-	public function click() {
-		$this->triggerEvent('click', array());
-	}
-
 	public function getAllowedActions(): array {
 		return array(
 			'click',

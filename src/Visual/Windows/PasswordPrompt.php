@@ -1,14 +1,14 @@
 <?php
 namespace Webos\Visual\Windows;
 use Webos\Visual\Window;
-use Webos\Visual\Controls\TextBox;
-class Prompt extends Window {
+use Webos\Visual\Controls\PasswordBox;
+class PasswordPrompt extends Window {
 
 	public function initialize(array $params = []) {
 		$this->title = $this->message;
 		$this->height = 25;
 		$this->width = 327;
-		$this->textBox = $textBox = $this->createObject(TextBox::class, [
+		$this->textBox = $textBox = $this->createObject(PasswordBox::class, [
 			'width'=>'100%',
 			'bottom' => 30,
 		]);

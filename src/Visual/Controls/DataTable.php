@@ -235,11 +235,10 @@ class DataTable extends Control {
 					$rowValue = $rowValue[$fieldPart]??'';
 				}
 				// fin de obtención del valor de la columna.
+				$value = $column->renderValue($rowValue, $row);
 				
-				if (empty($rowValue)) {
+				if (empty($value)) {
 					$value = '&nbsp;';
-				} else {
-					$value = $column->renderValue($rowValue);
 				}
 				$html .= 
 					"<div class=\"DataTableCell{$linkable} no-break\" " .

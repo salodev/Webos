@@ -6,7 +6,8 @@ $sm = StylesManager::Instance();
 
 $sm->defineColor('yellow',   '#f5b400');
 // $sm->defineColor('blue',     '#5589e1');
-$sm->defineColor('blue',     '#4a78c5');
+// $sm->defineColor('blue',     '#4a78c5');
+$sm->defineColor('blue',     'rgba(74,120,197,0.95)');
 $sm->defineColor('red',      '#dc4437');
 $sm->defineColor('green',    '#56a845');
 $sm->defineColor('paper',    '#555555', '#ffffff');
@@ -63,7 +64,7 @@ $sm->define('icon-chevron-down', [
 ])->import('icon');
 
 $sm->addRule('.Button', [
-	'border-radius' => '2px',
+	// 'border-radius' => '2px',
 	'height'        => '25px',
 	// 'font-size'     => '13.33px',
 	'font-size'     => '14px',
@@ -128,6 +129,10 @@ $sm->addRule('.MultiTab > .Tabs > .tab:hover', [
 
 $sm->addRule('.FrameControl', [ 
     'overflow'=> 'hidden',
+]);
+
+$sm->addRule('.Control.Link:visited', [
+	'color' => 'blue',
 ]);
 
 
