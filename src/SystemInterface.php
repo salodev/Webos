@@ -119,13 +119,11 @@ class SystemInterface {
 	}
 	
 	public function showError($e) {	
-		$app = $this->getActiveApplication();		
-		// @todo: decide about it.
-		if (ENV==ENV_DEV && false) {
-			$app->openExceptionWindow($e);
-		} else {
-			$parsedException = ExceptionWindow::ParseException($e);
-			$w = $app->openMessageWindow('Opps', $e->getMessage());
+		$app = $this->getActiveApplication();
+
+		$parsedException = ExceptionWindow::ParseException($e);
+		$w = $app->openMessageWindow('Opps', $e->getMessage());
+		if (ENV==ENV_DEV) {
 			$w->createWindowButton('Details')->onClick(function($context, $source) {
 				$source->getApplication()->openWindow(ExceptionWindow::class, $context['exception']);
 			}, [
