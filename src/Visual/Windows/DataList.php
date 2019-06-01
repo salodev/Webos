@@ -61,6 +61,14 @@ abstract class DataList extends Window {
 			$this->refreshList();
 		});
 		
+		$this->dataTable->setDataFn(function(int $offset = 0, int $limit = 0) {
+			return $this->getData($offset, $limit);
+		});
+		
+		$this->dataTable->bind('nextPage', function($params) {
+			$this->getData($params);
+		});
+		
 		$this->txtSearch->focus();
 	}
 	
@@ -70,11 +78,10 @@ abstract class DataList extends Window {
 	}
 	
 	public function refreshList() {
-		$rs = $this->getData();
-		$this->dataTable->rows = $rs;
+		$rs = $this->dataTable->setOffset(0);
 	}
 	
-	abstract public function getData(): array;
+	abstract public function getData(int $offset = 0, int $limit = 0): array;
 	
 	/**
 	 * Usage example:

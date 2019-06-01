@@ -385,7 +385,7 @@ class Window extends Container {
 			'<div 
 				id="__ID__" 
 				class="Window form-wrapper__ACTIVE____STATUS__"
-				style="__STYLE__"__READY__ __DIRECTIVES__' .
+				__STYLE__ __READY__ __DIRECTIVES__' .
 			'>' .
 				'<div class="form-titlebar">' .
 					($this->showTitle ?
@@ -423,20 +423,19 @@ class Window extends Container {
 		
 		$hasReadyListeners = $this->hasListenerFor('ready');
 		
-
-		$styles = array(
-			'width'    => $this->width,
-			'height'   => $this->height,
-			'top'      => $this->top,
-			'left'     => $this->left,
-			'position' => 'absolute',
-		);
+		$absolutize = true;
+		if (empty($this->left) && $this->horizontalAlign && $this->horizontalAlign == 'center') {
+			$this->position    = 'relative';
+			$absolutize        = false;
+			$this->marginLeft  = 'auto';
+			$this->marginRight = 'auto';
+		}
 
 		$active = ($this->isActive()) ? ' active' : '';
 		$status = ($this->windowStatus) ? ' ' . $this->windowStatus : '';
 
 		if ($this->windowStatus == 'maximized') {
-			unset($styles['width'], $styles['height']);
+			// unset($styles['width'], $styles['height']);
 		}
 		
 		$html->replaces(array(
@@ -444,7 +443,7 @@ class Window extends Container {
 			'__ACTIVE__'     => $active,
 			'__STATUS__'     => $status,
 			'__TITLE__'      => $this->title,
-			'__STYLE__'      => $this->getAsStyles($styles),
+			'__STYLE__'      => $this->getInlineStyle($absolutize),
 			'__AUTOFOCUS__'  => $autofocus,
 			'__READY__'      => $hasReadyListeners ? 'webos ready': '',
 			'__DIRECTIVES__' => count($directives) ? 'webos ' . implode(' ', $directives): '',

@@ -388,7 +388,9 @@ abstract class VisualObject extends BaseObject {
 
 		$styles = [];
 		if (isset($attributes['top']) || isset($attributes['left'])) {
-			$styles['position'] = 'absolute';
+			if ($absolutize) {
+				$styles['position'] = 'absolute';
+			}
 		}
 
 		$visualAttributesList = array(
@@ -402,6 +404,7 @@ abstract class VisualObject extends BaseObject {
 			'textAlign',
 			'backgroundImage',
 			'backgroundColor',
+			'backgroundSize',
 			'overflowX',
 			'overflowY',
 			'marginTop',
@@ -410,9 +413,12 @@ abstract class VisualObject extends BaseObject {
 			'marginRight',
 			'margin',
 			'fontSize',
+			'fontFamily',
 			'padding',
 			'color',
 			'textDecoration',
+			'position',
+			'boxShadow',
 		);
 
 		foreach($visualAttributesList as $name) {

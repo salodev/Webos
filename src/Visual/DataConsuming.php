@@ -10,7 +10,29 @@ use Exception;
 
 trait DataConsuming {
 	
+	protected $_offset = 0;
+	protected $_limit  = 100;
+	
 	protected $_dataSourceFn;
+	
+	public function reset(): self {
+		$this->setOffset(0);
+		return $this;
+	}
+	
+	public function setOffset(int $value): self {
+		$this->_offset = $value;
+		$this->refresh();
+		
+		return $this;
+	}
+	
+	public function setLimit(int $value): self {
+		$this->_limit = $value;
+		$this->refresh();
+		
+		return $this;
+	}
 	
 	/**
 	 * Set a callback function that receive parameters, make a query
@@ -34,14 +56,17 @@ trait DataConsuming {
 		}
 	}
 	
-	public function refresh(array $params = []) {
+	public function refresh() {
+		$data = $this->_queryData($this->_offset, $this->_limit);
+		$this->setData($data);
+	}
+	
+	protected function _queryData(int $offset = 0, int $limit = 0) {
 		if (!is_callable($this->_dataSourceFn)) {
 			throw new Exception('Not callback function for data');
 		}
 		$ds = $this->_dataSourceFn;
-		$data = $ds($params);
-		
-		$this->setData($data);
+		return $ds($offset, $limit);
 	}
 	
 	public function setData(array $data = []) {

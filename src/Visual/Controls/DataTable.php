@@ -14,6 +14,7 @@ class DataTable extends Control {
 	
 	// public $rowIndex = null;
 	public function initialize() {
+		$this->offset = 0;
 		$this->rows        = [];
 		$this->columns     = new Collection();
 		$this->rowIndex    = null;
@@ -140,6 +141,18 @@ class DataTable extends Control {
 		}
 	}
 	
+	public function nextPage(array $params): void {
+		$this->_offset = $this->_offset + $this->_limit;
+		$newData = $this->_queryData($this->_offset, $this->_limit);
+		
+		$this->rows = array_merge($this->_rows, $newData);
+		
+		$this->triggerEvent('nextPage', [
+			'offset' => $this->_offset,
+			'limit'  => $this->_limit,
+		]);
+	}
+	
 	public function onContextMenu(callable $cb, bool $persistent = true, array $contextData = []): self {
 		$this->bind('contextMenu', $cb, $persistent, $contextData);
 		return $this;
@@ -151,6 +164,7 @@ class DataTable extends Control {
 			'rowDoubleClick',
 			'scroll',
 			'contextMenu',
+			'nextPage',
 		];
 	}
 
@@ -160,6 +174,7 @@ class DataTable extends Control {
 			'rowDoubleClick',
 			'contextMenu',
 			'scroll',
+			'nextPage',
 		];
 	}
 	
@@ -169,6 +184,10 @@ class DataTable extends Control {
 	
 	public function onRowDoubleClick(callable $eventListener, bool $persistent = true, array $contextData = []): void {
 		$this->bind('rowDoubleClick', $eventListener, $persistent, $contextData);
+	}
+	
+	public function onNextPage(callable $eventListener, bool $persistent = true, array $contextData = []): self {
+		$this->bind('nextPage', $eventListener, $persistent, $contextData);
 	}
 	
 	public function render(): string {

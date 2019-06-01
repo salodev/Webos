@@ -130,19 +130,19 @@ $sm->addRule('.MenuButton:hover > .text')->import('blue')->invert()->important('
 $sm->addRule('.MenuButton.selected > .text')->import('blue')->invert()->important('background');
 
 $sm->addRule('.MultiTab > .Tabs', [
-	'border-bottom' => 'solid 1px ' . $sm->getPalette('green'),
+	'border-bottom' => 'solid 1px ' . $sm->getPalette('blue'),
 ]);
 
 $sm->addRule('.MultiTab > .Tabs > .tab', [
 	'color'         => $sm->getPalette('black'),
 ]);
 $sm->addRule('.MultiTab > .Tabs > .tab.selected', [
-	'color'         => $sm->getPalette('green'),
-	'border-bottom' => 'solid 2px ' . $sm->getPalette('green'),
+	'color'         => $sm->getPalette('blue'),
+	'border-bottom' => 'solid 2px ' . $sm->getPalette('blue'),
 ]);
 $sm->addRule('.MultiTab > .Tabs > .tab:hover', [
 	// 'color' => $sm->getPalette('green'),
-	'border-bottom' => 'solid 2px ' . $sm->getPalette('green'),
+	'border-bottom' => 'solid 2px ' . $sm->getPalette('blue'),
 ]);
 
 $sm->addRule('.FrameControl', [ 

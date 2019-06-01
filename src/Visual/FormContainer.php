@@ -423,7 +423,7 @@ trait FormContainer {
 	}
 	
 	public function createHTMLContainer(array $parameters = []): HtmlContainer {		
-		return $this->createObject(HtmlContainer::class);
+		return $this->createObject(HtmlContainer::class, $parameters);
 	}
 	
 	public function createFilePicker(string $label = '', array $params = []): FilePicker {

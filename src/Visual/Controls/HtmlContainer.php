@@ -49,7 +49,8 @@ class HtmlContainer extends Control {
 	public function render(): string {
 		$scrollTop  = $this->scrollTop  ?? 0;
 		$scrollLeft = $this->scrollLeft ?? 0;
-		return "<div class=\"HtmlContainers\" id=\"{$this->getObjectID()}\" {$this->getInlineStyle(true)} webos set-scroll-values=\"{$scrollTop},{$scrollLeft}\">" . $this->getChildObjects()->render() . '</div>';
+		
+		return "<div class=\"HtmlContainers\" id=\"{$this->getObjectID()}\" {$this->getInlineStyle(true)} webos set-scroll-values=\"{$scrollTop},{$scrollLeft}\">" . ($this->content ?? '') . $this->getChildObjects()->render() . '</div>';
 	}
 	
 	public function enableScroll(): self {
