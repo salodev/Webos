@@ -2,7 +2,10 @@
 
 namespace Webos\FrontEnd;
 
+use \Webos\Implementations\Service;
+
 class Page implements PageWrapper {
+	
 	private $body = null;
 
 	public function setContent(string $html): PageWrapper {
@@ -19,12 +22,17 @@ class Page implements PageWrapper {
 	}
 
 	private function renderTemplate(string $content): string {
+		$title = Service::GetTitle();
 		$html =
 			'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' .
 			'<html xmlns="http://www.w3.org/1999/xhtml">' .
 				'<head>' .
 					'<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>' .
-					'<title>Test</title>' .
+					'<title>' . htmlentities($title) . '</title>';
+					if (Service::GetFavicon()) {
+						$html .= '<link rel="shortcut icon" type="image/png" href="' . Service::GetFavicon() . '"/>';
+					}
+					$html .=
 					'<link rel="stylesheet" href="css/Window.css" />' .
 					'<link rel="stylesheet" href="css/Toolbar.css" />' .
 					'<link rel="stylesheet" href="css/styles.css" />' .

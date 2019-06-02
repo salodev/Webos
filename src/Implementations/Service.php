@@ -14,6 +14,24 @@ class Service {
 	static private $_applicationName = '';
 	static private $_applicationParams = [];
 	static private $_url = '';
+	static private $_title = 'WebOS Application';
+	static private $_favicon = '';
+	
+	static public function SetTitle(string $title): void {
+		self::$_title = $title;
+	}
+	
+	static public function GetTitle(): string {
+		return self::$_title;
+	}
+	
+	static public function SetFavicon(string $favicon): void {
+		self::$_favicon = $favicon;
+	}
+	
+	static public function GetFavicon(): string {
+		return self::$_favicon;
+	}
 	
 	static public function SetUrl(string $url): void {
 		self::$_url = $url;
