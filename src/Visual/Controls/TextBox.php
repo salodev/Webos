@@ -13,7 +13,8 @@ class TextBox extends Field {
 					'class="Control Field TextFieldControl"__style__ ' .
 					'webos leavetyping __focus__ __captureTyping__ ' .
 					'placeholder="__placeholder__" ' .
-					'name="__name__"__disabled__>__value__</textarea>'
+					// 'name="__name__"' . 
+					'__disabled__>__value__</textarea>'
 			);
 		} else {
 			$html =  new StringChar(
@@ -22,7 +23,7 @@ class TextBox extends Field {
 					'type="text" ' .
 					'autocomplete="off" ' .
 					'webos leavetyping __focus__ __captureTyping__ ' .
-					'name="__name__" ' .
+					// 'name="__name__" ' .
 					'placeholder="__placeholder__" ' .
 					'value="__value__"__disabled__ />'
 			);
@@ -31,7 +32,7 @@ class TextBox extends Field {
 		$hasLeaveTypingEvent = $this->_eventsHandler->hasListenersForEventName('leaveTyping');
 		$html->replaces(array(
 			'__id__'          => $this->getObjectID(),
-			'__name__'        => $this->name,
+			// '__name__'        => $this->name,
 			'__value__'       => $this->value,
 			'__placeholder__' => $this->placeholder,
 			'__style__'       => $this->getInlineStyle(),

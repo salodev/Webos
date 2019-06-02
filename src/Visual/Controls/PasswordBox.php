@@ -11,7 +11,7 @@ class PasswordBox extends TextBox {
 				'class="Control Field PasswordFieldControl"' .
 				'__style__ ' .
 				'type="password" ' .
-				'name="__name__" ' .
+				// 'name="__name__" ' .
 				'webos leavetyping ' .
 				'value="__value__" ' .
 			'/>'
@@ -19,7 +19,7 @@ class PasswordBox extends TextBox {
 		
 		return $html
 			->replace('__id__',       $this->getObjectID())
-			->replace('__name__',     $this->name)
+			// ->replace('__name__',     $this->name)
 			->replace('__value__',    $this->value)
 			->replace('__style__',    $this->getInlineStyle());
 	}
