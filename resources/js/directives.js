@@ -40,17 +40,24 @@ Directives.register('close', function(el) {
 });
 
 Directives.register('leavetyping', function(el) {
-	var id = $(el).attr('id');
-	var to = null;
-	$(el).unbind('keyup').bind('keyup', function(ev) {
+	var $el = $(el);
+	var id  = $el.attr('id');
+	var to  = null;
+	var save = function() {
+		Webos.action('leaveTyping', id, {
+			value: $el.val(),
+			ignoreUpdateObject: true
+		});
+	}
+	$el.unbind('keyup').bind('keyup', function(ev) {
 		if (to) { clearTimeout(to); }
 		to = setTimeout(function() {
-			Webos.action('leaveTyping', id, {
-				value: $(el).val(),
-				ignoreUpdateObject: true
-			});	
+			save();
 		}, 400);
 	});
+	if ($el.is(":-webkit-autofill")) {
+		save();
+	}
 });
 
 Directives.register('ready', function(el) {
