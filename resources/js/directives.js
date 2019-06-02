@@ -359,5 +359,8 @@ Directives.register('focus', function(el) {
 });
 
 $(function() {
-	Directives.findNApplyAll(document.body);
+	//wait for autofill
+	setTimeout(function() {
+		Directives.findNApplyAll(document.body);
+	}, 400);
 });
