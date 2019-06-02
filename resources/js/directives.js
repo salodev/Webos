@@ -55,9 +55,11 @@ Directives.register('leavetyping', function(el) {
 			save();
 		}, 400);
 	});
-	if ($el.is(":-webkit-autofill")) {
-		save();
-	}
+	$(function(){
+		if ($el.is(":-webkit-autofill")) {
+			save();
+		}
+	});
 });
 
 Directives.register('ready', function(el) {
