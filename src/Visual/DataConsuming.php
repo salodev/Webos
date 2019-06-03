@@ -49,11 +49,11 @@ trait DataConsuming {
 	 * @param bool     $refresh       Wether call function after set.
 	 * @param array    $refreshParams Params only for first call, if set to TRUE
 	 */
-	public function setDataFn(callable $fn, bool $refresh = true, array $refreshParams = []) {
+	public function setDataFn(callable $fn/*, bool $refresh = true, array $refreshParams = []*/) {
 		$this->_dataSourceFn = new Closure($fn);
-		if ($refresh) {
+		/*if ($refresh) {
 			$this->refresh($refreshParams);
-		}
+		}*/
 	}
 	
 	public function refresh() {
