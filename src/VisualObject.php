@@ -387,11 +387,6 @@ abstract class VisualObject extends BaseObject {
 	public function getInlineStyleFromArray(array $attributes, bool $absolutize = true): string {
 
 		$styles = [];
-		if (isset($attributes['top']) || isset($attributes['left'])) {
-			if ($absolutize) {
-				$styles['position'] = 'absolute';
-			}
-		}
 
 		$visualAttributesList = array(
 			'top',
@@ -444,14 +439,6 @@ abstract class VisualObject extends BaseObject {
 			
 		}
 
-		if (is_array($absolutize)) {
-			$styles = array_merge($styles, $absolutize);
-		} else {
-			if ($absolutize === true) { 
-				$styles['position'] = 'absolute';
-			}
-		}
-		
 		if (!empty($attributes['position']) && $attributes['position'] == 'fixed') {
 			$styles['position'] = 'fixed';
 		}
