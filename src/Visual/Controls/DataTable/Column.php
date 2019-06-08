@@ -17,9 +17,14 @@ class Column {
 	public $dateFormat    = null;
 	public $renderFn      = null;
 	
-	public function __construct($label, $fieldName) {
+	public function __construct(string $label, string $fieldName) {
 		$this->label     = $label;
 		$this->fieldName = $fieldName;
+	}
+	
+	public function title(string $value): self {
+		$this->label = $value;
+		return $this;
 	}
 	
 	public function label(string $value): self {
@@ -27,9 +32,13 @@ class Column {
 		return $this;
 	}
 	
-	public function fieldName(string $value): self {
+	public function name(string $value): self {
 		$this->fieldName = $value;
 		return $this;
+	}
+	
+	public function fieldName(string $value): self {
+		return $this->name($value);
 	}
 	
 	public function width(int $value): self {
@@ -57,7 +66,7 @@ class Column {
 		return $this;
 	}
 	
-	public function decimal($decimals = 2, $decimalsGlue = '.', $thousandsGlue = ''): self {
+	public function decimal(int $decimals = 2, string $decimalsGlue = '.', string $thousandsGlue = ''): self {
 		$this->decimals = $decimals;
 		$this->decimalsGlue = $decimalsGlue;
 		$this->thousandsGlue = $thousandsGlue;
