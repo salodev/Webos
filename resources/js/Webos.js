@@ -33,3 +33,15 @@ Webos.trigger = function(eventName, eventData) {
 Webos.bind = function(eventName, eventHandler, persistance) {
 	eventEngine.registerEventListener(eventName, eventHandler, persistance);
 }
+
+Webos.syncViewportSize = function() {
+	$.ajax({
+		url: this.endPoint,
+		type: 'post',
+		data: {
+			syncViewportSize: true,
+			width:  window.innerWidth,
+			height: window.innerHeight
+		}
+	});
+}

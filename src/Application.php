@@ -109,6 +109,31 @@ abstract class Application {
 			$window->left = $relativeTo->left + 100;
 		}
 		
+		
+		$margin = 10;
+		$h = $this->getWorkSpace()->getViewportHeight();
+		$w = $this->getWorkSpace()->getViewportWidth();
+		
+		/**
+		 * In order to keep window placed into screen so check dimensions and
+		 * try to put the window better as possible.
+		 * First check it for vertical position
+		 */
+		if ($window->top + $window->height > $h) {
+			$window->top = $h - $window->height - $margin;
+			if ($window->top < $margin) {
+				$window->top = $margin;
+			}
+		}
+		
+		// Now for horizontal position.
+		if ($window->left + $window->width > $w) {
+			$window->left = $h - $window->width - $margin;
+			if ($window->left < $margin) {
+				$window->left = $margin;
+			}
+		}
+		
 		return $window;
 	}
 	

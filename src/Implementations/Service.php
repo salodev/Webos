@@ -1,7 +1,6 @@
 <?php
 
 namespace Webos\Implementations;
-use Webos\Service\DevService;
 use Webos\Service\ProductionService;
 use Webos\Service\AuthService;
 use Webos\Service\UserService;
@@ -48,7 +47,7 @@ class Service {
 	
 	static public function Create(string $user, string $applicationName, array $applicationParams = []): UserService {
 		if (self::$dev) {
-			return new DevService($user, $applicationName, $applicationParams);
+			return new UserService($user, $applicationName, $applicationParams);
 		} else {
 			return new ProductionService($user, $applicationName, $applicationParams);
 		}
@@ -85,12 +84,12 @@ class Service {
 		
 		if(!empty($_REQUEST['actionName'])) {
 			self::DoAction($service);
-			return;
 		} elseif (!empty($_REQUEST['getOutputStream'])) {
 			self::GetOutputStream($service);
-			return;
 		} elseif (!empty($_REQUEST['getMediaContent'])) {
 			self::GetMediaContent($service);
+		} elseif (!empty($_REQUEST['syncViewportSize'])) {
+			self::SyncViewportSize($service);
 		} else {
 			self::RenderAll($service);
 		}
@@ -119,6 +118,16 @@ class Service {
 		}
 		
 		self::SendJson($response);
+	}
+	
+	static public function SyncViewportSize(UserService $service): void {
+		if (empty($_REQUEST['width']) || empty($_REQUEST['height'])) {
+			self::SendJson(['status'=>'error','message'=>'Missing width or height']);
+			return;
+		}
+		
+		$service->setViewportSize((int)$_REQUEST['width'], (int)$_REQUEST['height']);
+		self::SendJson([]);
 	}
 	
 	static public function GetOutputStream(UserService $service): void {

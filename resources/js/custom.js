@@ -119,3 +119,15 @@ Webos.bind('elementsUpdated', function() {
 $(document).ready(function() {
 	Webos.trigger('elementsUpdated');
 });
+
+$(document).ready(function() {
+	Webos.syncViewportSize();
+	
+	var to = null;
+	$(window).resize(function() {
+		clearTimeout(to);
+		to = setTimeout(function() {
+			Webos.syncViewportSize();
+		}, 500);
+	})
+});

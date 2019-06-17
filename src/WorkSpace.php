@@ -6,10 +6,8 @@ use Webos\FrontEnd\PageWrapper;
 use Webos\FrontEnd\Page;
 
 /**
- * El WorkSpace es el entorno donde se ejecutarán todas las posibles
- * aplicaciones.
- * Éste da soporte de eventos y comunicación entre aplicaciones. También
- * proporciona a las mismas acceso al objeto System que la contiene.
+ * WorkSpace is the scope for all applications.
+ * It supports events and app communications.
  **/
 class WorkSpace {
 	
@@ -19,6 +17,9 @@ class WorkSpace {
 	protected $_name              = null;
 	protected $_info              = [];
 	protected $_pageWrapper       = null;
+	protected $_vpWidth           = 1200;
+	protected $_vpHeight          = 600;
+	
 	/**
 	 *
 	 * @var Webos\System; 
@@ -85,15 +86,12 @@ class WorkSpace {
 	}
 
 	/**
-	 * Éste método finaliza una aplicación previamente cerrando sus ventanas
-	 * abiertas.
+	 * Finishes application closing all own open windows.
 	 *
-	 * @todo: Este método debería detenerse si una llamada a closeWindow()
-	 *        retorna FALSE.
-	 *        Debería poseer además un parámetro para forzar el cierre de la
-	 *        aplicación sin importar el resultado del método.
-	 *        Otra forma de cerrar la aplicación sería indicando que se cierre
-	 *        sin llamar a closeWindow().
+	 * @todo: This method should stop if a closeWindow() call returns FALSE.
+	 *        Should be an optional param to force close appliaction avoiding
+	 *	      closeWindow() returns.
+	 *        Other way may be closing indicating no call closeWindow()
 	 * @param <type> $key
 	 * @return WorkSpace
 	 */
@@ -223,5 +221,18 @@ class WorkSpace {
 		$configPath = $this->_systemEnvironment->getConfig('path/workspaces');
 		
 		return "{$configPath}{$this->_name}/files/";
+	}
+	
+	public function setViewportSize(int $width, int $height) {
+		$this->_vpWidth = $width;
+		$this->_vpHeight = $height;
+	}
+	
+	public function getViewportWidth(): int {
+		return $this->_vpWidth;
+	}
+	
+	public function getViewportHeight(): int {
+		return $this->_vpHeight;
 	}
 }
