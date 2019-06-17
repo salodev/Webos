@@ -1,10 +1,16 @@
 <?php
 
 namespace Webos\Visual\Windows;
+
 use Webos\Visual\Window;
+use Webos\Visual\Controls\TabFolder;
 
 class Embedder extends Window {
 	
+	/**
+	 *
+	 * @var \Webos\Visual\Control\MultiTab;
+	 */
 	public $tabs = null;
 	
 	public function preInitialize() {
@@ -22,7 +28,11 @@ class Embedder extends Window {
 		});
 	}
 	
-	public function tabWindow(string $title, string $windowClass, array $params = []) {
+	public function addTab(string $title, array $params = []): TabFolder {
+		return $this->tabs->addTab($title, $params);
+	}
+	
+	public function tabWindow(string $title, string $windowClass, array $params = []): TabFolder {
 		$tab = $this->tabs->addTab($title);
 		$tab->onEmbedded(function($data) {
 			$data['window']->onNewData(function() {
@@ -33,5 +43,7 @@ class Embedder extends Window {
 			});
 		});
 		$tab->embedWindowOnSelect($windowClass, $params);
+		
+		return $tab;
 	}	
 }
