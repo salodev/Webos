@@ -15,9 +15,6 @@ class Image extends Control {
 		$this->onClick(function() {
 			if ($this->uploadEnabled) {
 				$window = $this->openUploadWindow();
-				$this->triggerEvent('uploadOpened', [
-					'window' => $window,
-				]);
 			}
 		});
 	}
@@ -84,6 +81,11 @@ class Image extends Control {
 			$this->uploadWindow->focus();
 			return $this->uploadWindow;
 		}
+		
+		$this->triggerEvent('uploadOpened', [
+			'window' => $this->uploadWindow,
+		]);
+		
 		$uw = $this->uploadWindow = $this->getParentWindow()->openWindow(Window::class);
 		$uw->title = 'Select a file';
 		
