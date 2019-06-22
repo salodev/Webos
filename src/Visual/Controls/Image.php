@@ -22,11 +22,13 @@ class Image extends Control {
 	public function enableUpload(bool $updateSource = true): self {
 		$this->uploadEnabled = true;
 		$this->updateSource = $updateSource;
+		$this->cursor = 'pointer';
 		return $this;
 	}
 	
 	public function disableUpload(): self {
 		$this->uploadEnabled = false;
+		$this->cursor = 'normal';
 		return $this;
 	}
 	

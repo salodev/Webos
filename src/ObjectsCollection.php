@@ -11,7 +11,7 @@ class ObjectsCollection extends Collection {
 	 *
 	 * @param VisualObject $object
 	 **/
-	function addObject(VisualObject $object) {
+	function addObject(VisualObject $object): self {
 
 		parent::add($object);
 		return $this;
@@ -33,8 +33,6 @@ class ObjectsCollection extends Collection {
 				break;
 			}
 		}
-		/*$pointer = &$objectToRemove;
-		unset($pointer);*/
 		return $this;
 	}
 
@@ -49,16 +47,11 @@ class ObjectsCollection extends Collection {
 		}
 
 		foreach($this->_data as $object) {
-			if (!($object instanceof VisualObject)) {
-				continue;
-			}
 			if ($object->getObjectID()==$id) {
 				return $object;
 			}
 			try {
-				if ($test = $object->getObjectByID($id, $horizontal)){
-					return $test;
-				}
+				return $object->getObjectByID($id, $horizontal);
 			} catch (NotFound $e) {
 				continue;
 			}
@@ -72,13 +65,7 @@ class ObjectsCollection extends Collection {
 		//return $inspector->getObjectsByClassName($className, $this);
 
 		$list = new ObjectsCollection();
-		foreach($this->_data as $object){
-			/**
-			 * Sólo VisualObjects implementan el método getClassName.
-			 **/
-			if (!($object instanceof VisualObject)) {
-				continue;
-			}
+		foreach($this->_data as $object) {
 
 			if ($object instanceof $className) {
 				$list->add($object);
@@ -96,11 +83,6 @@ class ObjectsCollection extends Collection {
 	function getObjectsFromAttributes(array $params): self {
 		$list = new ObjectsCollection();
 		foreach($this->_data as $object) {
-
-			if (!($object instanceof VisualObject)) {
-				continue;
-			}
-
 			foreach($params as $attName => $attValue) {
 				if ($object->$attName==$attValue) {
 					$list->add($object);
@@ -171,5 +153,12 @@ class ObjectsCollection extends Collection {
 	
 	public function getLastObject(): VisualObject {
 		return parent::getLastObject();
+	}
+	
+	public function unIndex(): self {
+		foreach($this->_data as $object) {
+			$object->unIndex();
+		}
+		return $this;
 	}
 }

@@ -38,6 +38,7 @@ abstract class VisualObject extends BaseObject {
 		parent::__construct($data);
 		
 		$this->_objectID = $this->generateObjectID();
+		$this->index();
 		$this->_eventsHandler = new EventsHandler();
 		$this->_childObjects = new ObjectsCollection();
 		
@@ -120,7 +121,12 @@ abstract class VisualObject extends BaseObject {
 	}
 
 	public function generateObjectID(): string {
-		return str_replace('\\','-', $this->getClassName()) . '-' . md5(mt_rand()) . md5(microtime());
+		if (Webos::$development) {
+			$index = $this->getApplication()->getWorkSpace()->getObjectIndex();
+			return str_replace('\\','-', $this->getClassName()) . '-' . $index;
+		} else {
+			return str_replace('\\','-', $this->getClassName()) . '-' . md5(mt_rand()) . md5(microtime());
+		}
 	}
 	
 	/**
@@ -166,12 +172,13 @@ abstract class VisualObject extends BaseObject {
 	
 	final public function hasObjectID(string $id): bool {
 		try {
-			$object = $this->getObjectByID($id);
+			// test if exists...
+			$this->getObjectByID($id);
 		} catch (NotFound $e) {
 			return false;
 		}
 		
-		return $object instanceof VisualObject;
+		return true;
 	}
 
 	final public function getObjectsByClassName(string $className): ObjectsCollection {
@@ -221,6 +228,7 @@ abstract class VisualObject extends BaseObject {
 		$objectID = $child->getObjectID();
 		$childs = $this->getChildObjects();
 		$childs->removeObject($child);
+		$this->unIndex();
 		$this->getApplication()->triggerSystemEvent('removeObject', $this, array(
 			'objectId' => $objectID,
 		));
@@ -279,12 +287,11 @@ abstract class VisualObject extends BaseObject {
 		if ($this instanceof Window) {
 			return $this;
 		}
-
-		$parent = $this->getParent();
-		if (!($parent instanceof VisualObject)) {
-			return null;
+		
+		if (!$this->hasParent()) {
+			throw new Exception('Current object has no parent object');
 		}
-
+		$parent = $this->getParent();
 		if ($parent instanceof Window) {
 			return $parent;
 		} else {
@@ -305,8 +312,6 @@ abstract class VisualObject extends BaseObject {
 		}
 	}
 
-	/* Todos los objetos VisualObject deben implementar IActionInvoker
-	 * pero no necesariamente todos deben actuar en consecuencia. */
 	public function action(string $name, array $params = []) {
 		if (!in_array($name,$this->getAllowedActions())){
 			throw new Exception("Action $name not allowed by " . get_class($this) . " object.");
@@ -331,7 +336,6 @@ abstract class VisualObject extends BaseObject {
 		$this->triggerEvent('scroll');
 	}
 
-	/* IWithEvents */
 	public function bind(string $eventName, $eventListener, bool $persistent = true, array $contextData = []): self {
 		if ($this->_eventsHandler->isAvailable($eventName)) {
 			$this->_eventsHandler->addListener($eventName, $eventListener, $persistent, $contextData);
@@ -414,6 +418,7 @@ abstract class VisualObject extends BaseObject {
 			'textDecoration',
 			'position',
 			'boxShadow',
+			'cursor',
 		);
 
 		foreach($visualAttributesList as $name) {
@@ -545,5 +550,16 @@ abstract class VisualObject extends BaseObject {
 	
 	public function getMediaContent(array $parameters = []): Content {
 		throw new \Exception('No content for this object');
+	}
+	
+	public function index(): self {
+		$this->getApplication()->getWorkSpace()->indexObject($this);
+		return $this;
+	}
+	
+	public function unIndex(): self {
+		$this->getApplication()->getWorkSpace()->unIndexObject($this);
+		$this->getChildObjects()->unIndex();
+		return $this;
 	}
 }

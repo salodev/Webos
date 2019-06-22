@@ -4,6 +4,7 @@ namespace Webos;
 use Webos\Visual\Window;
 use Webos\FrontEnd\PageWrapper;
 use Webos\FrontEnd\Page;
+use Webos\Exceptions\Collection\NotFound;
 
 /**
  * WorkSpace is the scope for all applications.
@@ -19,6 +20,8 @@ class WorkSpace {
 	protected $_pageWrapper       = null;
 	protected $_vpWidth           = 1200;
 	protected $_vpHeight          = 600;
+	protected $_lastObjectIndex   = 0;
+	protected $_voIndex           = [];
 	
 	/**
 	 *
@@ -234,5 +237,28 @@ class WorkSpace {
 	
 	public function getViewportHeight(): int {
 		return $this->_vpHeight;
+	}
+	
+	public function getObjectIndex(): int {
+		return ++$this->_lastObjectIndex;
+	}
+	
+	public function indexObject(VisualObject $object): self {
+		$id = $object->getObjectID();
+		$this->_voIndex[$id] = $object;
+		return $this;
+	}
+	
+	public function unIndexObject(VisualObject $object): self {
+		$id = $object->getObjectID();
+		unset($this->_voIndex[$id]);
+		return $this;
+	}
+	
+	public function getObjectByID($objectID): VisualObject {
+		if (!isset($this->_voIndex[$objectID])) {
+			throw new NotFound('Object not found');
+		}
+		return $this->_voIndex[$objectID];
 	}
 }

@@ -164,25 +164,17 @@ class SystemInterface {
 	}
 
 	public function addCreateNotification(VisualObject $object): self {
-		
-		// Log::write('CREATE: ' . $object->getObjectID() . "\n");
 		// Verifica si tiene que agregar a la lista de notificaciones.
 		if ($this->checkNeccessary($object->getObjectID())) {
-			$this->_notifications['create'][] = $object;
+			$this->_notifications['create'][$object->getObjectID()] = $object;
 		}
 		
 		return $this;
 	}
 
 	public function addUpdateNotification(VisualObject $object): self {
-		// $e = new Exception();
-		// Log::write('UPDATE: ' . $object->getObjectID() . "\n" . 'parent: ' . $object->getParentWindow()->getObjectId() . "\n\n" . $e->getTraceAsString() . "\n--------------------------------------\n\n");
-		// Log::write('UPDATE: ' . $object->getObjectID() . "\n" . 'parent: ' . $object->getParentWindow()->getObjectId());
-		//Log::write((new Exception)->getTraceAsString());
-		//Log::write("---------------------------------------\n");
-		// Verifica si tiene que agregar a la lista de notificaciones.
 		if ($this->checkNeccessary($object->getObjectID())) {
-			$this->_notifications['update'][] = $object;
+			$this->_notifications['update'][$object->getObjectID()] = $object;
 			$this->_notifications['update_stacks'][] = [
 				'stack' => explode("\n", (new Exception)->getTraceAsString()),
 				'objectID' => $object->getObjectID(),
@@ -219,11 +211,9 @@ class SystemInterface {
 		// Verifico objetos a crear.
 		if (!empty($notif['create'])) {
 			foreach($notif['create'] as $object) {
-				// if ($object instanceof Visual\Window) {
-					if ($object->hasObjectID($objectId)) {
-						return false;
-					}
-				// }
+				if ($object->hasObjectID($objectId)) {
+					return false;
+				}				
 				if ($object->getObjectID() == $objectId) {
 					return false;
 				}
@@ -249,14 +239,7 @@ class SystemInterface {
 				 * Ahora verificamos que no haya algún contenedor en la lista de
 				 * actualizaciones.
 				 */
-				try {
-					$test = $object->getObjectByID($objectId);
-				} catch (NotFound $e) {
-					return true;
-				}
-
-				// Si es contenedor, no es necesario notificar.
-				if ($test instanceof VisualObject) {
+				if ($object->hasObjectID($objectId)) {
 					return false;
 				}
 
@@ -298,6 +281,7 @@ class SystemInterface {
 	}
 	
 	public function getParsedNotifications(): array {
+		
 		$notif = $this->_notifications;
 		$parsed = [
 			'events' => [],
@@ -426,12 +410,19 @@ class SystemInterface {
 	public function getObjectByID(string $objectID): VisualObject {
 		$ws = $this->_system->getWorkSpace();
 
+		// First, try get it from the WS Index. (So faster)
 		try {
-			$object = $ws->getApplications()->getObjectByID($objectID);
+			return $ws->getObjectByID($objectID);
+		} catch (NotFound $e) {
+			// discard $e;
+		}
+		
+		// Sometimes, object was not indexed, so try walking all objects ware..
+		// TODO. Should be removed this check?
+		try {
+			return $ws->getApplications()->getObjectByID($objectID);
 		} catch (NotFound $e) {
 			throw new Exception('Object does not exist', null, $e);
 		}
-		
-		return $object;
 	}
 }

@@ -155,7 +155,7 @@ abstract class Application {
 	public function closeWindow(Window $window): self {
 		$objectId = $window->getObjectID();
 		$this->_visualObjects->removeObject($window);
-
+		$window->unIndex();
 		$this->_notifyRemove($objectId);
 		/*$this->triggerSystemEvent('removeObject', $this, array(
 			'objectId' => $windowID
