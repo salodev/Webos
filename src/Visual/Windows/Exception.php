@@ -12,6 +12,7 @@ class Exception extends Window {
 		$this->title  = 'Exception trown';
 		$this->width  = 800;
 		$this->height = 500;
+		$this->modal  = true;
 		
 		$this->splitHorizontal(60);
 		$this->bottomPanel->splitHorizontal(-100);

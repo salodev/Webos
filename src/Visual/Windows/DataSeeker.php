@@ -2,11 +2,13 @@
 
 namespace Webos\Visual\Windows;
 
-class DataSeeker extends DataList {
+abstract class DataSeeker extends DataList {
 	
-	public function initialize(array $params = []) {
+	public function preInitialize(array $params = []) {
+		parent::preInitialize($params);
+		
 		$this->title = 'Data seeker window';
-		parent::initialize($params);
+		$this->modal = true;
 		
 		$this->createActionsMenu(function($data) {
 			$menu = $data['menu'];

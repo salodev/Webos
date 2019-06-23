@@ -14,6 +14,8 @@ class Wait extends Window {
 		$this->height      = $params['height' ] ?? 130;
 		$this->showTitle   = false;
 		$this->allowResize = false;
+		$this->modal       = true;
+		
 		$this->enableEvent('error');
 	}
 

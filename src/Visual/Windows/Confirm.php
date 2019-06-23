@@ -6,10 +6,10 @@ use Webos\Visual\Window;
 class Confirm extends Window {
 
 	public function initialize(array $params = []) {
-		$this->title = 'Confirmar';
-		
+		$this->title  = 'Confirmar';
 		$this->height = 130;
-		$this->text = $this->message;
+		$this->text   = $this->message;
+		$this->modal  = true;
 		
 		$this->createWindowButton('Confirmar')->onClick(function() {
 			$this->triggerEvent('confirm');

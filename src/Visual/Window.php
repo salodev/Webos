@@ -36,6 +36,7 @@ class Window extends Container {
 		$this->showTitle    = true;
 		$this->showControls = true;
 		$this->allowResize  = true;
+		$this->modal        = false;
 		
 		$this->onContextMenu(function($data) {
 			$menu = $data['menu'];
@@ -191,6 +192,11 @@ class Window extends Container {
 		}
 		
 		return false;
+	}
+	
+	public function modal(bool $value = true): self {
+		$this->modal = $value;
+		return $this;
 	}
 	
 	/**
@@ -381,11 +387,12 @@ class Window extends Container {
 		if ($this->allowResize && !$this->_embed) {
 			$directives[] = 'resize';
 		}
+		
 		$html = new StringChar(
-			'<div 
-				id="__ID__" 
-				class="Window form-wrapper__ACTIVE____STATUS__"
-				__STYLE__ __READY__ __DIRECTIVES__' .
+			'<div ' .
+				($this->modal ? '' : 'id="__ID__" ') .
+				'class="Window form-wrapper__ACTIVE____STATUS__" ' .
+				'__STYLE__ __READY__ __DIRECTIVES__' .
 			'>' .
 				'<div class="form-titlebar">' .
 					($this->showTitle ?
@@ -403,6 +410,10 @@ class Window extends Container {
 				'__AUTOFOCUS__' . 
 			'</div>'
 		);
+		
+		if ($this->modal) {
+			$html = new StringChar('<div id="__ID__" class="modal-wrapper">' . $html . '</div>');
+		}
 		
 		if ($this->_embed) {
 			$html = new StringChar('<div id="__ID__" __READY__ __DIRECTIVES__ style="top:0;left:0;bottom:0;right:0;position:absolute;overflow:hidden;">__CONTENT____AUTOFOCUS__</div>');

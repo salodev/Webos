@@ -3,8 +3,8 @@
     -moz-border-radius:7px;
     border-radius:7px;*/
     background: #efefef;
-    -webkit-box-shadow:0 0 5px #eee;
-    -moz-box-shadow:0 0 5px #eee;
+    -webkit-box-shadow:0 0 5px #ccc;
+    -moz-box-shadow:0 0 5px #ccc;
     box-shadow:0 0 5px #ccc;
 	border: solid 1px #ccc;
     width:450px;
@@ -13,9 +13,9 @@
 }
 
 .Window.active {
-    -webkit-box-shadow:0 0 10px #ddd;
-    -moz-box-shadow:0 0 10px #ddd;
-    box-shadow:0 0 10px #ddd;
+    -webkit-box-shadow:0 0 10px #999;
+    -moz-box-shadow:0 0 10px #999;
+    box-shadow:0 0 10px #999;
 }
 
 .Window .form-titlebar{

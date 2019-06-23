@@ -12,6 +12,7 @@ class Question extends Window {
 		$this->width       = $params['width'  ] ?? 450;
 		$this->height      = $params['height' ] ?? 150;
 		$this->messageType = $params['type'   ] ?? null;
+		$this->modal       = true;
 	}
 	
 	public function ifAnswer(string $text, callable $fn): self {

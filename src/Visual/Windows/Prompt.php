@@ -5,9 +5,10 @@ use Webos\Visual\Controls\TextBox;
 class Prompt extends Window {
 
 	public function initialize(array $params = []) {
-		$this->title = $this->message;
+		$this->title  = $this->message;
 		$this->height = 25;
-		$this->width = 327;
+		$this->width  = 327;
+		$this->modal  = true;
 		$this->textBox = $textBox = $this->createObject(TextBox::class, [
 			'width'=>'100%',
 			'bottom' => 30,

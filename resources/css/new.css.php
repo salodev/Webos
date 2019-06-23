@@ -112,6 +112,14 @@ $sm->addRule('.DropDown .icon', [
 $sm->addRule('.DropDown .icon:before', [
 	'content'=> '"\E114"'
 ]);
+$sm->addRule('.modal-wrapper', [
+	'top'        => 0,
+    'left'       => 0,
+    'right'      => 0,
+    'bottom'     => 0,
+    'position'   => 'fixed',
+    'background' => 'rgba(0,0,0,.4)',
+]);
 $sm->addRule('.Window')->import('paper');
 $sm->addRule('.Window .form-titlebar .title')->import('gray4');
 $sm->addRule('.Window .form-titlebar .controls *')->import('gray4')->important('background');
