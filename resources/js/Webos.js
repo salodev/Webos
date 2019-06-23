@@ -2,6 +2,10 @@ var Webos = {};
 Webos.endPoint = '';
 
 Webos.parseResponse = function(data) {
+	if (typeof(data)!= 'object') {
+		alert('Unexpected response:\n' + data);
+	}
+	
 	if (typeof(data.events) != 'undefined') {
 		var i, eventName, eventData;
 		for (i in data.events) {
@@ -24,7 +28,7 @@ Webos.action = function(actionName, objectID, params) {
         data: data,
 		type: 'post'
 	}).done(Webos.parseResponse).fail(function(r) {
-		alert('unexpected response:\n' + r);
+		alert('Unexpected response:\n' + r);
 	});
 }
 Webos.trigger = function(eventName, eventData) {

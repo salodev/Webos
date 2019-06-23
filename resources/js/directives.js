@@ -1,7 +1,11 @@
 Directives.register('action', function(el) {
 	var id = $(el).attr('id') || $(el).parents('[id]').attr('id');
 	var data = $(el).data();
+	var bubble = ($(el).parents('[id]').attr('bubble') || 'true') == 'true';
 	$(el).unbind('click').bind('click', function(ev) {
+		if (!bubble) {
+			if (ev.target !== el) { return; }
+		}
 		ev.stopPropagation();
 		ev.preventDefault();
 		Webos.action($(el).attr('action'), id, data);

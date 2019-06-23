@@ -412,7 +412,7 @@ class Window extends Container {
 		);
 		
 		if ($this->modal) {
-			$html = new StringChar('<div id="__ID__" class="modal-wrapper">' . $html . '</div>');
+			$html = new StringChar('<div webos no-action="close" bubble="false" id="__ID__" class="modal-wrapper">' . $html . '</div>');
 		}
 		
 		if ($this->_embed) {
