@@ -517,11 +517,11 @@ abstract class VisualObject extends BaseObject {
 	}
 	
 	public function isHidden(): bool {
-		if (!array_key_exists('hidden', $this->_attributes)) {
+		if (!array_key_exists('visible', $this->_attributes)) {
 			return false;
 		}
 		
-		return $this->hidden;
+		return !$this->visible;
 	}
 	
 	public function isDisabled(): bool {
@@ -533,11 +533,13 @@ abstract class VisualObject extends BaseObject {
 	}
 	
 	public function hide() {
-		$this->hidden = true;
+		$this->unindex();
+		$this->visible = false;
 	}
 	
 	public function show() {
-		$this->hidden = false;
+		$this->index();
+		$this->visible = true;
 	}
 	
 	public function disable() {
