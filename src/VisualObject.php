@@ -228,7 +228,7 @@ abstract class VisualObject extends BaseObject {
 		$objectID = $child->getObjectID();
 		$childs = $this->getChildObjects();
 		$childs->removeObject($child);
-		$this->unIndex();
+		$child->unIndex();
 		$this->getApplication()->triggerSystemEvent('removeObject', $this, array(
 			'objectId' => $objectID,
 		));
@@ -243,6 +243,7 @@ abstract class VisualObject extends BaseObject {
 		$childs = $this->getChildObjects();
 		$childsID = [];
 		foreach($childs as $child) { 
+			$child->unIndex();
 			$childsID[] = $child->getObjectID();
 		}
 		$childs->clear();
