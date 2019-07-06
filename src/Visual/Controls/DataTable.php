@@ -107,12 +107,12 @@ class DataTable extends Control {
 		$rowData   = $this->getRowData($row);
 		$cellValue = &$rowData[$fieldName];
 		
-		$this->triggerEvent('rowClick', array(
+		$this->triggerEvent('rowClick', [
 			'row'       => $row,
 			'fieldName' => $fieldName,
 			'rowData'   => $rowData,
 			'cellValue' => $cellValue,
-		));
+		]);
 	}
 
 	public function rowDoubleClick(array $params = []): void {
@@ -120,7 +120,7 @@ class DataTable extends Control {
 			throw new Exception('The \'rowDoubleClick\' event needs a \'row\' parameter');
 		}
 		$this->rowIndex = $params['row'];
-		$this->triggerEvent('rowDoubleClick', array('row'=>$params['row']));
+		$this->triggerEvent('rowDoubleClick', ['row'=>$params['row']]);
 	}
 	
 	public function contextMenu(array $params): void {

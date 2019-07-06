@@ -10,13 +10,13 @@ use Webos\StringChar;
 class Frame extends Control {
 	use FormContainer;
 
-	public function setInitialAttributes(array $userAttrs = array()){
-		$attrs = array(
+	public function setInitialAttributes(array $userAttrs = []){
+		$attrs = [
 			'top'    => 0,
 			'right'  => 0,
 			'bottom' => 0,
 			'left'   => 0,
-		);
+		];
 
 		$this->_attributes = array_merge($attrs, $userAttrs);
 	}
@@ -26,11 +26,11 @@ class Frame extends Control {
 	}
 
 	public function getAllowedActions(): array {
-		return array();
+		return [];
 	}
 
 	public function getAvailableEvents():array  {
-		return array();
+		return [];
 	}
 	
 	public function render(): string {

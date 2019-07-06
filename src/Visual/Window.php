@@ -67,7 +67,7 @@ class Window extends Container {
 	}
 
 	public function getAllowedActions(): array {
-		return array(
+		return [
 			'move',
 			'resize',
 			'close',
@@ -78,7 +78,7 @@ class Window extends Container {
 			'ready',
 			'contextMenu',
 			'keyPress',
-		);
+		];
 	}
 	
 	public function contextMenu($params) {
@@ -227,7 +227,7 @@ class Window extends Container {
 	 * @param array $params
 	 * @return Window;
 	 */
-	public function openWindow(string $className = null, array $params = array()): Window {
+	public function openWindow(string $className = null, array $params = []): Window {
 		return $this->getApplication()->openWindow($className, $params, $this)->syncDataWith($this);
 	}
 	
@@ -449,7 +449,7 @@ class Window extends Container {
 			// unset($styles['width'], $styles['height']);
 		}
 		
-		$html->replaces(array(
+		$html->replaces([
 			'__ID__'         => $this->getObjectID(),
 			'__ACTIVE__'     => $active,
 			'__STATUS__'     => $status,
@@ -458,7 +458,7 @@ class Window extends Container {
 			'__AUTOFOCUS__'  => $autofocus,
 			'__READY__'      => $hasReadyListeners ? 'webos ready': '',
 			'__DIRECTIVES__' => count($directives) ? 'webos ' . implode(' ', $directives): '',
-		));
+		]);
 
 		return $html;
 	}

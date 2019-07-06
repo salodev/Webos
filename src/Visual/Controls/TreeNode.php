@@ -53,14 +53,14 @@ class TreeNode extends Control {
 	}
 
 	public function getAllowedActions(): array {
-		return array(
+		return [
 			'expand',
 			'collapse',
 			'toggle',
 			'select',
 			'click',
 			'contextMenu',
-		);
+		];
 	}
 	
 	/**
@@ -169,7 +169,7 @@ class TreeNode extends Control {
 			$toggleClass = 'none';
 		}
 
-		$html->replaces(array(
+		$html->replaces([
 			'__id__'            => $this->getObjectID(),
 			'__style__'         => $this->getInlineStyle(true),
 			'__toggleClass__'   => $toggleClass,
@@ -178,7 +178,7 @@ class TreeNode extends Control {
 			'__content__'       => $content,
 			'__onclickToggle__' => $onclickToggle,
 			'__columns__'       => $this->_renderColumns(),
-		))->replace('__id__', $this->getObjectID());
+		])->replace('__id__', $this->getObjectID());
 
 		return $html;
 	}

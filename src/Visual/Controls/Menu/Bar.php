@@ -34,9 +34,9 @@ class Bar extends Control {
 	}
 	
 	public function createButton(string $text): ListItems {
-		$menuButton = $this->createObject(Button::class, array(
+		$menuButton = $this->createObject(Button::class, [
 			'text' => $text,
-		));
+		]);
 		return $menuButton->createObject(ListItems::class);
 	}
 	

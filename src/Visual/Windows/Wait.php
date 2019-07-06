@@ -8,7 +8,7 @@ use Error;
 
 class Wait extends Window {
 
-	public function initialize(array $params = array()) {
+	public function initialize(array $params = []) {
 		$this->message     = $params['message'] ?? 'Please, wait a moment...';
 		$this->width       = $params['width'  ] ?? 350;
 		$this->height      = $params['height' ] ?? 130;
@@ -20,10 +20,10 @@ class Wait extends Window {
 	}
 
 	public function  getInitialAttributes(): array {
-		return array(
+		return [
 			'height' => 100,
 			'width'  => 200
-		);
+		];
 	}
 	
 	/**

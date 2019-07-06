@@ -6,15 +6,15 @@ use Webos\StringChar;
 
 class Button extends Control {
 	public function getAllowedActions(): array {
-		return array(
+		return [
 			'click',
-		);
+		];
 	}
 
 	public function getAvailableEvents(): array {
-		return array(
+		return [
 			'click',
-		);
+		];
 	}
 	
 	/**
@@ -56,13 +56,13 @@ class Button extends Control {
 		
 		$html->replace('__style__', $this->getInLineStyle());
 			
-		$html->replaces(array(
+		$html->replaces([
 			'__id__'      => $this->getObjectID(),
 			'__class__'   => $this->getClassNameForRender(),
 			'__name__'    => $this->name,
 			'__value__'   => $this->getChildObjects()->render() . $this->value,
 			'__disabled__' => $this->disabled ? 'disabled="disabled"' : '',
-		));
+		]);
 
 		return $html;
 	}

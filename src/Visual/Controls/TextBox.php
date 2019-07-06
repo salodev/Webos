@@ -30,7 +30,7 @@ class TextBox extends Field {
 		}
 		
 		$hasLeaveTypingEvent = $this->_eventsHandler->hasListenersForEventName('leaveTyping');
-		$html->replaces(array(
+		$html->replaces([
 			'__id__'          => $this->getObjectID(),
 			// '__name__'        => $this->name,
 			'__value__'       => $this->value,
@@ -40,7 +40,7 @@ class TextBox extends Field {
 			'__leavetyping__' => $hasLeaveTypingEvent ? ' leavetyping' : '',
 			'__focus__'       => $this->hasFocus() ? 'focus' : '',
 			' __captureTyping__'=> $this->captureTyping() ? 'capture-typing' : '',
-		));
+		]);
 
 		return $html;
 	}

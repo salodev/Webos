@@ -16,16 +16,16 @@ class DropDown extends Control {
 	}
 	
 	public function getAllowedActions(): array {
-		return array(
+		return [
 			'click',
-		);
+		];
 	}
 
 	public function getAvailableEvents(): array {
-		return array(
+		return [
 			'click',
 			'contextMenu',
-		);
+		];
 	}
 
 	public function click(array $params = []) {
@@ -51,13 +51,13 @@ class DropDown extends Control {
 		
 		$html->replace('__style__', $this->getInLineStyle());
 			
-		$html->replaces(array(
+		$html->replaces([
 			'__id__'       => $this->getObjectID(),
 			'__name__'     => $this->name,
 			'__value__'    => $this->value,
 			'__content__'  => $this->getChildObjects()->render(), 
 			'__disabled__' => $this->disabled ? 'disabled="disabled"' : '',
-		));
+		]);
 
 		return $html;
 	}

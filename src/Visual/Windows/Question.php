@@ -23,9 +23,9 @@ class Question extends Window {
 	}
 
 	public function  getInitialAttributes(): array {
-		return array(
+		return [
 			'height' => 100,
 			'width'  => 200
-		);
+		];
 	}
 }

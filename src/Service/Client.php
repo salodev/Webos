@@ -64,11 +64,11 @@ class Client {
 		
 		$logHandler = $this->_logHandler ?? function() {};
 		
-		$msg = json_encode(array(
+		$msg = json_encode([
 			'command'  => $commandName,
 			'data'     => $data,
 			'token'    => $this->_token,
-		));
+		]);
 		
 		$logHandler('SEND ' . $msg);
 		

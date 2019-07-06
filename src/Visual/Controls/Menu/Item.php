@@ -8,13 +8,13 @@ use TypeError;
 class Item extends Control {
 
 	public function  getAllowedActions(): array {
-		return array(
+		return [
 			'click'
-		);
+		];
 	}
 
 	public function  getAvailableEvents(): array {
-		return array('click');
+		return ['click'];
 	}
 
 	public function click() {
@@ -106,7 +106,7 @@ class Item extends Control {
 				'<td class="arrow__arrow__">__arr__</td>' .
 			'</tr>'
 		);
-		$html->replaces(array(
+		$html->replaces([
 			'__id__'         => $this->getObjectID(),
 			'__selected__'   => $selected,
 			'__disabled__'   => $this->disabled ? 'disabled="disabled"' : '',
@@ -115,7 +115,7 @@ class Item extends Control {
 			'__arrow__'      => '',
 			'__arr__'        => $arr,
 			'__content__'    => $content,
-		));
+		]);
 		
 		return $html;
 	}

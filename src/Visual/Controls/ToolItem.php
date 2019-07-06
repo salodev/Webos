@@ -7,15 +7,15 @@ use Webos\StringChar;
 class ToolItem extends Control {
 
 	public function getAllowedActions(): array {
-		return array(
+		return [
 			'click',
-		);
+		];
 	}
 
 	public function getAvailableEvents(): array {
-		return array(
+		return [
 			'click',
-		);
+		];
 	}
 	
 	public function render(): string {

@@ -40,9 +40,9 @@ class System {
 	public function createWorkSpace(string $name): WorkSpace {
 		$ws = new WorkSpace($name);
 		$ws->setSystemEnvironment($this);
-		$this->triggerEvent('createdWorkspace', $this, array(
+		$this->triggerEvent('createdWorkspace', $this, [
 			'ws' => $ws,
-		));
+		]);
 		
 		return $ws;
 	}
@@ -72,9 +72,9 @@ class System {
 		$this->_workSpace = $ws;
 		WorkSpace::SetCurrent($ws);
 
-		$this->triggerEvent('loadedWorkSpace', $this, array(
+		$this->triggerEvent('loadedWorkSpace', $this, [
 			'workspace'=>$ws
-		));
+		]);
 		
 		/**
 		 * Just useful for development mode.

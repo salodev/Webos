@@ -25,14 +25,14 @@ class LinkButton extends Control {
 		$url = $this->url;
 		$text = $this->text ?? $this->url;
 			
-		$html->replaces(array(
+		$html->replaces([
 			'__id__'      => $this->getObjectID(),
 			'__class__'   => $this->getClassNameForRender(),
 			'__name__'    => $this->name,
 			'__url__'     => $url,
 			'__value__'   => $text,
 			'__disabled__' => $this->disabled ? 'disabled="disabled"' : '',
-		));
+		]);
 
 		return $html;
 	}

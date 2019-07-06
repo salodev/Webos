@@ -81,12 +81,12 @@ class SystemInterface {
 
 		// Esto permite que las aplicaciones puedan actuar en consecuencia
 		// de las acciones del usuario.		
-		$ws->triggerEvent('actionCalled', $this, array(
+		$ws->triggerEvent('actionCalled', $this, [
 			'actionName' => $actionName,
 			'objectId'   => $objectID,
 			'object'     => $object,
 			'parameters' => $parameters,
-		));
+		]);
 
 		$object->action($actionName, $parameters);
 	}
@@ -272,12 +272,12 @@ class SystemInterface {
 	}
 	
 	private function _resetNotifications(): void {
-		$this->_notifications = array(
-			'update' => array(),
-			'create' => array(),
-			'remove' => array(),
-			'general' => array(),
-		);
+		$this->_notifications = [
+			'update'  => [],
+			'create'  => [],
+			'remove'  => [],
+			'general' => [],
+		];
 	}
 	
 	public function getParsedNotifications(): array {
@@ -293,17 +293,17 @@ class SystemInterface {
 			
 		// Notificaciones: Actualización.
 		/*if (!empty($notif['update_stacks'])){
-			$eventData = array();
+			$eventData = [];
 			foreach($notif['update_stacks'] as $info) {
-				$response['events'][] = array(
+				$response['events'][] = [
 					'name' => 'updateElements_staks',
 					'data' => $info,
-				);
+				];
 			}
 		}*/
 
 		if (count($notif['update'])){
-			$eventData = array();
+			$eventData = [];
 			foreach($notif['update'] as $object) {
 				$content = '';
 				try {
@@ -311,46 +311,46 @@ class SystemInterface {
 				} catch (NotFound $ex) {
 
 				}
-				$eventData[] = array(
+				$eventData[] = [
 					'objectId' => $object->getObjectID(),
 					'content' => $content,
-				);
+				];
 			}
 
-			$parsed['events'][] = array(
+			$parsed['events'][] = [
 				'name' => 'updateElements',
 				'data' => $eventData,
-			);
+			];
 		}
 
 		// Notificaciones: Creación.
 		if (count($notif['create'])){
-			$eventData = array();
+			$eventData = [];
 			foreach($notif['create'] as $object) {
 				$parentObjectID = $object->hasParent() ? $object->getParent()->getObjectID() : '';
-				$eventData[] = array(
+				$eventData[] = [
 					'parentObjectId' => $parentObjectID,
 					'content' => '' . $object->render(),
-				);
+				];
 			}
 
-			$parsed['events'][] = array(
+			$parsed['events'][] = [
 				'name' => 'createElements',
 				'data' => $eventData,
-			);
+			];
 		}
 
 		// Notificaciones: Eliminación.
 		if (count($notif['remove'])) {
-			$eventData = array();
+			$eventData = [];
 			foreach($notif['remove'] as $objectId) {
 				$eventData[]['objectId'] = $objectId;
 			}
 
-			$parsed['events'][] = array(
+			$parsed['events'][] = [
 				'name' => 'removeElements',
 				'data' => $eventData,
-			);
+			];
 		}
 		
 		return $parsed;
@@ -398,9 +398,9 @@ class SystemInterface {
 	}
 	
 	public function onsSessionCreated(array $params): void {
-		$this->addNotification('sessionCreated', array(
+		$this->addNotification('sessionCreated', [
 			'sessionId' => $params['sessionId'],
-		));
+		]);
 	}
 	
 	public function onSystemEvent(string $eventName, array $params = []): void {

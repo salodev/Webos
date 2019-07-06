@@ -3,9 +3,9 @@
 class WindowMinimizeMenuItem extends MenuItem {
 
 	public function  getInitialAttributes() {
-		return array(
+		return [
 			'title' => 'Minimizar',
-		);
+		];
 	}
 
 	public function click() {

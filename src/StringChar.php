@@ -13,7 +13,7 @@ class StringChar {
 		return $this;
 	}
 
-	public function replaces(array $replaces = array()): self {
+	public function replaces(array $replaces = []): self {
 		foreach($replaces as $search => $replace) {
 			$this->_string = str_replace($search, $replace, $this->_string);
 		}

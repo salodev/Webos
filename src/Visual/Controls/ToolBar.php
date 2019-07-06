@@ -9,11 +9,11 @@ class ToolBar extends Control {
 	use ControlsFactory;
 
 	public function getAllowedActions(): array {
-		return array();
+		return [];
 	}
 
 	public function getAvailableEvents(): array {
-		return array();
+		return [];
 	}
 
 	/**
@@ -22,11 +22,11 @@ class ToolBar extends Control {
 	 * @param array $options
 	 * @return Button
 	 */
-	public function addButton($title, array $options = array()): Button {
-		return $this->createObject(Button::class, array_merge(array(
+	public function addButton($title, array $options = []): Button {
+		return $this->createObject(Button::class, array_merge([
 			'value' => $title,
 			// 'left'  => 5,
-		),  $options));
+		],  $options));
 	}
 	
 	public function addSeparator(): VerticalSeparator {

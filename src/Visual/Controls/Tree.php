@@ -40,7 +40,7 @@ class Tree extends Control {
 	}
 	
 	public function getAllowedActions(): array {
-		return array('scroll');
+		return ['scroll'];
 	}
 	
 	public function getAvailableEvents(): array {
@@ -135,11 +135,11 @@ class Tree extends Control {
 			$content .= $child->render();
 		}
 
-		$html->replaces(array(
+		$html->replaces([
 			'__id__'      => $this->getObjectID(),
 			'__style__'   => $this->getInlineStyle(true),
 			'__content__' => $content,
-		));
+		]);
 
 		return $html;
 	}

@@ -64,17 +64,17 @@ class Base {
 			} catch(Exception $e) {
 				echo "Command Exception: {$e->getMessage()} at file '{$e->getFile()}' ({$e->getLine()})\n\n";
 				echo $e->getTraceAsString();
-				return json_encode(array(
+				return json_encode([
 					'status' => 'error',
 					'errorMsg' => $e->getMessage(),
-				));
+				]);
 			}
 
 			// echo "enviando: " . print_r($commandResponse, true);
-			return json_encode(array(
+			return json_encode([
 				'status' => 'ok',
 				'data'   => $commandResponse,
-			));
+			]);
 		});
 	}
 }

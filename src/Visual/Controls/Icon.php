@@ -7,7 +7,7 @@ use Exception;
 use Webos\StringChar;
 
 class Icon extends Control {
-	public function initialize(array $params = array()) {
+	public function initialize(array $params = []) {
 		$icon = $this->icon;
 		if (empty($icon)) {
 			throw new Exception('Missing \'icon\' parameter for Icon Object');

@@ -3,9 +3,9 @@
 class WindowCloneMenuItem extends MenuItem {
 
 	public function  getInitialAttributes() {
-		return array(
+		return [
 			'title' => 'Nueva ventana',
-		);
+		];
 	}
 
 	public function click() {

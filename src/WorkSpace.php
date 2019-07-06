@@ -77,9 +77,9 @@ class WorkSpace {
 		$application = new $appClassName($this);
 		$application->setParams($params);		
 		
-		$this->triggerEvent('startApplication', $this, array(
+		$this->triggerEvent('startApplication', $this, [
 			'object' => $application,
-		));
+		]);
 		
 		$this->getApplications()->add($application);
 		$this->setActiveApplication($application);
@@ -100,9 +100,9 @@ class WorkSpace {
 	 */
 	public function finishApplication(Application $application): self {
 
-		$this->triggerEvent('beforeFinishApplication', $this, array(
+		$this->triggerEvent('beforeFinishApplication', $this, [
 			'object' => $application,
-		));
+		]);
 		
 		$application->signalFinish();
 
@@ -115,9 +115,9 @@ class WorkSpace {
 
 		$this->_applications->removeApplication($application);
 
-		$this->triggerEvent('finishApplication', $this, array(
+		$this->triggerEvent('finishApplication', $this, [
 			'object' => $application,
-		));
+		]);
 		
 		return $this;
 	}
@@ -125,9 +125,9 @@ class WorkSpace {
 	public function setActiveApplication(Application $application): self {
 		$this->_activeApplication = $application;
 
-		$this->triggerEvent('activeApplication', $this, array(
+		$this->triggerEvent('activeApplication', $this, [
 			'object' => $application,
-		));
+		]);
 		
 		return $this;
 	}

@@ -3,9 +3,9 @@
 class WindowRestoreMenuItem extends MenuItem {
 
 	public function  getInitialAttributes() {
-		return array(
+		return [
 			'title' => 'Restaurar',
-		);
+		];
 	}
 
 	public function click() {

@@ -27,15 +27,15 @@ class Button extends Control {
 	}
 
 	public function  getAllowedActions(): array {
-		return array(
+		return [
 			'click',
-		);
+		];
 	}
 
 	public function  getAvailableEvents(): array {
-		return array(
+		return [
 			'click'
-		);
+		];
 	}
 
 	public function click() {
@@ -116,12 +116,12 @@ class Button extends Control {
 			'</div>'
 		);
 		
-		$html->replaces(array(
+		$html->replaces([
 			'__id__'       => $this->getObjectID(),
 			'__selected__' => $selected,
 			'__text__'     => $this->text,
 			'__content__'  => $content,
-		));
+		]);
 
 		return $html;
 	}

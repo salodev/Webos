@@ -43,13 +43,13 @@ class Link extends Control {
 
 			$html->replace('__style__', $this->getInLineStyle());
 
-			$html->replaces(array(
+			$html->replaces([
 				'__id__'      => $this->getObjectID(),
 				'__class__'   => $this->getClassNameForRender(),
 				'__text__'   => $this->getChildObjects()->render() . $this->text,
 				'__disabled__' => $this->disabled ? 'disabled="disabled"' : '',
 				'__style__' => $this->getInlineStyle(true),
-			));
+			]);
 			
 			return $html;
 	}

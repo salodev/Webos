@@ -23,7 +23,7 @@ abstract class Application {
 	final public function __construct(WorkSpace $workSpace) {
 
 		$this->_workSpace           = $workSpace;
-		$this->_config              = array();
+		$this->_config              = [];
 		$this->_visualObjects       = new ObjectsCollection();
 		$this->_eventsHandler       = new EventsHandler();
 		$this->_systemEventsHandler = new EventsHandler();
@@ -98,7 +98,7 @@ abstract class Application {
 	 * @param array $params
 	 * @return Visual\Window
 	 */
-	public function openWindow(string $windowName = null, array $params = array(), $relativeTo = null): Window {
+	public function openWindow(string $windowName = null, array $params = [], $relativeTo = null): Window {
 		if ($windowName===null) {
 			$windowName = Window::class;
 		}
@@ -157,9 +157,9 @@ abstract class Application {
 		$this->_visualObjects->removeObject($window);
 		$window->unIndex();
 		$this->_notifyRemove($objectId);
-		/*$this->triggerSystemEvent('removeObject', $this, array(
+		/*$this->triggerSystemEvent('removeObject', $this, [
 			'objectId' => $windowID
-		));*/
+		]);*/
 
 		return $this;
 	}
@@ -201,10 +201,10 @@ abstract class Application {
 	 * @return Visual\MessageWindow
 	 */
 	public function openMessageWindow(string $title, string $message): MessageWindow {
-		return $this->openWindow(MessageWindow::class, array(
+		return $this->openWindow(MessageWindow::class, [
 			'title' => $title,
 			'message' => $message,
-		), $this->getActiveWindow());
+		], $this->getActiveWindow());
 	}
 	
 	public function openPromptWindow(string $message, string $defaultValue = null): PromptWindow {
@@ -284,9 +284,9 @@ abstract class Application {
 
 		$this->_visualObjects->add($child);
 
-		$this->triggerSystemEvent('createObject', $this, array(
+		$this->triggerSystemEvent('createObject', $this, [
 			'object' => $child,
-		));
+		]);
 
 		return $this;
 	}
@@ -330,9 +330,9 @@ abstract class Application {
 	}
 
 	protected function _notifyRemove(string $objectId): self {
-		$this->triggerSystemEvent('removeObject', $this, array(
+		$this->triggerSystemEvent('removeObject', $this, [
 			'objectId' => $objectId
-		));
+		]);
 		return $this;
 	}
 	

@@ -3,9 +3,9 @@
 class WindowMaximizeMenuItem extends MenuItem {
 
 	public function  getInitialAttributes() {
-		return array(
+		return [
 			'title' => 'Maximizar',
-		);
+		];
 	}
 
 	public function click() {

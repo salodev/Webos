@@ -25,7 +25,7 @@ class FilePicker extends Field {
 		);
 		
 		$hasLeaveTypingEvent = $this->_eventsHandler->hasListenersForEventName('leaveTyping');
-		$html->replaces(array(
+		$html->replaces([
 			'__id__'          => $this->getObjectID(),
 			'__value__'       => $this->value,
 			'__placeholder__' => $this->placeholder,
@@ -33,7 +33,7 @@ class FilePicker extends Field {
 			'__disabled__'    => $this->disabled ? ' disabled="disabled"' : '',			
 			'__focus__'       => $this->hasFocus() ? 'focus' : '',
 			'__class__'       => $this->getClassNameForRender(),
-		));
+		]);
 
 		return $html;
 	}

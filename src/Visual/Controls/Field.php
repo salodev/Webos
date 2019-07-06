@@ -36,9 +36,9 @@ abstract class Field extends Control {
 		} else {
 			$this->value = $mixed;
 		}
-		$this->triggerEvent('updateValue', array(
+		$this->triggerEvent('updateValue', [
 			'value' => $this->value,
-		));
+		]);
 
 	}
 	
@@ -53,12 +53,12 @@ abstract class Field extends Control {
 		$left = $this->left + $this->width - $width;
 		//die("{$this->left} + {$this->width} - {$width} = {$left}");
 		$this->width = $this->width - $width - 5;
-		$this->button = $this->getParent()->createObject(Button::class, array(
+		$this->button = $this->getParent()->createObject(Button::class, [
 			'top' => $top,
 			'left' => $left,
 			'width' => $width,
 			'value' => $text,
-		));
+		]);
 		return $this->button;
 	}
 	
@@ -70,12 +70,12 @@ abstract class Field extends Control {
 		}
 		//die("{$this->left} + {$this->width} - {$width} = {$left}");
 		$this->width = $this->width - $width - 5;
-		$this->label = $this->getParentWindow()->createObject(Label::class, array(
+		$this->label = $this->getParentWindow()->createObject(Label::class, [
 			'top'   => $top,
 			'left'  => $left,
 			'width' => $width,
 			'name'  => $name,
-		));
+		]);
 		return $this->button;
 	}
 	
@@ -114,14 +114,14 @@ abstract class Field extends Control {
 	}
 
 	public function getAllowedActions(): array {
-		return array(
+		return [
 			'setValue'
-		);
+		];
 	}
 
 	public function getAvailableEvents(): array {
-		return array(
+		return [
 			'updateValue',
-		);
+		];
 	}
 }

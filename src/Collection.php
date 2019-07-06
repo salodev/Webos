@@ -10,9 +10,9 @@ use Webos\Exceptions\Collection\IsEmpty;
 class Collection implements \Iterator, \Countable {
     protected $_position = 0;
 
-    protected $_data = array();
+    protected $_data = [];
 
-    public function __construct(array $data = array()) {
+    public function __construct(array $data = []) {
         $this->_position = 0;
 		$this->_data = $data;
     }
@@ -62,7 +62,7 @@ class Collection implements \Iterator, \Countable {
 		}
 		
 		// Fix indexes;
-		$temp = array();
+		$temp = [];
 		foreach($this->_data as &$elem){
 			$temp[] = $elem;
 		}
@@ -72,7 +72,7 @@ class Collection implements \Iterator, \Countable {
 	}
 
 	public function clear() {
-		$this->_data = array();
+		$this->_data = [];
 	}
 
 	public function item($key) {

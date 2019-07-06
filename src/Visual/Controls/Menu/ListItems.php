@@ -9,11 +9,11 @@ class ListItems extends Control {
 	protected $_selectedItem = null;
 
 	public function  getAvailableEvents(): array {
-		return array();
+		return [];
 	}
 
 	public function  getAllowedActions(): array {
-		return array();
+		return [];
 	}
 
 	public function getSelectedItem(): Item {
@@ -32,11 +32,11 @@ class ListItems extends Control {
 		$this->_selectedItem = null;
 	}
 	
-	public function createItem($text, $shortCut = '', array $params = array()): Item {
-		return $this->createObject(Item::class, array_merge($params, array(
+	public function createItem($text, $shortCut = '', array $params = []): Item {
+		return $this->createObject(Item::class, array_merge($params, [
 			'text' => $text,
 			'shortCut' => $shortCut,
-		)));
+		]));
 	}
 	public function createControlItem($className, array $params = []): Control {
 		$item = $this->createObject(ControlItem::class);

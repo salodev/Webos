@@ -18,9 +18,9 @@ class ListBox extends Field {
 	public function setSelectedItem(ListItem $item): self {
 		$this->_selectedItem = $item;
 
-		$this->getApplication()->triggerSystemEvent('updateObject', $this, array(
+		$this->getApplication()->triggerSystemEvent('updateObject', $this, [
 			'object' => $this,
-		));
+		]);
 		return $this;
 	}
 

@@ -13,8 +13,8 @@ class EventsHandler {
 	protected $availableEvents = null;
 
 	public function __construct() {
-		$this->events = array();
-		$this->availableEvents = array();
+		$this->events = [];
+		$this->availableEvents = [];
 		$this->useAvailableEvents = false;
 	}
 

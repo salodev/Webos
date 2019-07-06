@@ -30,16 +30,16 @@ class TabFolder extends Control {
 	}
 
 	public function  getAllowedActions(): array {
-		return array(
+		return [
 			'select',
-		);
+		];
 	}
 
 	public function  getAvailableEvents(): array {
-		return array(
+		return [
 			'embedded',
 			'select',
-		);
+		];
 	}
 	
 	public function onEmbedded(callable $function): self {
@@ -60,7 +60,7 @@ class TabFolder extends Control {
 		return $html;
 	}
 	
-	public function embedWindowOnSelect(string $windowClassName, array $initialAttributes = array(), callable $onEmbed = null) {
+	public function embedWindowOnSelect(string $windowClassName, array $initialAttributes = [], callable $onEmbed = null) {
 		if ($this->getParent()->hasActiveTab()) {
 			if ($this->getParent()->getActiveTab() === $this) {
 				$window = $this->embedWindow($windowClassName, $initialAttributes);

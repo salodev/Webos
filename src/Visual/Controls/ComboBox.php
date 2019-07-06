@@ -3,7 +3,7 @@ namespace Webos\Visual\Controls;
 class ComboBox extends Field {
 	public function initialize() {
 		if (!is_array($this->options)) {
-			$this->options = array();
+			$this->options = [];
 		}
 	}
 
@@ -24,7 +24,7 @@ class ComboBox extends Field {
 	}
 	
 	public function setRS(array $rs, string $keyID = 'id', string $keyText = 'text'): self {
-		$options = array();
+		$options = [];
 		if ($this->placeholder) {
 			$options[''] = $this->placeholder;
 		}

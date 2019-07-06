@@ -57,7 +57,7 @@ trait FormContainer {
 		}
 		if (isset($options['left'])) {
 			$this->leftControl = $options['left'];
-			$this->leftButton = $options['left'];
+			$this->leftButton  = $options['left'];
 		}
 		if (isset($options['width'])) {
 			$this->widthFieldControl = $options['width'];
@@ -66,23 +66,24 @@ trait FormContainer {
 			$this->widthLabelControl = $options['labelWidth'];
 		}
 		$this->createObject(Label::class, array_merge(
-			$options, 
-			array('value'=>$label), // bugfix
-			array('text'=>$label), 
-			array(
+			$options, [
+				'value'      => $label // bugfix
+			], [
+				'text'       => $label
+			], [
 				'text-align' => 'left',
-				'top'   => $this->topControl,
-				'left'  => $this->leftControl,
-				'width' => $this->widthLabelControl,
-			)
+				'top'        => $this->topControl,
+				'left'       => $this->leftControl,
+				'width'      => $this->widthLabelControl,
+			]
 		));
 
-		$control = $this->createObject($className, array_merge($options, array(
+		$control = $this->createObject($className, array_merge($options, [
 			'top'   => $this->topControl,
 			'left'  => $this->leftControl + $this->widthLabelControl + 5,
 			'width' => $this->widthFieldControl,
 			'name'  => $name,
-		)));
+		]));
 		$this->topControl += ($options['height'] ?? 23) + 5;
 		if ($this->topControl > $this->maxTopControl) {
 			$this->maxTopControl = $this->topControl;
@@ -130,7 +131,7 @@ trait FormContainer {
 	 * @return \Webos\Visual\Controls\Label
 	 */
 	public function createLabel(string $text, array $options = []): Label {
-		return $this->createObject(Label::class, array_merge($options, array('text'=>$text)));
+		return $this->createObject(Label::class, array_merge($options, ['text' => $text]));
 	}
 	
 	/**
@@ -340,7 +341,7 @@ trait FormContainer {
 	 * @return array
 	 */
 	public function getFormData(array $merge = []): array {
-		$formData = array();
+		$formData = [];
 		$objects = $this->getChildObjects();
 		foreach($objects as $childObject){
 			if ($childObject->name) {

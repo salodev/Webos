@@ -12,7 +12,7 @@ abstract class Container extends VisualObject {
 	
 	protected $_embed = false;
 
-	final public function __construct(Application $application, array $initialAttributes = array(), bool $embed = false) {
+	final public function __construct(Application $application, array $initialAttributes = [], bool $embed = false) {
 		parent::__construct($application, $initialAttributes);
 		$this->_embed = $embed;
 		if (!$embed) {

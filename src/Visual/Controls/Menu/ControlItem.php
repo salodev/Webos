@@ -19,14 +19,14 @@ class ControlItem extends Item {
 				'<td class="arrow"></td>' .
 			'</tr>'
 		);
-		$html->replaces(array(
+		$html->replaces([
 			'__id__'         => $this->getObjectID(),
 			'__selected__'   => $selected,
 			'__disabled__'   => $this->disabled ? 'disabled="disabled"' : '',
 			'__icon_class__' => '',
 			'__text__'       => $this->text,
 			'__content__'    => $this->getChildObjects()->render(),
-		));
+		]);
 		
 		return $html;
 	}

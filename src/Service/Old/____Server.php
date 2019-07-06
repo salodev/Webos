@@ -46,25 +46,25 @@ class Server {
 				try {
 					$commandResponse = $this->call($command, $data);
 				} catch(Exception $e) {
-					$connection->write(json_encode(array(
+					$connection->write(json_encode([
 						'status' => 'error',
 						'errorMsg' => $e->getMessage(),
-					)));
+					]));
 					$connection->close();
 					return;
 				}
 				
 				if ($commandResponse===null) {
-					$connection->write(json_encode(array(
+					$connection->write(json_encode([
 						'status' => 'error',
 						'errorMsg' => 'Invalid response type',
-					)));
+					]));
 				} else {
 					// echo "enviando: " . print_r($commandResponse, true);
-					$connection->write(json_encode(array(
+					$connection->write(json_encode([
 						'status' => 'ok',
 						'data'   => $commandResponse,
-					)));
+					]));
 					
 				}
 				$connection->close();
@@ -112,7 +112,7 @@ class Server {
 		}, false);
 	}
 	
-	public function call(string $command, array $data = array()) {
+	public function call(string $command, array $data = []) {
 		if (!in_array($command, ['renderAll', 'action', 'store', 'read'])) {
 			throw new Exception('Invalid command');
 		}
@@ -159,20 +159,20 @@ class Server {
 		}
 		$ws = $this->_loadWorkspace($this->_username);
 		if (!$ws || !($ws instanceof WorkSpace)) {
-			return array(
-				'events' => array(
-					array('name'=>'authUser'),
-				)
-			);
+			return [
+				'events' => [
+					['name'=>'authUser'],
+				]
+			];
 		}
-		$response = array();
-		$response['errors'] = array();
+		$response = [];
+		$response['errors'] = [];
 		// Si se envía un parámetro actionName, entonces se enviará la acción al sistema.
 		if (!isset($data['actionName'])) {
 			throw new Exception('Missing actionName param');
 		}
 
-		$params = array();
+		$params = [];
 
 		foreach($data as $pname => $pvalue) {
 			if ($pname != 'actionName' && $pname != 'objectId' && $pname != 'username'){
@@ -187,12 +187,12 @@ class Server {
 				$params
 			);
 		} catch (Exception $e) {
-			$response['errors'][] = array(
+			$response['errors'][] = [
 				'message' => $e->getMessage(),
 				'file'    => $e->getFile(),
 				'line'    => $e->getLine(),
 				'trace'   => $e->getTraceAsString(),
-			);
+			];
 		}
 
 		// Obtengo las notificaciones.
@@ -200,51 +200,51 @@ class Server {
 
 		// Notificaciones: Actualización.
 		if (count($notif['update'])){
-			$eventData = array();
+			$eventData = [];
 			foreach($notif['update'] as $object) {
-				$eventData[] = array(
+				$eventData[] = [
 					'objectId' => $object->getObjectID(),
 					'content' => '' . $object->render(),
-				);
+				];
 			}
 
-			$response['events'][] = array(
+			$response['events'][] = [
 				'name' => 'updateElements',
 				'data' => $eventData,
-			);
+			];
 		}
 
 		// Notificaciones: Creación.
 		if (count($notif['create'])){
-			$eventData = array();
+			$eventData = [];
 			foreach($notif['create'] as $object) {
 				$parent = $object->getParent();
 				$parentObjectId = ($parent instanceof Application) ? '' :
 						$parent->getObjectID();
 
-				$eventData[] = array(
+				$eventData[] = [
 					'parentObjectId' => $parentObjectId,
 					'content' => '' . $object->render(),
-				);
+				];
 			}
 
-			$response['events'][] = array(
+			$response['events'][] = [
 				'name' => 'createElements',
 				'data' => $eventData,
-			);
+			];
 		}
 
 		// Notificaciones: Eliminación.
 		if (count($notif['remove'])) {
-			$eventData = array();
+			$eventData = [];
 			foreach($notif['remove'] as $objectId) {
 				$eventData[]['objectId'] = $objectId;
 			}
 
-			$response['events'][] = array(
+			$response['events'][] = [
 				'name' => 'removeElements',
 				'data' => $eventData,
-			);
+			];
 		}
 		return $response;
 	}

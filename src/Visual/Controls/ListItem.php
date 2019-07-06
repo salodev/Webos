@@ -8,15 +8,15 @@ use Webos\StringChar;
 class ListItem extends Control {
 
 	public function getAllowedActions(): array {
-		return array(
+		return [
 			'click'
-		);
+		];
 	}
 
 	public function getAvailableEvents(): array {
-		return array(
+		return [
 			'click'
-		);
+		];
 	}
 
 	public function click() {

@@ -68,7 +68,7 @@ abstract class VisualObject extends BaseObject {
 		$this->getApplication()->triggerSystemEvent(
 			'updateObject',
 			$this,
-			array('object' => $this)
+			['object' => $this]
 		);
 	}
 
@@ -102,7 +102,7 @@ abstract class VisualObject extends BaseObject {
 	}
 	
 	public function getClassNameForRender(): string {
-		return str_replace(array('Webos\Apps\\', 'Webos\Visual\Controls\\', '\\'), array('','','-'), get_class($this));
+		return str_replace(['Webos\Apps\\', 'Webos\Visual\Controls\\', '\\'], ['','','-'], get_class($this));
 	}
 	
 	/**
@@ -138,9 +138,9 @@ abstract class VisualObject extends BaseObject {
 	public function createObject(string $className, array $initialAttributes = []): self {
 		$object = new $className($this->_application, $this, $initialAttributes);
 
-		$this->getApplication()->triggerSystemEvent('createObject', $this, array(
+		$this->getApplication()->triggerSystemEvent('createObject', $this, [
 			'object' => $object,
-		));
+		]);
 
 		return $object;
 	}
@@ -158,9 +158,9 @@ abstract class VisualObject extends BaseObject {
 		$window = new $windowClassName($this->_application, $initialAttributes, true);
 		$window->setParentObject($this);
 
-		$this->getApplication()->triggerSystemEvent('createObject', $this, array(
+		$this->getApplication()->triggerSystemEvent('createObject', $this, [
 			'object' => $window,
-		));
+		]);
 
 		return $window;
 	}
@@ -229,9 +229,9 @@ abstract class VisualObject extends BaseObject {
 		$childs = $this->getChildObjects();
 		$childs->removeObject($child);
 		$child->unIndex();
-		$this->getApplication()->triggerSystemEvent('removeObject', $this, array(
+		$this->getApplication()->triggerSystemEvent('removeObject', $this, [
 			'objectId' => $objectID,
-		));
+		]);
 		return $this;
 	}
 	
@@ -248,9 +248,9 @@ abstract class VisualObject extends BaseObject {
 		}
 		$childs->clear();
 		foreach($childsID as $objectID) {
-			$this->getApplication()->triggerSystemEvent('removeObject', $this, array(
+			$this->getApplication()->triggerSystemEvent('removeObject', $this, [
 				'objectId' => $objectID,
-			));
+			]);
 		}
 		
 		return $this;
@@ -393,7 +393,7 @@ abstract class VisualObject extends BaseObject {
 
 		$styles = [];
 
-		$visualAttributesList = array(
+		$visualAttributesList = [
 			'top',
 			'left',
 			'right',
@@ -420,7 +420,7 @@ abstract class VisualObject extends BaseObject {
 			'position',
 			'boxShadow',
 			'cursor',
-		);
+		];
 
 		foreach($visualAttributesList as $name) {
 			
@@ -431,7 +431,7 @@ abstract class VisualObject extends BaseObject {
 				continue; 
 			}
 			if ($absolutize) {
-				if (in_array($name, array('top', 'left', 'bottom', 'right'))) {
+				if (in_array($name, ['top', 'left', 'bottom', 'right'])) {
 					$styles['position'] = 'absolute';
 				}
 			}
