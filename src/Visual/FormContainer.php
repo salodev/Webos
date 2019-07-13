@@ -238,6 +238,7 @@ trait FormContainer {
 	 */
 	public function createFrame(array $options = []): Frame {
 		return $this->createObject(Frame::class, array_merge([
+			'top'  => 0,
 			'left' => 0,
 			'right' => 0,
 			'bottom' => 0,
