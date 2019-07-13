@@ -123,7 +123,7 @@ class SystemInterface {
 
 		$parsedException = ExceptionWindow::ParseException($e);
 		$w = $app->openMessageWindow('Opps', $e->getMessage());
-		if (ENV==ENV_DEV) {
+		if (ENV==ENV_DEV||true) {
 			$w->createWindowButton('Details')->onClick(function($context, $source) {
 				$source->getApplication()->openWindow(ExceptionWindow::class, $context['exception']);
 			}, [
