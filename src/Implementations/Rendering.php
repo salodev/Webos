@@ -6,7 +6,7 @@ use Exception;
 
 class Rendering {
 	
-	private $_fn;
+	private static $_fn;
 	
 	static public function SetFn(callable $fn): void {
 		self::$_fn = $fn;

@@ -7,7 +7,7 @@ use Webos\StringChar;
 
 class DropDown extends Control {
 	
-	public function initialize() {
+	public function initialize(array $params = []) {
 		$this->listItems = $this->createObject(ListItems::class, [
 			'top' => 100,
 			'left' => 100,

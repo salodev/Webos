@@ -15,18 +15,13 @@ use Webos\Stream\Content;
  * objeto de datos.
  **/
 abstract class VisualObject extends BaseObject {
-
-	protected $_objectID      = null;
-	protected $_className     = null;
-	protected $_parentObject  = null;
-	protected $_application   = null;
-	protected $_childObjects  = null;
-	protected $_events        = null;
-	/**
-	 *
-	 * @var EventsHandler;
-	 */
-	protected $_eventsHandler = null;
+	
+	protected /* @var int               */ $_objectID      = null;
+	protected /* @var string            */ $_className     = null;
+	protected /* @var self              */ $_parentObject  = null;
+	protected /* @var Application       */ $_application   = null;
+	protected /* @var ObjectsCollection */ $_childObjects  = null;
+	protected /* @var EventsHandler     */ $_eventsHandler = null;
 
 	public function __construct(Application $application, array $data = []) {
 		$this->_application = $application;
@@ -45,7 +40,7 @@ abstract class VisualObject extends BaseObject {
 		$this->_eventsHandler->setAvailableEvents($this->getAvailableEvents());
 	}
 	
-	public function checkRequiredParams(array $params) {
+	public function checkRequiredParams(array $params): void {
 		$requiredParams = $this->getRequiredParams();
 		foreach($requiredParams as $name) {
 			if (!isset($params[$name])) {
@@ -64,7 +59,7 @@ abstract class VisualObject extends BaseObject {
 		}
 	}
 
-	final public function modified() {
+	final public function modified(): void {
 		$this->getApplication()->triggerSystemEvent(
 			'updateObject',
 			$this,
@@ -116,7 +111,7 @@ abstract class VisualObject extends BaseObject {
 	 * Hace posible que su contenedor lo identifique de una manera mejor
 	 * que por sí mismo.
 	 **/
-	final public function setObjectID(string $id){
+	final public function setObjectID(string $id): void {
 		$this->_objectID = $id;
 	}
 
@@ -193,16 +188,16 @@ abstract class VisualObject extends BaseObject {
 	 * Permite definir quién es su padre o contenedor.
 	 * @param VisualObject $object
 	 **/
-	final public function setParentObject(VisualObject $object): self {
+	final public function setParentObject(self $object): self {
 		$this->_parentObject = $object;
 
 		$object->addChildObject($this);
 		return $this;
 	}
 
-	public function addChildObject(VisualObject $child): self {
+	public function addChildObject(self $child): self {
 		$parent = $child->getParent();
-		if (!($parent instanceof VisualObject)) {
+		if (!($parent instanceof self)) {
 			throw new Exception('Trying to add a child object without parent to ' . $this->getObjectID());
 		}
 
@@ -224,7 +219,7 @@ abstract class VisualObject extends BaseObject {
 	 * @param \Webos\VisualObject $child
 	 * @return $this
 	 */
-	public function removeChild(VisualObject $child): self {
+	public function removeChild(self $child): self {
 		$objectID = $child->getObjectID();
 		$childs = $this->getChildObjects();
 		$childs->removeObject($child);
@@ -300,9 +295,9 @@ abstract class VisualObject extends BaseObject {
 		}
 	}
 
-	public function getParentByClassName(string $className): VisualObject {
+	public function getParentByClassName(string $className): self {
 		$parent = $this->_parentObject;
-		if (!($parent instanceof VisualObject)) {
+		if (!($parent instanceof self)) {
 			return null;
 		}
 		
@@ -313,7 +308,7 @@ abstract class VisualObject extends BaseObject {
 		}
 	}
 
-	public function action(string $name, array $params = []) {
+	public function action(string $name, array $params = []): void {
 		if (!in_array($name,$this->getAllowedActions())){
 			throw new Exception("Action $name not allowed by " . get_class($this) . " object.");
 		}
@@ -505,15 +500,15 @@ abstract class VisualObject extends BaseObject {
 		return [];
 	}
 	
-	public function getPrevious() {
+	public function getPrevious(): self {
 		return $this->getParent()->getChildObjects()->getPreviousTo($this);
 	}
 	
-	public function getNext() {
+	public function getNext(): self {
 		return $this->getParent()->getChildObjects()->getNextTo($this);
 	}
 	
-	public function getLastChild(): VisualObject {
+	public function getLastChild(): self {
 		return $this->getChildObjects()->getLastObject();
 	}
 	
@@ -533,22 +528,26 @@ abstract class VisualObject extends BaseObject {
 		return $this->disabled;
 	}
 	
-	public function hide() {
+	public function hide(): self {
 		$this->unindex();
 		$this->visible = false;
+		return $this;
 	}
 	
-	public function show() {
+	public function show(): self {
 		$this->index();
 		$this->visible = true;
+		return $this;
 	}
 	
-	public function disable() {
-		$this->disabled = true;
+	public function disable(bool $value = true): self {
+		$this->disabled = $value;
+		return $this;
 	}
 	
-	public function enable() {
-		$this->disabled = false;
+	public function enable(bool $value = true): self {
+		$this->disabled = !$value;
+		return $this;
 	}
 	
 	public function getMediaContent(array $parameters = []): Content {

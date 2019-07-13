@@ -7,7 +7,7 @@ use TypeError;
 
 class Button extends Control {
 
-	public function initialize() {
+	public function initialize(array $params = []) {
 		$this->getApplication()->getWorkSpace()->addEventListener('actionCalled', function ($params) {
 			$selected = $this->selected;
 			if (!$selected || $params['object'] === $this) {

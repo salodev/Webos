@@ -9,7 +9,7 @@ class TabFolder extends Control {
 	
 	use FormContainer;
 
-	public function initialize() {
+	public function initialize(array $params = []) {
 		if (!$this->title) {
 			$this->title = 'Pestaña ' . $this->getParent()->getChildObjects()->count();
 		}

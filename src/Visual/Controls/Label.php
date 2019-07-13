@@ -9,7 +9,7 @@ class Label extends Field {
 		
 		return $html
 			->replace('__ID__',    $this->getObjectID())
-			->replace('__text__',  $this->value??$this->text)
+			->replace('__text__',  $this->text)
 			->replace('__style__', $this->getInlineStyle());
 	}
 }

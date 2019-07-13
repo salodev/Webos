@@ -13,7 +13,7 @@ abstract class Control extends VisualObject {
 		$this->_parentObject = $parent;
 		$parent->addChildObject($this);
 
-		$this->initialize();
+		$this->initialize($initialAttributes);
 	}
 
 	/**
@@ -25,7 +25,7 @@ abstract class Control extends VisualObject {
 	 * método initialize() que será invocado por el constructor, y que podrá ser
 	 * especializado de acuerdo a las necesidades.
 	 */
-	public function initialize() {}
+	public function initialize(array $params = []) {}
 	
 	public function focus() {
 		$this->getParentWindow()->setActiveControl($this);

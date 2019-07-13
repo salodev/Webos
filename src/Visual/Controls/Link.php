@@ -19,7 +19,7 @@ use Webos\StringChar;
 class Link extends Control {
 	//put your code here
 	
-	public function initialize() {
+	public function initialize(array $params = []) {
 		$this->enableEvent('click');
 	}
 	

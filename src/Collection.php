@@ -11,6 +11,8 @@ class Collection implements \Iterator, \Countable {
     protected $_position = 0;
 
     protected $_data = [];
+	
+	protected $_last = null;
 
     public function __construct(array $data = []) {
         $this->_position = 0;
@@ -44,9 +46,10 @@ class Collection implements \Iterator, \Countable {
 
 	public function add($obj) {
 		$this->_data[] = $obj;
+		$this->_last   = $obj;
 	}
 
-	public function append($objects) {
+	public function append(self $objects) {
 		foreach($objects as $object){
 			$this->add($object);
 		}
@@ -97,6 +100,9 @@ class Collection implements \Iterator, \Countable {
 	public function getLastObject() {
 		if (!count($this->_data)) {
 			throw new IsEmpty('Collection is empty');
+		}
+		if ($this->_last !== null) {
+			return $this->_last;
 		}
 		end($this->_data);
 		return current($this->_data);

@@ -45,6 +45,16 @@ class TextBox extends Field {
 		return $html;
 	}
 	
+	/**
+	 * Creates an visual attached button to field.
+	 * @param type $text
+	 * @param type $width
+	 * @return \Webos\Visual\Controls\Button
+	 */
+	public function attachButton(string $text = '...', int $width = 25): Button {
+		return $this->getParent()->createButton($text, ['width' => $width]);
+	}
+	
 	public function multiline(bool $value): self {
 		$this->multiline = $value;
 		return $this;

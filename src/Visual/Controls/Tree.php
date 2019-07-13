@@ -13,7 +13,7 @@ class Tree extends Control {
 
 	// private $_selectedNode = null;
 	
-	public function initialize() {
+	public function initialize(array $params = []) {
 		$this->columns = new Collection();
 	}
 

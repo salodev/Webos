@@ -1,7 +1,7 @@
 <?php
 namespace Webos\Visual\Controls;
 class ComboBox extends Field {
-	public function initialize() {
+	public function initialize(array $params = []) {
 		if (!is_array($this->options)) {
 			$this->options = [];
 		}

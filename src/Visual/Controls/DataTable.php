@@ -13,7 +13,7 @@ class DataTable extends Control {
 	use DataConsuming;
 	
 	// public $rowIndex = null;
-	public function initialize() {
+	public function initialize(array $params = []) {
 		$this->offset = 0;
 		$this->rows        = [];
 		$this->columns     = new Collection();

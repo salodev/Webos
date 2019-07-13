@@ -17,7 +17,7 @@ class Bar extends Control {
 		}
 	}
 	
-	public function initialize() {
+	public function initialize(array $params = []) {
 		$this->height = 26;
 		$this->top    = 0;
 		$this->left   = 0;

@@ -8,7 +8,7 @@ use Exception;
 class MultiTab extends Control {
 
 	protected $_activeTab;
-	public function initialize() {
+	public function initialize(array $params = []) {
 		$this->_activeTab = null;
 		$this->enableEvent('close');
 	}

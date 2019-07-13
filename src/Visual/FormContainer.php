@@ -1,6 +1,8 @@
 <?php
 namespace Webos\Visual;
+use Webos\Exceptions\Collection\IsEmpty;
 use Webos\VisualObject;
+use Webos\Visual\Controls\Group;
 use Webos\Visual\Controls\VerticalSeparator;
 use Webos\Visual\Controls\HorizontalSeparator;
 use Webos\Visual\Controls\Field;
@@ -23,23 +25,41 @@ use Webos\Visual\Window;
 use Webos\Visual\Controls\FilePicker;
 
 trait FormContainer {
+	
 	protected $maxTopControl     = 15;
-	protected $topControl        = 15;
-	protected $leftControl       = 0;
-	protected $widthLabelControl = 75;
-	protected $widthFieldControl = 75;
-	protected $showTitleControls = true;
-	protected $controlProperties = [];
-	protected $controlClassName  = TextBox::class;
-	protected $hasHorizontalButtons = false;
 	protected $hasWindowButtons  = false;
-
-	protected function setControlProperties(array $properties = []): void {
-		$this->controlProperties = $properties;
+	
+	protected function _getNextPositions(): array {
+		$margin = 5;
+		
+		$positions = [
+			'top'        => $margin,
+			'left'       => 0,
+			'height'     => 25,
+			'width'      => 300,
+			'labelWidth' => 100,
+		];
+		
+		try {
+			$lastChild               = $this->getLastChild();
+			$positions['top'       ] = $lastChild->top  + $lastChild->height + $margin;
+			$positions['left'      ] = $lastChild->left;
+			$positions['height'    ] = $lastChild->height;
+			$positions['width'     ] = $lastChild->width ?? 300;
+			$positions['labelWidth'] = $lastChild->labelWidth;
+		} catch (IsEmpty $e) {
+			// discard $e;
+		}
+		
+		return $positions;
 	}
-
-	protected function clearControlProperties(): void {
-		$this->controlProperties = [];
+	
+	protected function _getNextPosTop(): int {
+		return $this->_getNextPositions()['top'];
+	}
+	
+	protected function _getNextPosLeft(): int {
+		return $this->_getNextPositions()['left'];
 	}
 	
 	/**
@@ -52,47 +72,27 @@ trait FormContainer {
 	 * @return \Webos\Visual\Control
 	 */
 	public function createControl(string $label, string $name, string $className = TextBox::class, array $options = [], bool $attachToContainer = true): Control {
-		if (isset($options['top'])) {
-			$this->topControl = $options['top'];
-		}
-		if (isset($options['left'])) {
-			$this->leftControl = $options['left'];
-			$this->leftButton  = $options['left'];
-		}
-		if (isset($options['width'])) {
-			$this->widthFieldControl = $options['width'];
-		}
-		if (isset($options['labelWidth'])) {
-			$this->widthLabelControl = $options['labelWidth'];
-		}
-		$this->createObject(Label::class, array_merge(
-			$options, [
-				'value'      => $label // bugfix
-			], [
-				'text'       => $label
-			], [
-				'text-align' => 'left',
-				'top'        => $this->topControl,
-				'left'       => $this->leftControl,
-				'width'      => $this->widthLabelControl,
-			]
-		));
-
-		$control = $this->createObject($className, array_merge($options, [
-			'top'   => $this->topControl,
-			'left'  => $this->leftControl + $this->widthLabelControl + 5,
-			'width' => $this->widthFieldControl,
-			'name'  => $name,
+		$positions = $this->_getNextPositions();
+		
+		$group = $this->createObject(Group::class, array_merge([
+			'top'        => $positions['top'       ],
+			'left'       => $positions['left'      ],
+			'width'      => $positions['width'     ],
+			'height'     => $positions['height'    ],
+			'labelWidth' => $positions['labelWidth'],
+			'text-align' => 'left',
+		], $options, [
+			'label'      => $label,
+			'className'  => $className,
+			'name'       => $name,
 		]));
-		$this->topControl += ($options['height'] ?? 23) + 5;
-		if ($this->topControl > $this->maxTopControl) {
-			$this->maxTopControl = $this->topControl;
-		}
+		$control = $group->getControl();
 
 		if ($attachToContainer) {
 			$this->$name = $control;
 		}
-		
+		$this->setMaxTopControl();
+
 		$this->fixWindowHeight();
 
 		return $control;
@@ -173,19 +173,14 @@ trait FormContainer {
 	 * @return \Webos\Visual\Controls\ToolBar
 	 */
 	public function createToolBar(array $params = []): ToolBar {
-		$this->topControl += 15;
 		$this->maxTopControl += 15;
-		$parentWindow = $this->getParentWindow();
-		if (($params['fixedTo']??'top')=='bottom') {
-			$parentWindow->height = $this->topControl + 80;
-		} else {
-			$parentWindow->height = $parentWindow->height + $this->topControl + 15 + 40;
-		}
-		return $this->createObject(ToolBar::class, array_merge([
-			'top' =>   0,
+		$toolBar = $this->createObject(ToolBar::class, array_merge([
+			'top'  => $this->_getNextPosTop(),
 			'left' =>  0,
 			'right' => 0,
 		], $params));
+		$this->fixWindowHeight();
+		return $toolBar;
 	}
 	
 	public function createButtonsBar(): ToolBar {
@@ -208,8 +203,6 @@ trait FormContainer {
 	 * @return \Webos\Visual\Controls\Menu\Bar
 	 */
 	public function createMenuBar(): MenuBar {
-		$this->topControl += 16;
-		$this->maxTopControl += 16;
 		return $this->createObject(MenuBar::class);
 	}
 	
@@ -219,17 +212,14 @@ trait FormContainer {
 	 * @return \Webos\Visual\Controls\DataTable
 	 */
 	public function createDataTable(array $options = []): DataTable {
-		$initialOptions = [
-			'top'    => $this->maxTopControl,
-			'left'   => $this->leftControl,
+		$dataTable = $this->createObject(DataTable::class, array_merge([
+			'top'    => $this->_getNextPosTop(),
 			'right'  => 0,
 			'bottom' => 0,
-		];
-		$options = array_merge($initialOptions, $options);
-		if (isset($options['height']) && is_numeric($options['height'])) {
-			$this->getParentWindow()->height = $this->topControl + ($options['height'] ?? 300) + 40;
-		}
-		return $this->createObject(DataTable::class, $options);
+		], $options));
+		$this->maxTopControl += 400;
+		$this->fixWindowHeight();
+		return $dataTable;
 	}
 	
 	/**
@@ -238,10 +228,6 @@ trait FormContainer {
 	 * @return Controls\Tree
 	 */
 	public function createTree(array $options = []): Tree {
-		$parentWindow = $this->getParentWindow();
-		if ($parentWindow->bottom != 0 && $parentWindow->top!=0) {
-			$this->getParentWindow()->height = $this->topControl + ($options['height'] ?? 300) + 40;
-		}
 		return $this->createObject(Tree::class, $options);
 	}
 	
@@ -251,13 +237,11 @@ trait FormContainer {
 	 * @return Controls\Frame
 	 */
 	public function createFrame(array $options = []): Frame {
-		$options = array_merge([
-			'top' => $this->maxTopControl,
+		return $this->createObject(Frame::class, array_merge([
 			'left' => 0,
 			'right' => 0,
 			'bottom' => 0,
-		], $options);
-		return $this->createObject(Frame::class, $options);
+		], $options));
 	}
 	
 	public function createTabsFolder(array $params = []): MultiTab {
@@ -276,28 +260,14 @@ trait FormContainer {
 	 * @return \Webos\Visual\Controls\Button
 	 */
 	public function addHorizontalButton($caption, $width = 80, array $params = []): Button {
-		if (!$this->hasHorizontalButtons) {
-			$this->hasHorizontalButtons = true;
-			$this->topHorizontalButtons = $this->maxTopControl + 10;
-			$this->maxTopControl += 28 + 10;
-			$this->topControl = $this->maxTopControl;
-			$this->fixWindowHeight();
+		if (!$this->horizontalButtonsBar) {
+			$this->horizontalButtonsBar = $this->createToolBar();
 		}
-		if (!empty($params['left'])) {
-			$this->leftButton = $params['left']/1;
-		}
-		if (!empty($params['top'])) {
-			$this->topControl = $this->topHorizontalButtons = $params['top']/1;
-		}
-		$left = $this->leftButton/1;
 		$width = empty($params['width']) ? $width : $params['width'];
-		$button = $this->createObject(Button::class, array_merge($params, [
-			'top'   => $this->topHorizontalButtons,
-			'left'  => $left,
+		$button = $this->horizontalButtonsBar->createObject(Button::class, array_merge($params, [
 			'width' => $width,
 			'value' => $caption,
 		]));
-		$this->leftButton = ($this->leftButton/1) + 10 + ($width*1); // + ($width/1) + 10;
 		return $button;
 	}
 	
@@ -334,7 +304,7 @@ trait FormContainer {
 			if ($object instanceOf Field) {
 				$object->value = null;
 			}
-		};
+		}
 	}
 	
 	/**
@@ -367,6 +337,13 @@ trait FormContainer {
 				$object->disabled = true;
 			}
 		};
+	}
+	
+	public function setMaxTopControl() {
+		$data = $this->_getNextPositions();
+		if ($data['top'] + $data['height'] > $this->maxTopControl) {
+			$this->maxTopControl = $data['top'] + $data['height'];
+		}
 	}
 	
 	public function fixWindowHeight(): void {
