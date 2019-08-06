@@ -1,4 +1,5 @@
 <?php
+
 namespace Webos\Visual\Controls;
 
 use Webos\Visual\Control;
@@ -7,24 +8,15 @@ use Webos\Visual\ControlsFactory;
 class ToolBar extends Control {
 	
 	use ControlsFactory;
-
-	public function getAllowedActions(): array {
-		return [];
-	}
-
-	public function getAvailableEvents(): array {
-		return [];
-	}
 	
 	public function getInitialAttributes(): array {
 		return array_merge(parent::getInitialAttributes(), [
-			'height' => 24,
+			'height' => 20,
 		]);
 	}
 	
 	public function initialize(array $params = []) {
 		$this->top = $params['top'] ?? 0;
-		$this->height = 24;
 	}
 
 	/**

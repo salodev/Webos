@@ -1,28 +1,30 @@
 <?php
+
 namespace Webos\Visual;
+
 use Webos\Exceptions\Collection\IsEmpty;
 use Webos\VisualObject;
-use Webos\Visual\Controls\Group;
-use Webos\Visual\Controls\VerticalSeparator;
-use Webos\Visual\Controls\HorizontalSeparator;
-use Webos\Visual\Controls\Field;
-use Webos\Visual\Controls\TextBox;
-use Webos\Visual\Controls\PasswordBox;
-use Webos\Visual\Controls\Label;
 use Webos\Visual\Controls\Button;
-use Webos\Visual\Controls\LinkButton;
-use Webos\Visual\Controls\Link;
 use Webos\Visual\Controls\ComboBox;
-use Webos\Visual\Controls\ToolBar;
 use Webos\Visual\Controls\DataTable;
-use Webos\Visual\Controls\Tree;
+use Webos\Visual\Controls\Field;
+use Webos\Visual\Controls\FilePicker;
 use Webos\Visual\Controls\Frame;
+use Webos\Visual\Controls\Group;
+use Webos\Visual\Controls\HorizontalSeparator;
+use Webos\Visual\Controls\HtmlContainer;
+use Webos\Visual\Controls\Image;
+use Webos\Visual\Controls\Label;
+use Webos\Visual\Controls\Link;
+use Webos\Visual\Controls\LinkButton;
 use Webos\Visual\Controls\Menu\Bar as MenuBar;
 use Webos\Visual\Controls\MultiTab;
-use Webos\Visual\Controls\Image;
-use Webos\Visual\Controls\HtmlContainer;
+use Webos\Visual\Controls\PasswordBox;
+use Webos\Visual\Controls\TextBox;
+use Webos\Visual\Controls\ToolBar;
+use Webos\Visual\Controls\Tree;
+use Webos\Visual\Controls\VerticalSeparator;
 use Webos\Visual\Window;
-use Webos\Visual\Controls\FilePicker;
 
 trait FormContainer {
 	

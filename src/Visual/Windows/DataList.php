@@ -32,29 +32,49 @@ abstract class DataList extends Window {
 	 */
 	public $dataTable = null;
 	
+	/**
+	 *
+	 * @var bool 
+	 */
+	public $showSearch = true;
+	
 	public function preInitialize() {
 		parent::preInitialize();
 		$this->width     = 600;
 		$this->toolBar   = $this->createToolBar();
-		$this->txtSearch = $this->toolBar->createTextBox(['placeholder'=>'...']);
-		$this->btnSearch = $this->toolBar->createButton('Search');
+		
+		if ($this->showSearch) {
+			
+			$this->txtSearch = $this->toolBar->createTextBox([
+				'placeholder' => '...'
+			]);
+			
+			$this->btnSearch = $this->toolBar->createButton('Search');
+			
+			$this->txtSearch->onLeaveTyping(function() {
+				$this->refreshList();
+			});
+		
+			$this->btnSearch->onClick(function() {
+				$this->refreshList();
+			});
+		
+			$this->txtSearch->focus();
+		}
+		
 		$this->dataTable = $this->createDataTable();
 		
-		$this->txtSearch->onLeaveTyping(function () {
-			$this->refreshList();
-		});
-		
 		$this->onKeyEscape(function() {
-			if ($this->txtSearch->value!==null) {
-				$this->txtSearch->value = null;
-				$this->refreshList();
+			if ($this->showSearch) {
+				if ($this->txtSearch->value!==null) {
+					$this->txtSearch->value = null;
+					$this->refreshList();
+				} else {
+					$this->close();
+				}
 			} else {
 				$this->close();
 			}
-		});
-		
-		$this->btnSearch->onClick(function() {
-			$this->refreshList();
 		});
 		
 		$this->onNewData(function() {
@@ -68,8 +88,6 @@ abstract class DataList extends Window {
 		$this->dataTable->bind('nextPage', function($params) {
 			$this->getData($params);
 		});
-		
-		$this->txtSearch->focus();
 	}
 	
 	public function afterInitialize() {
