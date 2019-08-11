@@ -8,6 +8,10 @@ use Webos\Visual\FormContainer;
 class HtmlContainer extends Control {
 	use FormContainer;
 	
+	public function div(string $text = ''): HtmlContainerNode {
+		return $this->createTag('div', $text);
+	}
+	
 	public function p(string $text = ''): HtmlContainerNode {
 		return $this->createTag('p', $text);
 	}

@@ -34,8 +34,11 @@ class Command extends Token {
 			return true;
 		}
 		if($word == 'create') {
-			if ($this->eatExpectedString('window')) {
+			if ($this->eatString('window')) {
 				$this->createWindow();
+				return true;
+			} else {
+				echo "run webos create window\n";
 				return true;
 			}
 			return true;

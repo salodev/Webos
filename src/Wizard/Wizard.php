@@ -8,6 +8,8 @@
 
 namespace Webos\Wizard;
 use Webos\StringChar;
+use Webos\Visual\Window;
+use Webos\Visual\Windows\DataList;
 
 /**
  * Description of Wizard
@@ -34,10 +36,29 @@ class Wizard {
 			$params['title'] = readline('Give title for new window: ');
 		}
 		
-		if (empty($params['extends-from'])) {
-			$params['extends-from'] = readline('Give class name from extends new window: ');
+		if (empty($params['type'])) {
+			while (true) {
+				$read = readline('Window type \'generic\' (by default) or \'list\' or specify full class name: ');
+				switch(trim($read)) {
+					case '':
+					case 'generic':
+						$params['extends-from'] = Window::class;
+						break;
+					case 'list':
+						$params['extends-from'] = DataList::class;
+						break;
+					default:
+						if (!class_exists($read)) {
+							echo "class does not exist. Specify generic for safe\n";
+							continue 2;
+						}
+						break;
+				}
+				break;
+			}
+			
 		}
-		print_r($params);
+		
 		$classFile = $params['classPath'];
 		$classFile .= str_replace('\\', '/', $params['name']) . '.php';
 		
@@ -49,18 +70,18 @@ class Wizard {
 		
 		$params['classFile'] = $classFile;
 		
-		print_r($params);
-		die();
-		
-		$classParts = explode('\\', $fullName);
+	
+		$classParts = explode('\\', $params['name']);
 		$className = array_pop($classParts);
 		$namespaceName = implode('\\', $classParts);
 		$template = new StringChar(file_get_contents($this->getTemplatesBasePath() . 'window.tpl'));
 		$template->replaces([
 			'__namespaceName__' => $namespaceName,
 			'__className__'     => $className,
-			'__windowTitle__'   => $title,
+			'__windowTitle__'   => $params['title'],
 		]);
+		
+		echo $template;
 		
 		return $template;
 	}
