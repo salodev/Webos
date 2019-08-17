@@ -352,6 +352,16 @@ class Window extends Container {
 		return $this;
 	}
 	
+	public function streamContent(string $content, string $mimetype = null, string $fileName = null): self {
+		$this->getParentApp()->streamContent($content, $mimetype, $fileName);
+		return $this;
+	}
+	
+	public function streamFile(string $path): self {
+		$this->getParentApp()->streamFile($path);
+		return $this;
+	}
+	
 	public function render(): string {
 		$html = $this->_getRenderTemplate();
 		$content = $this->text ?? '';

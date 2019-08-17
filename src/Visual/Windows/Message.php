@@ -10,11 +10,11 @@ class Message extends Window {
 		$this->title       = $params['title'  ] ?? 'Mensaje:';
 		$this->text        = $params['message'] ?? 'Mensaje:';
 		$this->width       = $params['width'  ] ?? 450;
-		$this->height      = $params['height' ] ?? 150;
 		$this->messageType = $params['type'   ] ?? null;
 		$this->modal = true;
 		
 		$this->createWindowButton('OK')->closeWindow();
+		$this->height      = $params['height' ] ?? 150;
 
 	}
 
