@@ -385,7 +385,7 @@ abstract class VisualObject extends BaseObject {
 	}
 	
 	public function getInlineStyleFromArray(array $attributes, bool $absolutize = true): string {
-
+		
 		$styles = [];
 
 		$visualAttributesList = [
@@ -415,6 +415,7 @@ abstract class VisualObject extends BaseObject {
 			'position',
 			'boxShadow',
 			'cursor',
+			'display',
 		];
 
 		foreach($visualAttributesList as $name) {
@@ -434,7 +435,7 @@ abstract class VisualObject extends BaseObject {
 			if ($name == 'backgroundImage') {
 				$value = "url({$value})";
 			}
-			if (strlen("$value")) {
+			if (strlen("{$value}")) {
 				$styles[$hyphenName] = $value;
 			}
 			

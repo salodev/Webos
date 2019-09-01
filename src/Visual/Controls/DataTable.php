@@ -254,7 +254,7 @@ class DataTable extends Control {
 					$rowValue = $rowValue[$fieldPart]??'';
 				}
 				// fin de obtención del valor de la columna.
-				$value = $column->renderValue($rowValue, $row);
+				$value = $column->renderValue($rowValue, (array) $row);
 				
 				if (empty($value)) {
 					$value = '&nbsp;';

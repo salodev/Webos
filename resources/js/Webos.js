@@ -44,8 +44,8 @@ Webos.syncViewportSize = function() {
 		type: 'post',
 		data: {
 			syncViewportSize: true,
-			width:  window.innerWidth,
-			height: window.innerHeight
+			width:  window.outerWidth,
+			height: window.outerHeight
 		}
 	});
 }

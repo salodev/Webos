@@ -12,6 +12,7 @@ use Webos\Visual\Control;
 use Webos\Visual\Controls\Menu\ListItems;
 use Webos\Exceptions\Collection\NotFound;
 use Webos\StringChar;
+use Webos\WorkSpace;
 
 class Window extends Container {
 
@@ -47,6 +48,46 @@ class Window extends Container {
 	}
 	
 	public function initialize(array $params = []) {}
+	
+	public function afterInitialize() {
+		parent::afterInitialize();
+
+		if ($this->getWorkspace()->isSmart()) {
+			$this->top    = 0;
+			$this->left   = 0;
+			$this->bottom = 0;
+			$this->height = null;
+			if ($this->modal) {
+				$this->right = 0;
+				$this->width = null;
+			}
+		} else {
+			$margin = 10;
+			$h = $this->getWorkspace()->getViewportHeight();
+			$w = $this->getWorkspace()->getViewportWidth();
+		
+		
+			/**
+			 * In order to keep window placed into screen so check dimensions and
+			 * try to put the window better as possible.
+			 * First check it for vertical position
+			 */
+			if ($this->top + $this->height > $h) {
+				$this->top = $h - $this->height - $margin;
+				if ($this->top < $margin) {
+					$this->top = $margin;
+				}
+			}
+
+			// Now for horizontal position.
+			if ($this->left + $this->width > $w) {
+				$this->left = $h - $this->width - $margin;
+				if ($this->left < $margin) {
+					$this->left = $margin;
+				}
+			}
+		}
+	}
 
 	public function getAvailableEvents(): array {
 		$eventNames = [
@@ -192,6 +233,17 @@ class Window extends Container {
 		}
 		
 		return false;
+	}
+	
+	public function __set_relativeTo($relativeTo) {
+		if ($relativeTo instanceof Window && !$this->getWorkSpace()->isSmart()) {
+			$this->top  = $relativeTo->top  + 100;
+			$this->left = $relativeTo->left + 100;
+		}
+	}
+	
+	public function getWorkspace(): WorkSpace {
+		return $this->getParentApp()->getWorkSpace();
 	}
 	
 	public function modal(bool $value = true): self {
@@ -398,9 +450,11 @@ class Window extends Container {
 			$directives[] = 'resize';
 		}
 		
+		$showModal = $this->modal && !$this->getParentApp()->getWorkSpace()->isSmart();
+		
 		$html = new StringChar(
 			'<div ' .
-				($this->modal ? '' : 'id="__ID__" ') .
+				($showModal ? '' : 'id="__ID__" ') .
 				'class="Window form-wrapper__ACTIVE____STATUS__" ' .
 				'__STYLE__ __READY__ __DIRECTIVES__' .
 			'>' .
@@ -421,7 +475,7 @@ class Window extends Container {
 			'</div>'
 		);
 		
-		if ($this->modal) {
+		if ($showModal) {
 			$html = new StringChar('<div webos no-action="close" bubble="false" id="__ID__" class="modal-wrapper">' . $html . '</div>');
 		}
 		

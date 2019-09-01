@@ -98,42 +98,11 @@ abstract class Application {
 	 * @param array $params
 	 * @return Visual\Window
 	 */
-	public function openWindow(string $windowName = null, array $params = [], $relativeTo = null): Window {
-		if ($windowName===null) {
-			$windowName = Window::class;
-		}
+	public function openWindow(string $windowName = Window::class, array $params = [], Window $relativeTo = null): Window {
 		$window = new $windowName($this, $params);
 		$this->setActiveWindow($window);
-		if ($relativeTo instanceof Window) {
-			$window->top  = $relativeTo->top  + 100;
-			$window->left = $relativeTo->left + 100;
-		}
-		
-		
-		$margin = 10;
-		$h = $this->getWorkSpace()->getViewportHeight();
-		$w = $this->getWorkSpace()->getViewportWidth();
-		
-		/**
-		 * In order to keep window placed into screen so check dimensions and
-		 * try to put the window better as possible.
-		 * First check it for vertical position
-		 */
-		if ($window->top + $window->height > $h) {
-			$window->top = $h - $window->height - $margin;
-			if ($window->top < $margin) {
-				$window->top = $margin;
-			}
-		}
-		
-		// Now for horizontal position.
-		if ($window->left + $window->width > $w) {
-			$window->left = $h - $window->width - $margin;
-			if ($window->left < $margin) {
-				$window->left = $margin;
-			}
-		}
-		
+		$window->relativeTo = $relativeTo;
+
 		return $window;
 	}
 	

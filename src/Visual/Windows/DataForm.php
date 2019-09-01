@@ -18,6 +18,7 @@ use Webos\Visual\Window;
 abstract class DataForm extends Window {
 	
 	public function afterInitialize() {		
+		parent::afterInitialize();
 		$this->createWindowButton('Save')->onClick(function() {
 			$data = $this->getFormData();
 			$returnData = $this->saveData($data);

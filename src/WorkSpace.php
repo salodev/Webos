@@ -1,4 +1,5 @@
 <?php
+
 namespace Webos;
 
 use Webos\Visual\Window;
@@ -20,6 +21,7 @@ class WorkSpace {
 	protected $_pageWrapper       = null;
 	protected $_vpWidth           = 1200;
 	protected $_vpHeight          = 600;
+	protected $_vpSmart           = false;
 	protected $_lastObjectIndex   = 0;
 	protected $_voIndex           = [];
 	
@@ -227,8 +229,17 @@ class WorkSpace {
 	}
 	
 	public function setViewportSize(int $width, int $height) {
-		$this->_vpWidth = $width;
+		$this->_vpWidth  = $width;
 		$this->_vpHeight = $height;
+		$this->_vpSmart  = $this->_vpWidth < 600;
+	}
+	
+	public function isSmart(): bool {
+		return $this->_vpSmart;
+	}
+	
+	public function setSmart(bool $value = true): void {
+		$this->_vpSmart = $value;
 	}
 	
 	public function getViewportWidth(): int {

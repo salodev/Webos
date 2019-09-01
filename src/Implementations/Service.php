@@ -69,7 +69,7 @@ class Service {
 				if (($_SERVER['HTTP_X_REQUESTED_WITH']??null)=='XMLHttpRequest') {
 					self::GetLogin();
 				}			
-			}
+			}			
 			// self::GetLogin($location);
 			$service = self::CreateAuth();
 		} else {
@@ -107,8 +107,6 @@ class Service {
 		
 		$response = $service->action($actionName, $objectID, $params, $ignoreUpdate);
 
-		
-		//print_r($response); die();
 		if (!empty($response['events'])) {
 			foreach($response['events'] as $event) {
 				if ($event['name']=='authUser' && !($service instanceof AuthService)) {
@@ -125,7 +123,6 @@ class Service {
 			self::SendJson(['status'=>'error','message'=>'Missing width or height']);
 			return;
 		}
-		
 		$service->setViewportSize((int)$_REQUEST['width'], (int)$_REQUEST['height']);
 		self::SendJson([]);
 	}

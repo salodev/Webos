@@ -7,7 +7,7 @@
     -moz-box-shadow:0 0 5px #ccc;
     box-shadow:0 0 5px #ccc;
 	border: solid 1px #ccc;
-    width:450px;
+    /*width:450px;*/
     /*margin:0 auto;*/
     position:absolute;
 }

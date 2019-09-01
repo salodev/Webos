@@ -1,5 +1,7 @@
 <?php
+
 namespace Webos;
+
 class Webos {
 	
 	static public $development = false;
