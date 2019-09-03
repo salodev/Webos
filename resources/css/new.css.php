@@ -7,6 +7,7 @@ $sm = StylesManager::Instance();
 $url = Service::GetUrl();
 
 $sm->defineColor('yellow',   '#f5b400');
+$sm->defineColor('lighthole',   '#f1f3f4');
 // $sm->defineColor('blue',     '#5589e1');
 // $sm->defineColor('blue',     '#4a78c5');
 $sm->defineColor('blue',     'rgba(74,120,197,0.95)');
@@ -36,11 +37,12 @@ $sm->define('click', [
 ]);
 
 $sm->define('control', [
-	'border-top' => 'none',
-	'border-left' => 'none',
-	'border-right' => 'none',
-	'border-bottom' => 'solid 1px ' . $sm->getPalette('gray'),
-	'background' => $sm->getPalette('white'),
+	'border' => 'none',
+	// 'border-top' => 'none',
+	// 'border-left' => 'none',
+	// 'border-right' => 'none',
+	// 'border-bottom' => 'solid 1px ' . $sm->getPalette('gray'),
+	'background' => $sm->getPalette('lighthole'),
 ])->import('box');
 
 $sm->addRule('*', [
@@ -59,6 +61,7 @@ $sm->addRule('body', [
 $sm->addRule('.LabelControl', [
 	'font-weight' => '600',
 	'font-size' => '13px',
+	//'background' => $sm->getPalette('lighthole'),
 ]);
 $sm->addRule('.Control.Field')->import('control');
 $sm->addRule('.Control.Field:focus,.Control.Field:active', [
