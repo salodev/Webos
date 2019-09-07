@@ -33,7 +33,7 @@ class Wait extends Window {
 	 * Also is closed when Exceptions take place.
 	 * @throws Exception
 	 */
-	public function ready() {
+	public function ready(): void {
 		try {
 			parent::ready();
 		} catch (Error $e) {
