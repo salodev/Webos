@@ -242,7 +242,7 @@ class Window extends Container {
 	}
 	
 	public function __set_relativeTo(Window $relativeTo): void {
-		if ($this->getWorkSpace()->isSmart()) {
+		if (!$this->getWorkSpace()->isSmart()) {
 			$this->top  = $relativeTo->top  + 100;
 			$this->left = $relativeTo->left + 100;
 		}
