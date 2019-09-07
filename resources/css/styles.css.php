@@ -22,6 +22,12 @@ input[type=button],button,input[type=text],input[type=password],select,.LabelCon
     height: 25px;
     padding: 3px 0;
     margin: 0 5px 0 0;
-	color:#444;
 }
 input[type=text], input[type=password] { padding:3px 8px; }
+
+body {
+  -webkit-user-select: none;  
+  -moz-user-select: none;    
+  -ms-user-select: none;      
+  user-select: none;
+}

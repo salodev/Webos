@@ -6,7 +6,7 @@ use Webos\Visual\Controls\Menu\ListItems;
 
 class Application extends Window {
 	
-	public function preInitialize() {
+	public function preInitialize(): void {
 		$this->top    = 0;
 		$this->bottom = 0;
 		$this->right  = 0;

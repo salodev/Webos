@@ -10,7 +10,7 @@ class Wizard extends Window {
 	protected $frames = [];
 	protected $currentFrameIndex = 0;
 	
-	public function preInitialize() {
+	public function preInitialize(): void {
 		
 		parent::preInitialize();
 		

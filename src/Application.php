@@ -101,7 +101,9 @@ abstract class Application {
 	public function openWindow(string $windowName = Window::class, array $params = [], Window $relativeTo = null): Window {
 		$window = new $windowName($this, $params);
 		$this->setActiveWindow($window);
-		$window->relativeTo = $relativeTo;
+		if ($relativeTo instanceof Window) {
+			$window->relativeTo = $relativeTo;
+		}
 
 		return $window;
 	}

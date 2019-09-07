@@ -4,7 +4,7 @@ namespace Webos\Visual\Windows;
 
 abstract class DataSeeker extends DataList {
 	
-	public function preInitialize(array $params = []) {
+	public function preInitialize(array $params = []):void {
 		parent::preInitialize($params);
 		
 		$this->title = 'Data seeker window';

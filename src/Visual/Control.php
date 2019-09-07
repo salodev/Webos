@@ -99,4 +99,9 @@ abstract class Control extends VisualObject {
 		$this->value = $value;
 		return $this;
 	}
+	
+	public function action(string $name, array $params = []): void {
+		parent::action($name, $params);
+		$this->focus();
+	}
 }

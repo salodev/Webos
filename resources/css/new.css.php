@@ -3,47 +3,8 @@
 use Webos\FrontEnd\CSS\StylesManager;
 use Webos\Implementations\Service;
 
-$sm = StylesManager::Instance();
+$sm = StylesManager::InstanceWithDefinitions();
 $url = Service::GetUrl();
-
-$sm->defineColor('yellow',   '#f5b400');
-$sm->defineColor('lighthole',   '#f1f3f4');
-// $sm->defineColor('blue',     '#5589e1');
-// $sm->defineColor('blue',     '#4a78c5');
-$sm->defineColor('blue',     'rgba(74,120,197,0.95)');
-$sm->defineColor('red',      '#dc4437');
-$sm->defineColor('green',    '#56a845');
-$sm->defineColor('paper',    '#555555', '#ffffff');
-$sm->defineColor('gray',     '#cdcdcd', '#ffffff');
-$sm->defineColor('gray1',    '#eeeeee', '#ffffff');
-$sm->defineColor('gray2',    '#dbe2e5', '#ffffff');
-$sm->defineColor('gray3',    '#5C5F69', '#ffffff');
-$sm->defineColor('gray4',    '#555555', '#ffffff');
-$sm->defineColor('gray5',    '#28292d', '#ffffff');
-$sm->defineColor('darkgray', '#666666', '#ffffff');
-$sm->addPalette('white', '#ffffff');
-$sm->addPalette('black', '#000000');
-
-$sm->define('noborder', [
-	'border' => 'none',
-]);
-
-$sm->define('box', [
-	'padding' => '3px 9px',
-]);
-
-$sm->define('click', [
-	'cursor' => 'pointer',
-]);
-
-$sm->define('control', [
-	'border' => 'none',
-	// 'border-top' => 'none',
-	// 'border-left' => 'none',
-	// 'border-right' => 'none',
-	// 'border-bottom' => 'solid 1px ' . $sm->getPalette('gray'),
-	'background' => $sm->getPalette('lighthole'),
-])->import('box');
 
 $sm->addRule('*', [
 	'box-sizing' => 'border-box !important',
@@ -61,11 +22,11 @@ $sm->addRule('body', [
 $sm->addRule('.LabelControl', [
 	'font-weight' => '600',
 	'font-size' => '13px',
-	//'background' => $sm->getPalette('lighthole'),
+	//'background' => $sm->getPalette('lightgray'),
 ]);
 $sm->addRule('.Control.Field')->import('control');
 $sm->addRule('.Control.Field:focus,.Control.Field:active', [
-	'border-bottom' => 'solid 1px ' . $sm->getPalette('darkgray'),
+	'border-bottom' => 'solid 2px ' . $sm->getPalette('gray2'),
 	'box-shadow' => 'none !important',
 	'outline' => 'none',
 ]);
@@ -74,12 +35,6 @@ $sm->addRule('.Control[disabled]', [
 	'cursor'  => 'initial',
 ]);
 
-$sm->define('icon', [
-	'font-family' => 'Glyphicons Halflings',
-]);
-$sm->define('icon-chevron-down', [
-	'content' => '"\E114"',
-])->import('icon');
 
 $sm->addRule('.Button', [
 	// 'font-family'    => "'Roboto'",
@@ -89,6 +44,7 @@ $sm->addRule('.Button', [
 	'line-height'   => '13px',
 	'outline'       => 'none',
 	'padding'       => '3px 8px',
+	'border-radius' => '2px',
 ])->import('blue')->invert()->import('noborder', 'box', 'click');
 $sm->addRule('.Button:focus', [
 	'filter' => 'brightness(90%)',
@@ -123,25 +79,19 @@ $sm->addRule('.modal-wrapper', [
     'position'   => 'fixed',
     'background' => 'rgba(0,0,0,.4)',
 ]);
+
 $sm->addRule('.Window')->import('paper');
-$sm->addRule('.Window .form-titlebar .title')->import('gray4');
 $sm->addRule('.Window .form-titlebar .controls *')->import('gray4')->important('background');
 
 
 
 // $sm->addRule('.FilePicker')->like('.Button');
 
-$sm->addRule('.MenuItem:hover', [
-	'cursor' => 'pointer',
-])->import('blue')->invert()->important('background');
-
-$sm->addRule('.MenuItem.selected')->like('.MenuItem:hover');
-
-$sm->addRule('.MenuButton:hover > .text')->import('blue')->invert()->important('background');
-$sm->addRule('.MenuButton.selected > .text')->import('blue')->invert()->important('background');
 
 $sm->addRule('.MultiTab > .Tabs', [
-	'border-bottom' => 'solid 1px ' . $sm->getPalette('blue'),
+	'border-bottom' => 'solid 2px ' . $sm->getPalette('gray2'),
+	'height' => '31px',
+	'overflow' => 'visible',
 ]);
 
 $sm->addRule('.MultiTab > .Tabs > .tab', [

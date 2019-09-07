@@ -38,7 +38,7 @@ abstract class DataList extends Window {
 	 */
 	public $showSearch = true;
 	
-	public function preInitialize() {
+	public function preInitialize():void {
 		parent::preInitialize();
 		$this->width     = 600;
 		$this->toolBar   = $this->createToolBar();

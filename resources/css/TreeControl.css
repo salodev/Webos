@@ -1,5 +1,5 @@
 .Tree {
-	border: solid 1px #ccc;
+	/*border: solid 1px #ccc;*/
     margin: 0;
 	padding: 0;
     position: absolute !important;
@@ -11,23 +11,21 @@
 .TreeNode {
 	position:relative !important;
 	list-style:none;
-	/*height:25px;*/
-	line-height: 25px;
 	cursor:default;
 }
 .TreeNode > .row {
 	overflow:auto;
 }
 .TreeNode > .row:hover {
-	background: #efefef;
+	background: #ddd;
 	cursor: pointer;
 }
 .TreeNode > .row.selected {
-	background: #999;
-	color:#fff;
+	background: #ddd;
 }
 .TreeNode > .row .title {
 	float:left;
+	padding:3px 6px;
 }
 .TreeNode > .row .columns {
     overflow: auto;
@@ -44,12 +42,12 @@
     float: left;
     height: 13px;
     width: 13px;
-    border: solid 1px #ccc;
+    border: solid 1px #000;
     text-align: center;
     padding: 0 !important;
     line-height: 11px;
     margin: 5px;
-    color: #999;
+    color: #000;
     border-radius: 2px;
     font-size: 7px;
 	font-family:'Glyphicons Halflings'

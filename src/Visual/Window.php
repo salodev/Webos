@@ -28,7 +28,7 @@ class Window extends Container {
 		return parent::bind($eventName, $eventListener, $persistent, $contextData);
 	}
 	
-	public function preInitialize() {
+	public function preInitialize(): void {
 		$this->title  = $this->getObjectID();
 		$this->width  = 600;
 		$this->height = 400;
@@ -138,21 +138,27 @@ class Window extends Container {
 		return $this;
 	}
 	
-	public function getActiveControl() {
+	public function getActiveControl(): Control {
+		if (!($this->activeControl instanceof Control)) {
+			throw new \Exception('No active control');
+		}
 		return $this->activeControl;
 	}
 	
-	public function setActiveControl(Control $object) {
-		$this->activeControl = $object;
+	public function hasActiveControl(): bool {
+		return $this->activeControl instanceof Control;
 	}
 	
-	public function hasFocus(Control $object) {
-		if ($this->activeControl === $object) {
-			return true;
-		}
+	public function setActiveControl(Control $object): self {
+		$this->activeControl = $object;
+		return $this;
+	}
+	
+	public function hasFocus(Control $object):bool {
+		return $this->activeControl === $object;
 	}
 
-	public function resize($params) {
+	public function resize(array $params): void {
 		if (!($this->allowResize??true)) {
 			return;
 		}
@@ -162,33 +168,33 @@ class Window extends Container {
 		$this->height = $params['y2'] - $params['y1'];
 	}
 
-	public function move(array $params) {
+	public function move(array $params): void {
 		$this->top  = $params['y'];
 		$this->left = $params['x'];
 	}
 
-	public function close() {
+	public function close(): void {
 		if ($this->triggerEvent('close')) {
 			$this->getApplication()->closeWindow($this);
 		}
 	}
 
-	public function maximize() {
+	public function maximize(): void {
 		$this->status = 'maximized';
 	}
-	public function restore() {
+	public function restore(): void {
 		$this->status = '';
 	}
 
-	public function ready() {
+	public function ready(): void {
 		$this->triggerEvent('ready');
 	}
 
-	public function focus() {
+	public function focus(): void {
 		$this->triggerEvent('focus');
 	}
 	
-	public function keyPress(array $params = []) {
+	public function keyPress(array $params = []): void {
 		$this->triggerEvent('keyPress', [
 			'key' => $params['key'],
 		]);
@@ -196,7 +202,7 @@ class Window extends Container {
 		$this->triggerEvent("keyPress{$params['key']}");
 	}
 	
-	public function isActive() {
+	public function isActive(): bool {
 		$ws   = $this->getApplication()->getWorkSpace();
 		$app  = $ws->getActiveApplication();
 		try {
@@ -214,7 +220,7 @@ class Window extends Container {
 		return false;
 	}
 
-	public function __set_active($value) {
+	public function __set_active(bool $value): void {
 		if ($value) {
 			$this->getApplication()->setActiveWindow($this);
 		} else {
@@ -224,7 +230,7 @@ class Window extends Container {
 		}
 	}
 
-	public function __get_active() {
+	public function __get_active(): bool {
 		$activeWindow = $this->getApplication()->getActiveWindow();
 		if ($activeWindow instanceof Window) {
 			if ($activeWindow === $this) {
@@ -235,8 +241,8 @@ class Window extends Container {
 		return false;
 	}
 	
-	public function __set_relativeTo($relativeTo) {
-		if ($relativeTo instanceof Window && !$this->getWorkSpace()->isSmart()) {
+	public function __set_relativeTo(Window $relativeTo): void {
+		if ($this->getWorkSpace()->isSmart()) {
 			$this->top  = $relativeTo->top  + 100;
 			$this->left = $relativeTo->left + 100;
 		}
@@ -484,8 +490,8 @@ class Window extends Container {
 		}
 		
 		$autofocus = '';
-		$activeControl = $this->getActiveControl();
-		if ($activeControl instanceof Control) {
+		if ($this->hasActiveControl()) {
+			$activeControl = $this->getActiveControl();
 			$autofocus = new StringChar(
 				'<script>' .
 					'$(function() {' .

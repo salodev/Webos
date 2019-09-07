@@ -1,15 +1,9 @@
 .Window {
-    /*-webkit-border-radius:7px;
-    -moz-border-radius:7px;
-    border-radius:7px;*/
     background: #efefef;
-    -webkit-box-shadow:0 0 5px #ccc;
-    -moz-box-shadow:0 0 5px #ccc;
     box-shadow:0 0 5px #ccc;
-	border: solid 1px #ccc;
-    /*width:450px;*/
-    /*margin:0 auto;*/
+	border: solid 1px #dbe2e5; /* gray2 */
     position:absolute;
+	border-radius:3px;
 }
 
 .Window.active {
@@ -28,9 +22,7 @@
 	color:#666;
 }
 
-.Window .form-titlebar .title{
-    color:#666;
-    font-size:16px;
+.Window .form-titlebar .title {
     font-weight:bold;
 	position:absolute;
 	top:0;left:0;right:48px;
