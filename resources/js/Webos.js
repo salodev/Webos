@@ -17,16 +17,19 @@ Webos.parseResponse = function(data) {
 	}
 };
 
+Webos.ajax = function(data) {
+	return $.ajax({
+		url: this.endPoint,
+		type: 'post',
+		data: data
+	});
+}
+
 Webos.action = function(actionName, objectID, params) {
-	var data = {
+	this.ajax({
 		actionName: actionName,
 		objectID:   objectID,
 		params:     params
-	};
-	$.ajax({
-        url:  this.endPoint,
-        data: data,
-		type: 'post'
 	}).done(Webos.parseResponse).fail(function(r) {
 		alert('Unexpected response:\n' + r);
 	});
@@ -39,13 +42,22 @@ Webos.bind = function(eventName, eventHandler, persistance) {
 }
 
 Webos.syncViewportSize = function() {
-	$.ajax({
-		url: this.endPoint,
-		type: 'post',
-		data: {
-			syncViewportSize: true,
-			width:  window.outerWidth,
-			height: window.outerHeight
-		}
+	this.ajax({
+		syncViewportSize: true,
+		width:  window.outerWidth,
+		height: window.outerHeight
+	});
+}
+
+Webos.blockedKeyEscape = false;
+Webos.keyEscape = function() {
+	if (Webos.blockedKeyEscape) {
+		return;
+	}
+	Webos.blockedKeyEscape = true;
+	this.ajax({
+		keyEscape: true,
+	}).always(function() {
+		Webos.blockedKeyEscape = false;
 	});
 }

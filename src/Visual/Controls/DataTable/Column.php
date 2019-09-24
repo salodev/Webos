@@ -107,7 +107,7 @@ class Column {
 			}
 			list($m, $d, $y) = explode('-', date('m-d-Y', strtotime($value)));
 			if (checkdate($m/1, $d/1, $y/1)) {
-				return date($this->dateFormat, $value);
+				return date($this->dateFormat, is_numeric($value) ? $value : strtotime($value));
 			}
 		}
 		

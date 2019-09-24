@@ -25,3 +25,9 @@
 .DataTableHeaders .DataTableRow, .DataTableHeaders .DataTableCell {
   height: 25px;
 }
+
+.DataTableFooters {
+	position:absolute;
+	bottom:0px;
+	font-weight:bold;
+}

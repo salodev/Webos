@@ -175,6 +175,18 @@ abstract class VisualObject extends BaseObject {
 		
 		return true;
 	}
+	
+	final public function isDescendantOf(VisualObject $object): bool {
+		try {
+			$parent = $this->getParent();
+		} catch (\TypeError $e) {
+			return false;
+		}
+		if ($parent === $object) {
+			return true;
+		}
+		return $parent->isDescendantOf($object);
+	}
 
 	final public function getObjectsByClassName(string $className): ObjectsCollection {
 		return $this->_childObjects->getObjectsByClassName($className);
@@ -408,6 +420,7 @@ abstract class VisualObject extends BaseObject {
 			'marginRight',
 			'margin',
 			'fontSize',
+			'fontWeight',
 			'fontFamily',
 			'padding',
 			'color',

@@ -33,7 +33,7 @@ Webos.bind('createElements', function(data) {
 				} else {
 					$container = $('#' + parentObjectId);
 				}
-			}
+			}			
 			$container.append(content);
 			Directives.findNApplyAll($container);
 		})(data[i]);
@@ -129,5 +129,11 @@ $(document).ready(function() {
 		to = setTimeout(function() {
 			Webos.syncViewportSize();
 		}, 500);
-	})
+	});
+	
+	$(window).keyup(function(event) {
+		if (event.originalEvent.keyCode === 27) {
+			// Webos.keyEscape();
+		}
+	});
 });

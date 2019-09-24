@@ -82,11 +82,12 @@ trait FormContainer {
 			'width'      => $positions['width'     ],
 			'height'     => $positions['height'    ],
 			'labelWidth' => $positions['labelWidth'],
-			'text-align' => 'left',
+			
 		], $options, [
 			'label'      => $label,
 			'className'  => $className,
 			'name'       => $name,
+			'textAlign'  => 'left',
 		]));
 		$control = $group->getControl();
 
@@ -301,13 +302,14 @@ trait FormContainer {
 		}
 	}
 	
-	public function clearFormData(): void {
+	public function clearFormData(array $data, bool $triggerUpdateValueEvent = false): void {
 		$objects = $this->getChildObjects();
 		foreach($objects as $object) {
 			if ($object instanceOf Field) {
 				$object->value = null;
 			}
 		}
+		$this->setFormData($data, $triggerUpdateValueEvent);
 	}
 	
 	/**
@@ -355,49 +357,60 @@ trait FormContainer {
 	
 	public function splitVertical(int $distribution = 200, bool $draggable = true): VisualObject {
 		$container = $this;
+		$tickness = 10;
 		if ($this instanceof Window) {
 			$container = $this->createFrame([
 				'left'   => 5,
 				'right'  => 5,
 				'bottom' => 5,
 			]);
+			$this->splittedFrames = $container;
 		}
 		$this->leftPanel = $container->createObject(Frame::class, [
-			'top'=>0, 'bottom'=>0
+			'top' => 0, 'bottom' => 0
 		]);
 		$this->verticalSeparator = $container->createObject(VerticalSeparator::class, [
-			'width'=>5, 'top' => 0, 'bottom' => 0, 'draggable' => $draggable,
+			'width'=> $tickness, 'top' => 0, 'bottom' => 0, 'draggable' => $draggable,
 		]);
 		$this->rightPanel = $container->createObject(Frame::class, [
-			'top'=>0, 'bottom'=>0
+			'top' => 0, 'bottom' => 0
 		]);
-		if ($distribution<0) {
+		if ($distribution < 0) {
 			$this->verticalSeparator->right = abs($distribution);
 		}
-		if ($distribution>0) {
+		if ($distribution > 0) {
 			$this->verticalSeparator->left = abs($distribution);
 		}
 		return $this;
 	}
 	
+	/**
+	 * Split window in two horizontal panels
+	 * 
+	 * @param int $distribution
+	 * @param bool $draggable
+	 * @return VisualObject
+	 */
 	public function splitHorizontal(int $distribution = 200, bool $draggable = true): VisualObject {
 		$container = $this;
+		$tickness = 10;
 		if ($this instanceof Window) {
 			$container = $this->createFrame();
+			$this->splittedFrames = $container;
 		}
 		$this->topPanel = $container->createObject(Frame::class, [
-			'top'=>0, 'left'=>0, 'right'=>0,
+			'top' => 0, 'left' => 0, 'right' => 0,
 		]);
 		$this->horizontalSeparator = $container->createObject(HorizontalSeparator::class, [
-			'height'=>5, 'left' => 0, 'right' => 0, 'draggable' => $draggable,
+			'height' => $tickness, 'left' => 0, 'right' => 0, 'draggable' => $draggable,
 		]);
 		$this->bottomPanel = $container->createObject(Frame::class, [
-			'left'=>0, 'right'=>0, 'bottom'=>0,
+			'left' => 0, 'right' => 0, 'bottom' => 0,
 		]);
-		if ($distribution<0) {
+		if ($distribution < 0) {
 			$this->horizontalSeparator->bottom = abs($distribution);
 		}
-		if ($distribution>0) {
+		if ($distribution > 0) {
 			$this->horizontalSeparator->top = abs($distribution);
 		}
 		return $this;

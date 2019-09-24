@@ -16,6 +16,7 @@ class DataTable extends Control {
 	public function initialize(array $params = []) {
 		$this->offset = 0;
 		$this->rows        = [];
+		$this->footRows    = [];
 		$this->columns     = new Collection();
 		$this->rowIndex    = null;
 		$this->columnIndex = null;
@@ -208,36 +209,57 @@ class DataTable extends Control {
 			$bodyWidth += $column->width+8;
 		}
 		$html .= '<div class="DataTableHeaders" style="width:'.$bodyWidth.'px">';
+		$footerHeight = count($this->footRows) * 25;
 		if (count($this->columns)) {			
 			$html .= '<div class="DataTableRow">';
 			foreach($this->columns as $column) {
-				$html .= '<div class="DataTableCell" style="width:' . $column->width . 'px">' . $column->label . '</div>';
+				$html .= "<div class=\"DataTableCell\" style=\"width:{$column->width}px;text-align:{$column->align}\">{$column->label}</div>";
 			}
 			$html .= '</div>';
 		} else {
 			if (count($rs)) {
 				$html .= '<div class="DataTableRow">';
 				foreach($rs[0] as $columnName => $value) {
-					$html .= '<div class="DataTableCell" style="width:' . $column->width . 'px">' . $columnName . '</div>';
+					$html .= '<div class="DataTableCell" style="width:200px">' . $columnName . '</div>';
 				}
 				$html .= '</div>';
 			}
 		}
 		$html .= '</div>'; // end TataTableHeaders
-		$html .= "<div class=\"DataTableHole\" webos set-scroll-values=\"{$scrollTop},{$scrollLeft}\">";
+		$html .= "<div class=\"DataTableHole\" webos set-scroll-values=\"{$scrollTop},{$scrollLeft}\" style=\"bottom:{$footerHeight}px\">";
 		$html .= '<div class="DataTableBody" style="width:'.$bodyWidth.'px">';
 		
+		$html .= $this->renderRows($rs, $hasContextMenu);
+		
+		$html .= '</div>'; // end DataTableBody
+		$html .= '</div>'; // end DataTableHole
+		
+		if (count($this->footRows)) {
+			$html .= '<div class="DataTableFooters" style="width:'.$bodyWidth.'px">';
+			$html .= $this->renderRows($this->footRows, false);
+			$html .= '</div>';
+		}
+		
+		
+		$html .= '</div>'; // end DataTable
+
+		return $html;
+	}
+	
+	public function renderRows(array $rs, bool $interactive = true): string {
+		$html = '';
 		foreach($rs as $i => $row) {
 			$classSelected = '';
 			if ($this->rowIndex!==null && $i == $this->rowIndex) {
 				$classSelected = ' selected';
 			}
 			
-			$contextMenuDirective = $hasContextMenu ? "webos contextmenu=\"{$i}\"" : '';
-			$html .= "<div 
-				class=\"DataTableRow {$classSelected}\" 
-				webos toggle-class=\"selected\" remove-others
-				{$contextMenuDirective}>";
+			$html .= "<div " .
+				"class=\"DataTableRow {$classSelected}\" " .
+				($interactive ? 
+				"webos toggle-class=\"selected\" remove-others" .
+				"webos contextmenu=\"{$i}\"" : '') . 
+			">";
 			foreach($this->columns as $column) {
 				
 				$linkable = ($column->linkable) ? ' linkable' : '';
@@ -262,21 +284,19 @@ class DataTable extends Control {
 				$html .= 
 					"<div class=\"DataTableCell{$linkable} no-break\" " .
 						"style=\"width:{$column->width}px;text-align:{$column->align};\" " .
+						($interactive ? 
 						'webos click="rowClick" ' .
 						'double-click="rowDoubleClick" '.
 						"data-row=\"{$i}\" ".
 						"data-field-name=\"{$column->fieldName}\"" . 
-						"data-ignore-update-object=\"1\"" .
+						"data-ignore-update-object=\"1\"" : '') .
 						">" .
 						$value . 
 					"</div>";
 			}
 			$html .= '</div>'; // end DataTableRow
 		}
-		$html .= '</div>'; // end DataTableBody
-		$html .= '</div>'; // end DataTableHole
-		$html .= '</div>'; // end DataTable
-
+		
 		return $html;
 	}
 

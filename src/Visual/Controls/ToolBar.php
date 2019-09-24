@@ -11,7 +11,7 @@ class ToolBar extends Control {
 	
 	public function getInitialAttributes(): array {
 		return array_merge(parent::getInitialAttributes(), [
-			'height' => 20,
+			'height' => 32,
 		]);
 	}
 	

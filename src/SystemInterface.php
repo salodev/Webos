@@ -165,7 +165,7 @@ class SystemInterface {
 
 	public function addCreateNotification(VisualObject $object): self {
 		// Verifica si tiene que agregar a la lista de notificaciones.
-		if ($this->checkNeccessary($object->getObjectID())) {
+		if ($this->checkNeccessary($object)) {
 			$this->_notifications['create'][$object->getObjectID()] = $object;
 		}
 		
@@ -173,7 +173,7 @@ class SystemInterface {
 	}
 
 	public function addUpdateNotification(VisualObject $object): self {
-		if ($this->checkNeccessary($object->getObjectID())) {
+		if ($this->checkNeccessary($object)) {
 			$this->_notifications['update'][$object->getObjectID()] = $object;
 			$this->_notifications['update_stacks'][] = [
 				'stack' => explode("\n", (new Exception)->getTraceAsString()),
@@ -200,8 +200,8 @@ class SystemInterface {
 	 * @param <type> $objectId
 	 * @return <type>
 	 */
-	public function checkNeccessary(string $objectId): bool {
-		if ($objectId == $this->lastObjectID) {
+	public function checkNeccessary(VisualObject $checkObject): bool {
+		if ($checkObject->getObjectID() == $this->lastObjectID) {
 			if ($this->ignoreUpdateObject) {
 				return false;
 			}
@@ -211,10 +211,11 @@ class SystemInterface {
 		// Verifico objetos a crear.
 		if (!empty($notif['create'])) {
 			foreach($notif['create'] as $object) {
-				if ($object->hasObjectID($objectId)) {
+				
+				if ($checkObject->isDescendantOf($object)) {
 					return false;
-				}				
-				if ($object->getObjectID() == $objectId) {
+				}
+				if ($object === $checkObject) {
 					return false;
 				}
 			}
@@ -231,7 +232,7 @@ class SystemInterface {
 				 * ejecución sólo es importante saber que fue modificado.
 				 *
 				 **/
-				if ($object->getObjectID() == $objectId) {
+				if ($object === $checkObject) {
 					return false;
 				}
 
@@ -239,7 +240,7 @@ class SystemInterface {
 				 * Ahora verificamos que no haya algún contenedor en la lista de
 				 * actualizaciones.
 				 */
-				if ($object->hasObjectID($objectId)) {
+				if ($checkObject->isDescendantOf($object)) {
 					return false;
 				}
 
@@ -252,16 +253,16 @@ class SystemInterface {
 	public function purgeNotifications(): void {
 		$update = $this->_notifications['update'];
 		$create = $this->_notifications['create'];
-		foreach($update as $updateObject) {
+		
+		foreach($update as $x =>$updateObject) {
 			foreach($create as $y => $createObject) {
-				try {
-					$updateObject->getObjectByID($createObject->getObjectID());
+				if ($createObject->isDescendantOf($updateObject)) {
 					unset($create[$y]);
-				} catch (Exception $e) {
-					
 				}
 			}
 		}
+		$this->_notifications['update'] = $update;
+		$this->_notifications['create'] = $create;
 	}
 
 	public function getNotifications(): array {
