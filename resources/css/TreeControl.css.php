@@ -1,3 +1,9 @@
+<?php
+
+use Webos\FrontEnd\CSS\StylesManager;
+
+$sm = StylesManager::InstanceWithDefinitions();
+?>
 .Tree {
 	/*border: solid 1px #ccc;*/
     margin: 0;
@@ -16,13 +22,13 @@
 .TreeNode > .row {
 	overflow:auto;
 }
-.TreeNode > .row:hover {
-	background: #ddd;
-	cursor: pointer;
-}
-.TreeNode > .row.selected {
-	background: #ddd;
-}
+<?php
+$sm->addRule('.TreeNode > .row:hover', [
+	'cursor' => 'pointer',
+])->import('hover');
+$sm->addRule('.TreeNode > .row.selected')->import('hover');
+echo $sm->getStyles();
+?>
 .TreeNode > .row .title {
 	float:left;
 	padding:3px 6px;

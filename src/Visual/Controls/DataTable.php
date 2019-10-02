@@ -17,6 +17,9 @@ class DataTable extends Control {
 		$this->offset = 0;
 		$this->rows        = [];
 		$this->footRows    = [];
+		/**
+		 * @property Collection<Webos\Visual\Controls\DataTable\Column> $columns Colection of columns
+		 */
 		$this->columns     = new Collection();
 		$this->rowIndex    = null;
 		$this->columnIndex = null;
@@ -87,7 +90,7 @@ class DataTable extends Control {
 		throw new Exception('Requested row does not exists');
 	}
 
-	public function rowClick(array $params = []): void {
+	public function action_rowClick(array $params = []): void {
 		if (!isset($params['row'])) {
 			throw new Exception('The \'rowClick\' event needs a \'row\' parameter');
 		}
@@ -116,7 +119,7 @@ class DataTable extends Control {
 		]);
 	}
 
-	public function rowDoubleClick(array $params = []): void {
+	public function action_rowDoubleClick(array $params = []): void {
 		if (!isset($params['row'])) {
 			throw new Exception('The \'rowDoubleClick\' event needs a \'row\' parameter');
 		}
@@ -124,7 +127,7 @@ class DataTable extends Control {
 		$this->triggerEvent('rowDoubleClick', ['row'=>$params['row']]);
 	}
 	
-	public function contextMenu(array $params): void {
+	public function action_contextMenu(array $params): void {
 		if (empty($params['top']) || empty($params['left'])) {
 			return;
 		}
@@ -142,7 +145,7 @@ class DataTable extends Control {
 		}
 	}
 	
-	public function nextPage(array $params): void {
+	public function action_nextPage(array $params): void {
 		$this->_offset = $this->_offset + $this->_limit;
 		$newData = $this->_queryData($this->_offset, $this->_limit);
 		
@@ -157,26 +160,6 @@ class DataTable extends Control {
 	public function onContextMenu(callable $cb, bool $persistent = true, array $contextData = []): self {
 		$this->bind('contextMenu', $cb, $persistent, $contextData);
 		return $this;
-	}
-
-	public function getAllowedActions(): array {
-		return [
-			'rowClick',
-			'rowDoubleClick',
-			'scroll',
-			'contextMenu',
-			'nextPage',
-		];
-	}
-
-	public function getAvailableEvents(): array {
-		return [
-			'rowClick',
-			'rowDoubleClick',
-			'contextMenu',
-			'scroll',
-			'nextPage',
-		];
 	}
 	
 	public function onRowClick(callable $eventListener, bool $persistent = true, array $contextData = []): void {
@@ -213,6 +196,9 @@ class DataTable extends Control {
 		if (count($this->columns)) {			
 			$html .= '<div class="DataTableRow">';
 			foreach($this->columns as $column) {
+				if (!$column->visible) {
+					continue;
+				}
 				$html .= "<div class=\"DataTableCell\" style=\"width:{$column->width}px;text-align:{$column->align}\">{$column->label}</div>";
 			}
 			$html .= '</div>';
@@ -261,6 +247,9 @@ class DataTable extends Control {
 				"webos contextmenu=\"{$i}\"" : '') . 
 			">";
 			foreach($this->columns as $column) {
+				if (!$column->visible) {
+					continue;
+				}
 				
 				$linkable = ($column->linkable) ? ' linkable' : '';
 				
@@ -305,5 +294,34 @@ class DataTable extends Control {
 	 */
 	public function getColumnName(): string {
 		return $this->columnName;
+	}
+	
+	public function showColumn(string $name): self {
+		foreach($this->columns as $column) {
+			if ($column->fieldName == $name) {
+				$column->show();
+				break;
+			}
+		}
+		return $this;
+	}
+	
+	public function hideColumn(string $name): self {
+		foreach($this->columns as $column) {
+			if ($column->fieldName == $name) {
+				$column->hide();
+				break;
+			}
+		}
+		return $this;
+	}
+	
+	public function getColumn(string $name): Column {
+		foreach($this->columns as $column) {
+			if ($column->fieldName == $name) {
+				return $column;
+			}
+		}
+		throw new \Exception("Column '{$name}' not found");
 	}
 }

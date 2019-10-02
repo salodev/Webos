@@ -36,8 +36,6 @@ abstract class VisualObject extends BaseObject {
 		$this->index();
 		$this->_eventsHandler = new EventsHandler();
 		$this->_childObjects = new ObjectsCollection();
-		
-		$this->_eventsHandler->setAvailableEvents($this->getAvailableEvents());
 	}
 	
 	public function checkRequiredParams(array $params): void {
@@ -321,8 +319,10 @@ abstract class VisualObject extends BaseObject {
 	}
 
 	public function action(string $name, array $params = []): void {
-		if (!in_array($name,$this->getAllowedActions())){
-			throw new Exception("Action $name not allowed by " . get_class($this) . " object.");
+		
+		$methodName = "action_{$name}";
+		if (!method_exists($this, $methodName)) {
+			throw new Exception("Action {$name} not allowed by " . get_class($this) . " object.");
 		}
 		
 		if (
@@ -335,7 +335,7 @@ abstract class VisualObject extends BaseObject {
 			throw new Exception("Can not call action.");
 		}
 		
-		$this->$name($params);
+		$this->$methodName($params);
 	}
 	
 	public function scroll(array $params = []): void {
@@ -345,11 +345,7 @@ abstract class VisualObject extends BaseObject {
 	}
 
 	public function bind(string $eventName, $eventListener, bool $persistent = true, array $contextData = []): self {
-		if ($this->_eventsHandler->isAvailable($eventName)) {
-			$this->_eventsHandler->addListener($eventName, $eventListener, $persistent, $contextData);
-		} else {
-			throw new Exception("Event $eventName not available in " . get_class($this) . " object.");
-		}
+		$this->_eventsHandler->addListener($eventName, $eventListener, $persistent, $contextData);
 		return $this;
 	}
 
@@ -497,13 +493,6 @@ abstract class VisualObject extends BaseObject {
 		}
 
 		return implode(';', $strings);
-	}
-	
-	/**
-	 * El objeto sólo admite un conjunto de acciones.
-	 **/
-	public function getAllowedActions(): array {
-		return [];
 	}
 
 	/**

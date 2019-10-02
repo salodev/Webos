@@ -88,50 +88,6 @@ class Window extends Container {
 			}
 		}
 	}
-
-	public function getAvailableEvents(): array {
-		$eventNames = [
-			'open',
-			'move',
-			'click',
-			'close',
-			'ready',
-			'focus',
-			'contextMenu',
-			'newData',
-			'keyPress',
-		];
-		foreach($this->_getKeysForEvents() as $keyName) {
-			$eventNames[] = "keyPress{$keyName}";
-		}
-		return $eventNames;
-	}
-
-	public function getAllowedActions(): array {
-		return [
-			'move',
-			'resize',
-			'close',
-			'minimize',
-			'maximize',
-			'restore',
-			'focus',
-			'ready',
-			'contextMenu',
-			'keyPress',
-		];
-	}
-	
-	public function contextMenu($params) {
-		if (empty($params['top']) || empty($params['left'])) {
-			return;
-		}
-		if ($this->hasListenerFor('contextMenu')) {
-			$menu = $this->getParentWindow()->createContextMenu($params['top'], $params['left']);
-			$eventData = ['menu' => $menu];
-			$this->triggerEvent('contextMenu', $eventData);
-		}
-	}
 	
 	public function onContextMenu(callable $cb, bool $persistent = true, array $contextData = []): self {
 		$this->bind('contextMenu', $cb, $persistent, $contextData);
@@ -158,7 +114,7 @@ class Window extends Container {
 		return $this->activeControl === $object;
 	}
 
-	public function resize(array $params): void {
+	public function action_resize(array $params = []): void {
 		if (!($this->allowResize??true)) {
 			return;
 		}
@@ -168,33 +124,44 @@ class Window extends Container {
 		$this->height = $params['y2'] - $params['y1'];
 	}
 
-	public function move(array $params): void {
+	public function action_move(array $params = []): void {
 		$this->top  = $params['y'];
 		$this->left = $params['x'];
 	}
 
-	public function close(): void {
+	public function action_close(): void {
 		if ($this->triggerEvent('close')) {
 			$this->getApplication()->closeWindow($this);
 		}
 	}
 
-	public function maximize(): void {
+	public function action_maximize(): void {
 		$this->status = 'maximized';
 	}
-	public function restore(): void {
+	public function action_restore(): void {
 		$this->status = '';
 	}
 
-	public function ready(): void {
+	public function action_ready(): void {
 		$this->triggerEvent('ready');
 	}
 
-	public function focus(): void {
+	public function action_focus(): void {
 		$this->triggerEvent('focus');
 	}
 	
-	public function keyPress(array $params = []): void {
+	public function action_contextMenu(array $params = []) {
+		if (empty($params['top']) || empty($params['left'])) {
+			return;
+		}
+		if ($this->hasListenerFor('contextMenu')) {
+			$menu = $this->getParentWindow()->createContextMenu($params['top'], $params['left']);
+			$eventData = ['menu' => $menu];
+			$this->triggerEvent('contextMenu', $eventData);
+		}
+	}
+	
+	public function action_keyPress(array $params = []): void {
 		$this->triggerEvent('keyPress', [
 			'key' => $params['key'],
 		]);
@@ -242,7 +209,7 @@ class Window extends Container {
 	}
 	
 	public function __set_relativeTo(Window $relativeTo): void {
-		if (!$this->getWorkSpace()->isSmart()) {
+		if (!$this->getWorkSpace()->isSmart() && !$relativeTo->_embed) {
 			$this->top  = $relativeTo->top  + 100;
 			$this->left = $relativeTo->left + 100;
 		}

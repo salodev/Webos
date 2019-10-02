@@ -7,19 +7,7 @@ use Webos\StringChar;
 
 class ListItem extends Control {
 
-	public function getAllowedActions(): array {
-		return [
-			'click'
-		];
-	}
-
-	public function getAvailableEvents(): array {
-		return [
-			'click'
-		];
-	}
-
-	public function click() {
+	public function action_click() {
 		$this->getParent()->setSelectedItem($this);
 		$this->triggerEvent('click');
 	}

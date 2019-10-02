@@ -14,12 +14,6 @@ trait KeysEvents {
 		];
 	}
 	
-	public function enableKeysEvents() {		
-		foreach($this->_getKeysForEvents() as $keyName) {
-			$this->enableEvent("keyPress{$keyName}");
-		}
-	}
-	
 	public function onKeyPress(callable $function, bool $persistent = true, array $context = []): self {
 		$this->bind('keyPress', $function, $persistent, $context);
 		return $this;

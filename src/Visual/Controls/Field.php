@@ -26,20 +26,20 @@ abstract class Field extends Control {
 			}
 		}
 	}*/
-
-	public function setValue($mixed) {
-		if (is_array($mixed)) {
-			if (!isset($mixed['value'])) {
-				return false;
-			}
-			$this->value = $mixed['value'];
-		} else {
-			$this->value = $mixed;
-		}
+	
+	public function setValue($value): self {
+		$this->value = $value;
 		$this->triggerEvent('updateValue', [
 			'value' => $this->value,
 		]);
+		return $this;
+	}
 
+	public function action_setValue(array $params = []): void {
+		if (!isset($params['value'])) {
+			return;
+		}
+		$this->setValue($params['value']);
 	}
 	
 	public function onUpdateValue(callable $callback): Field {
@@ -64,17 +64,5 @@ abstract class Field extends Control {
 	public function onChange(callable $callback): Field {
 		$this->bind('updateValue', $callback);
 		return $this;
-	}
-
-	public function getAllowedActions(): array {
-		return [
-			'setValue'
-		];
-	}
-
-	public function getAvailableEvents(): array {
-		return [
-			'updateValue',
-		];
 	}
 }

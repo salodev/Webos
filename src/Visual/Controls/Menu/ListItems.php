@@ -8,14 +8,6 @@ class ListItems extends Control {
 
 	protected $_selectedItem = null;
 
-	public function  getAvailableEvents(): array {
-		return [];
-	}
-
-	public function  getAllowedActions(): array {
-		return [];
-	}
-
 	public function getSelectedItem(): Item {
 		return $this->_selectedItem;
 	}

@@ -24,14 +24,6 @@ class Frame extends Control {
 	public function getControls(): ObjectsCollection {
 		return $this->_childObjects;
 	}
-
-	public function getAllowedActions(): array {
-		return [];
-	}
-
-	public function getAvailableEvents():array  {
-		return [];
-	}
 	
 	public function render(): string {
 		

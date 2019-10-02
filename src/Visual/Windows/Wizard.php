@@ -30,8 +30,6 @@ class Wizard extends Window {
 			$this->close();
 			$this->triggerEvent('wizardFinished');
 		});
-		
-		$this->enableEvent('wizardFinished');
 	}
 	
 	public function addStep(): Frame {

@@ -22,24 +22,15 @@ class TabFolder extends Control {
 		return $this;
 	}
 	
+	public function action_select(array $params = []): void {
+		$this->select();
+	}
+	
 	public function isActive(): bool {
 		if (!$this->getParent()->hasActiveTab()) {
 			return false;
 		}
 		return $this->getParent()->getActiveTab()===$this;
-	}
-
-	public function  getAllowedActions(): array {
-		return [
-			'select',
-		];
-	}
-
-	public function  getAvailableEvents(): array {
-		return [
-			'embedded',
-			'select',
-		];
 	}
 	
 	public function onEmbedded(callable $function): self {

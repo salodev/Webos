@@ -15,8 +15,6 @@ class Wait extends Window {
 		$this->showTitle   = false;
 		$this->allowResize = false;
 		$this->modal       = true;
-		
-		$this->enableEvent('error');
 	}
 
 	public function  getInitialAttributes(): array {

@@ -16,6 +16,5 @@ class Confirm extends Window {
 			$this->close();
 		});
 		$this->createWindowButton('Cancelar')->closeWindow();
-		$this->enableEvent('confirm');
 	}
 }

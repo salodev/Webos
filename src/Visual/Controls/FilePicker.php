@@ -64,7 +64,7 @@ class FilePicker extends Field {
 		return true;
 	}
 	
-	public function fileUpload(array $data = []) {
+	public function action_fileUpload(array $data = []): void {
 		$file = new File($data['__uploadedFile']);
 		$mimeType = $file->getMimeType();
 		
@@ -90,13 +90,5 @@ class FilePicker extends Field {
 	public function onUpload(callable $fn): self {
 		$this->bind('fileUpload', $fn);
 		return $this;
-	}
-	
-	public function getAvailableEvents(): array {
-		return array_merge(parent::getAvailableEvents(), ['fileUpload']);
-	}
-	
-	public function getAllowedActions(): array {
-		return array_merge(parent::getAllowedActions(), ['fileUpload']);
 	}
 }

@@ -124,18 +124,4 @@ class Image extends Control {
 		return $uw;
 	}
 	
-	public function getAllowedActions(): array {
-		return [
-			'click',
-		];
-	}
-
-	public function getAvailableEvents(): array {
-		return [
-			'upload',
-			'uploadOpened',
-			'click',
-		];
-	}
-	
 }

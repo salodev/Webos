@@ -5,17 +5,6 @@ use Webos\Visual\Control;
 use Webos\StringChar;
 
 class Button extends Control {
-	public function getAllowedActions(): array {
-		return [
-			'click',
-		];
-	}
-
-	public function getAvailableEvents(): array {
-		return [
-			'click',
-		];
-	}
 	
 	/**
 	 * 

@@ -10,19 +10,17 @@ class MultiTab extends Control {
 	protected $_activeTab;
 	public function initialize(array $params = []) {
 		$this->_activeTab = null;
-		$this->enableEvent('close');
 	}
 	
-	public function select(array $params = []): self {
+	public function action_select(array $params = []): void {
 		if (!isset($params['index'])) {
 			throw new Exception('Missing index param');
 		}
 		$this->setActiveTab($this->getChildObjects()->item($params['index']));
 		$this->modified();
-		return $this;
 	}
 	
-	public function close(array $params = []): self {
+	public function action_close(array $params = []): void {
 		if (!isset($params['index'])) {
 			throw new Exception('Missing index param');
 		}
@@ -44,11 +42,11 @@ class MultiTab extends Control {
 		if ($index<0) {
 			$this->_activeTab = null;
 			$this->modified();
-			return $this;
+			return;
 		}
 
 		$this->setActiveTab($this->getChildObjects()->item($index));
-		return $this;
+		return;
 	}
 	
 	public function onClose(callable $function): self {
@@ -106,10 +104,6 @@ class MultiTab extends Control {
 		$tab->triggerEvent('select');
 		$this->modified();
 		return $this;
-	}
-	
-	public function getAllowedActions(): array {
-		return array_merge(parent::getAllowedActions(), ['select','close']);
 	}
 	
 	public function render(): string {

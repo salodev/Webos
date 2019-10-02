@@ -18,7 +18,7 @@ class Text extends Labeled {
 				webos leavetyping />";
 	}
 	
-	public function leaveTyping(array $params) {
+	public function action_leaveTyping(array $params = []): void {
 		if (empty($params['value'])) {
 			// return;
 		}
@@ -29,13 +29,5 @@ class Text extends Labeled {
 	public function onLeaveTyping(callable $callback): self {
 		$this->bind('leaveTyping', $callback);
 		return $this;
-	}
-	
-	public function getAvailableEvents(): array {
-		return array_merge(parent::getAvailableEvents(), ['leaveTyping']);
-	}
-	
-	public function getAllowedActions(): array {
-		return array_merge(parent::getAllowedActions(), ['leaveTyping']);
 	}
 }

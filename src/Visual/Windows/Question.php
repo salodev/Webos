@@ -5,8 +5,7 @@ use Webos\Visual\Window;
 
 class Question extends Window {
 
-	public function initialize(array $params = []) {		
-		$this->enableEvent('confirm');
+	public function initialize(array $params = []) {
 		$this->title       = $params['title'  ] ?? 'Question:';
 		$this->text        = $params['message'] ?? 'Mensaje:';
 		$this->width       = $params['width'  ] ?? 450;

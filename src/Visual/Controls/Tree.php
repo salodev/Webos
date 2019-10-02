@@ -39,18 +39,6 @@ class Tree extends Control {
 		return $this->_selectedNode instanceof TreeNode;
 	}
 	
-	public function getAllowedActions(): array {
-		return ['scroll'];
-	}
-	
-	public function getAvailableEvents(): array {
-		return [
-			'nodeToggled',
-			'nodeSelected',
-			'contextMenu',
-			'scroll',
-		];
-	}
 	/**
 	 * 
 	 * @param mixed $title

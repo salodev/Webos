@@ -7,17 +7,7 @@ use TypeError;
 
 class Item extends Control {
 
-	public function  getAllowedActions(): array {
-		return [
-			'click'
-		];
-	}
-
-	public function  getAvailableEvents(): array {
-		return ['click'];
-	}
-
-	public function click() {
+	public function action_click(array $params = []): void {
 		
 		if ($this->triggerEvent('click')) {
 			if ($this->getObjectsByClassName(ListItems::class)->count()) {
@@ -57,7 +47,7 @@ class Item extends Control {
 		return $listItems->createObject(Separator::class);
 	}
 	
-	private function _getListItems():ListItems {
+	private function _getListItems(): ListItems {
 		$ret = $this->getObjectsByClassName(ListItems::class);
 		if ($ret->count() != 1) {
 			$this->createObject(ListItems::class);

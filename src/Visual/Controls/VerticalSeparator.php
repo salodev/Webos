@@ -8,7 +8,6 @@ class VerticalSeparator extends Control {
 		$this->top    = 0;
 		$this->bottom = 0;
 		$this->width  = 5;
-		$this->enableEvent('drop');
 	}
 	
 	public function __set_left($value) {
@@ -37,11 +36,7 @@ class VerticalSeparator extends Control {
 		return $value;
 	}
 	
-	public function getAllowedActions(): array {
-		return array_merge(parent::getAllowedActions(), ['drop']);
-	}
-	
-	public function drop($params) {
+	public function action_drop($params) {
 		if (!$this->draggable) {
 			return;
 		}

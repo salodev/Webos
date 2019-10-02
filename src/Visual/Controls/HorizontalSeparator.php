@@ -11,7 +11,6 @@ class HorizontalSeparator extends Control {
 		$this->height = 5;
 		$this->left   = 0;
 		$this->right  = 0;
-		$this->enableEvent('drop');
 	}
 	
 	public function __set_top($value) {
@@ -42,11 +41,7 @@ class HorizontalSeparator extends Control {
 		return $value;
 	}
 	
-	public function getAllowedActions(): array {
-		return array_merge(parent::getAllowedActions(), ['drop']);
-	}
-	
-	public function drop($params) {
+	public function action_drop(array $params = []): void {
 		if (!$this->draggable) {
 			return;
 		}

@@ -1,10 +1,21 @@
+<?php
+
+use Webos\FrontEnd\CSS\StylesManager;
+
+$sm = StylesManager::InstanceWithDefinitions();
+?>
 .DataTable { overflow:hidden; border:solid 1px #fff; }
 .DataTable * {box-sizing:border-box !important;}
 .DataTable .DataTableRow { height:24px; /*border-bottom:solid 1px #eee;*/ }
 /*.DataTable .DataTableRow:hover .DataTableCell{background:#efefef;}*/
 .DataTable .DataTableBody .DataTableRow { color:#000; }
 .DataTable .DataTableBody .DataTableRow:nth-child(odd) {background:#f1f3f4;}
-.DataTable .DataTableBody .DataTableRow:hover {background:#ddd;}
+/*.DataTable .DataTableBody .DataTableRow:hover {background:#ddd;}*/
+<?php
+$sm->addRule('.DataTable .DataTableBody .DataTableRow:hover')->import('hover');
+$sm->addRule('.DataTable .DataTableRow.selected')->import('hover');
+echo $sm->getStyles();
+?>
 .DataTable .DataTableRow.selected {background:#ddd;}
 .DataTable .DataTableHeaders {position:relative; /*border-bottom:solid 1px #ddd;*/ min-width: 100%;}
 .DataTable .DataTableHole {position:absolute;top:26px;left:0;bottom:0;right:0;overflow-x:hidden;overflow-y:auto;}

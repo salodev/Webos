@@ -16,6 +16,7 @@ class Column {
 	public $thousandsGlue = null;
 	public $dateFormat    = null;
 	public $renderFn      = null;
+	public $visible       = true;
 	
 	public function __construct(string $label, string $fieldName) {
 		$this->label     = $label;
@@ -112,5 +113,13 @@ class Column {
 		}
 		
 		return $value;
+	}
+	
+	public function show(): self {
+		$this->visible = true;
+	}
+	
+	public function hide(): self {
+		$this->visible = false;
 	}
 }

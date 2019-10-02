@@ -51,23 +51,12 @@ class TreeNode extends Control {
 	public function __set_selected(TreeNode $nodeTree) {
 		throw new Exception('Read only property');
 	}
-
-	public function getAllowedActions(): array {
-		return [
-			'expand',
-			'collapse',
-			'toggle',
-			'select',
-			'click',
-			'contextMenu',
-		];
-	}
 	
 	/**
 	 * 
 	 * @return $this
 	 */
-	public function toggle(): self {
+	public function action_toggle(): void {
 		$expanded = $this->expanded;
 		if ($expanded) {
 			$this->expanded = false;
@@ -77,18 +66,16 @@ class TreeNode extends Control {
 		}
 		$this->treeControl->triggerEvent('nodeToggled',['node'=>$this]);
 		$this->select();
-		return $this;
 	}
 	
 	/**
 	 * 
 	 * @return $this
 	 */
-	public function click(): self {
+	public function action_click(): void {
 		$this->treeControl->setSelectedNode($this);
 		$this->treeControl->triggerEvent('nodeSelected',['node'=>$this]);
 		$this->triggerEvent('click', ['node' => $this]);
-		return $this;
 	}
 	
 	/**
@@ -124,10 +111,6 @@ class TreeNode extends Control {
 	public function onExpand(callable $cb, $persistent = true): self {
 		$this->bind('expanded', $cb, $persistent);
 		return $this;
-	}
-	
-	public function getAvailableEvents(): array {
-		return ['contextMenu', 'click', 'expanded'];
 	}
 	
 	public function render(): string {

@@ -31,7 +31,7 @@ class Group extends Field {
 		$width = $params['width'] ?? 30; $margin = 10;
 		
 		$this->control->width = $this->control->width -($width + $margin);
-		return $this->button = $this->createObject(Button::class, array_merge($params, [
+		return $this->control->button = $this->button = $this->createObject(Button::class, array_merge($params, [
 			'top'    => 0, 
 			'bottom' => 0, 
 			'left'   => $this->width - $width,

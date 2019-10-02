@@ -27,7 +27,6 @@ class PasswordPrompt extends Window {
 			]);
 		});
 		$this->createWindowButton('Cancelar')->closeWindow();
-		$this->enableEvent('confirm');
 		
 		$this->textBox->focus();
 	}

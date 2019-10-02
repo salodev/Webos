@@ -26,19 +26,7 @@ class Button extends Control {
 		});
 	}
 
-	public function  getAllowedActions(): array {
-		return [
-			'click',
-		];
-	}
-
-	public function  getAvailableEvents(): array {
-		return [
-			'click'
-		];
-	}
-
-	public function click() {
+	public function action_click() {
 		// $this->selected = true;
 		if ($this->triggerEvent('click')) {
 			$a = $this->selected;

@@ -27,7 +27,6 @@ class Prompt extends Window {
 			]);
 		});
 		$this->createWindowButton('Cancelar')->closeWindow();
-		$this->enableEvent('confirm');
 		$this->height = 130;
 		$this->textBox->focus();
 	}

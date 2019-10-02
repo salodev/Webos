@@ -14,21 +14,8 @@ class DropDown extends Control {
 			'position' => 'fixed',
 		]);
 	}
-	
-	public function getAllowedActions(): array {
-		return [
-			'click',
-		];
-	}
 
-	public function getAvailableEvents(): array {
-		return [
-			'click',
-			'contextMenu',
-		];
-	}
-
-	public function click(array $params = []) {
+	public function action_click(array $params = []): void {
 		$this->triggerEvent('click');
 		$menu = $this->getParentWindow()->createContextMenu($params['top']+25, $params['left']);
 		$this->triggerEvent('contextMenu', ['menu'=>$menu]);

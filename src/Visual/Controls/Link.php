@@ -19,16 +19,8 @@ use Webos\StringChar;
 class Link extends Control {
 	//put your code here
 	
-	public function initialize(array $params = []) {
-		$this->enableEvent('click');
-	}
-	
 	public function getRequiredParams(): array {
 		return array_merge(parent::getRequiredParams(), ['url']);
-	}
-	
-	public function getAllowedActions(): array {
-		return ['click'];
 	}
 	
 	public function render(): string {

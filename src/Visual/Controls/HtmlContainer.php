@@ -42,14 +42,6 @@ class HtmlContainer extends Control {
 		]);
 	}
 	
-	public function getAllowedActions(): array {
-		return array_merge(parent::getAllowedActions(), ['scroll']);
-	}
-	
-	public function getAvailableEvents(): array {
-		return array_merge(parent::getAvailableEvents(), ['scroll']);
-	}
-	
 	public function render(): string {
 		$scrollTop  = $this->scrollTop  ?? 0;
 		$scrollLeft = $this->scrollLeft ?? 0;
