@@ -20,6 +20,12 @@ class Frame extends Control {
 
 		$this->_attributes = array_merge($attrs, $userAttrs);
 	}
+	
+	public function initialize(array $params = []) {
+		if ($this->height??0>0) {
+			$this->bottom = null;
+		}
+	}
 
 	public function getControls(): ObjectsCollection {
 		return $this->_childObjects;
@@ -31,7 +37,7 @@ class Frame extends Control {
 
 		$html->replace('__id__',  $this->getObjectID());
 		$html->replace('__style__',  $this->getInlineStyle(true));
-		$html->replace('__content__', $this->getChildObjects()->render());
+		$html->replace('__content__', $this->text . $this->getChildObjects()->render());
 		return $html;
 	}
 }

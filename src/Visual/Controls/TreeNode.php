@@ -89,7 +89,11 @@ class TreeNode extends Control {
 		return $this;
 	}
 	
-	public function contextMenu(array $params) {
+	public function action_select(): void {
+		$this->select();
+	}
+	
+	public function action_contextMenu(array $params = []): void {
 		if (empty($params['top']) || empty($params['left'])) {
 			return;
 		}

@@ -364,11 +364,6 @@ abstract class VisualObject extends BaseObject {
 		return $this->_eventsHandler->trigger($eventName, $this, $params);
 	}
 	
-	public function enableEvent(string $eventName): self {
-		$this->_eventsHandler->enableEvent($eventName);
-		return $this;
-	}
-	
 	public function hasListenerFor(string $eventName): bool {
 		return $this->_eventsHandler->hasListenersForEventName($eventName);
 	}
@@ -392,7 +387,7 @@ abstract class VisualObject extends BaseObject {
 		return $html;
 	}
 	
-	public function getInlineStyleFromArray(array $attributes, bool $absolutize = true): string {
+	public function getInlineStyleFromArray(array $attributes, bool $absolutize = true, bool $wrapped = true): string {
 		
 		$styles = [];
 
@@ -461,6 +456,10 @@ abstract class VisualObject extends BaseObject {
 		}
 		
 		$stylesString = self::getAsStyles($styles);
+		
+		if (!$wrapped) {
+			return $stylesString;
+		}
 
 		if (strlen($stylesString)) {
 			$ret = new StringChar(' style="__style_string__"');
@@ -473,9 +472,9 @@ abstract class VisualObject extends BaseObject {
 		
 	}
 	
-	public function getInlineStyle(bool $absolutize = true): string {
+	public function getInlineStyle(bool $absolutize = true, bool $wrapped = true): string {
 		$attributes = $this->getAttributes();
-		return $this->getInlineStyleFromArray($attributes, $absolutize);
+		return $this->getInlineStyleFromArray($attributes, $absolutize, $wrapped);
 	}
 
 	static public function getAsStyles(array $styles): string {

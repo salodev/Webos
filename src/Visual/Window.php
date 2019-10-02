@@ -114,6 +114,12 @@ class Window extends Container {
 		return $this->activeControl === $object;
 	}
 
+	public function close(): void {
+		if ($this->triggerEvent('close')) {
+			$this->getApplication()->closeWindow($this);
+		}
+	}
+
 	public function action_resize(array $params = []): void {
 		if (!($this->allowResize??true)) {
 			return;
@@ -130,9 +136,7 @@ class Window extends Container {
 	}
 
 	public function action_close(): void {
-		if ($this->triggerEvent('close')) {
-			$this->getApplication()->closeWindow($this);
-		}
+		$this->close();
 	}
 
 	public function action_maximize(): void {

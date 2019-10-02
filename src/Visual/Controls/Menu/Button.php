@@ -26,7 +26,7 @@ class Button extends Control {
 		});
 	}
 
-	public function action_click() {
+	public function action_click(): void {
 		// $this->selected = true;
 		if ($this->triggerEvent('click')) {
 			$a = $this->selected;

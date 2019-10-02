@@ -21,6 +21,7 @@ use Webos\Visual\Controls\Menu\Bar as MenuBar;
 use Webos\Visual\Controls\MultiTab;
 use Webos\Visual\Controls\PasswordBox;
 use Webos\Visual\Controls\TextBox;
+use Webos\Visual\Controls\CheckBox;
 use Webos\Visual\Controls\ToolBar;
 use Webos\Visual\Controls\Tree;
 use Webos\Visual\Controls\VerticalSeparator;
@@ -116,6 +117,11 @@ trait FormContainer {
 		return $this->createControl($label, $name, PasswordBox::class, $options);
 	}
 	
+	public function createCheckBox(string $label, string $name, array $options = []): CheckBox {
+		return $this->createControl($label, $name, CheckBox::class, $options);
+	}
+
+
 	/**
 	 * 
 	 * @param string $label
@@ -249,7 +255,9 @@ trait FormContainer {
 	}
 	
 	public function createTabsFolder(array $params = []): MultiTab {
-		return $this->createObject(MultiTab::class, $params);
+		$np = $this->_getNextPositions();
+		
+		return $this->createObject(MultiTab::class, array_merge(['top'=>$np['top']], $params));
 	}
 	
 	public function createImage(string $filePath, array $params = []): Image {
