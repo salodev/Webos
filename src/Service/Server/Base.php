@@ -5,7 +5,7 @@ namespace Webos\Service\Server;
 use Exception;
 use salodev\Implementations\SimpleServer;
 
-class Base {
+class Base extends SimpleServer {
 	
 	/**
 	 *
@@ -24,7 +24,7 @@ class Base {
 	}
 	
 	static public function RegisterActionHandler($name, $handler) {
-		self::$_actionHandlers[$name] = $handler;
+		static::$_actionHandlers[$name] = $handler;
 	}
 	
 	static public function GetActionsList(): array {
@@ -49,7 +49,7 @@ class Base {
 	
 	static public function Listen($address, $port) {
 		
-		SimpleServer::Listen($address, $port, function($reqString) {
+		parent::Listen($address, $port, function($reqString) {
 			$json = json_decode($reqString, true);
 			if ($json==null) {
 				return 'Bad json format: ' . $reqString;

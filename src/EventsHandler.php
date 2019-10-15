@@ -8,25 +8,15 @@ use Exception;
 
 class EventsHandler {
 
-	public $events = null;
-	protected $useAvailableEvents = null;
-	protected $availableEvents = null;
-
-	public function __construct() {
-		$this->events = [];
-		$this->availableEvents = [];
-		$this->useAvailableEvents = false;
-	}
+	private $events = [];
 
 	public function addListener(string $eventName, callable $eventListener, bool $persistent = true, array $contextData = []): self {
-
-		$this->checkAvailableEvent($eventName);
 
 		if (!is_callable($eventListener)) {
 			throw new Exception('eventListener must be a function or an Closure instance');
 		}
 		
-		$dependenciesList = $this->_getDependenciesList($eventListener);
+		$dependenciesList = DependencyInjector::getDependenciesList($eventListener);
 		
 		if ($eventListener instanceof Closure) {
 			$eventListener = new WebosClosure($eventListener);
@@ -44,13 +34,14 @@ class EventsHandler {
 	}
 
 	public function removeListeners(string $eventName){
-		//@todo: completar esto..
-		throw new Exception('TODO: complete it.');
+		if (!isset($this->events[$eventName])) {
+			throw new \Exception('Event not listed');
+		}
+		unset($this->events[$eventName]);
+		return $this;
 	}
 
 	public function trigger(string $eventName, $source, $params = null): bool {
-
-		$this->checkAvailableEvent($eventName);
 
 		if(isset($this->events[$eventName])) {			
 			foreach ($this->events[$eventName] as $k => $evData) {
@@ -58,7 +49,7 @@ class EventsHandler {
 					unset($this->events[$eventName][$k]);
 				}
 				
-				$dependencies = $this->_buildDependenciesArray($evData->dependenciesList, [
+				$dependencies = DependencyInjector::buildDependenciesFromArray($evData->dependenciesList, [
 					'source'      => $source,
 					'eventName'   => $eventName,
 					'params'      => $params,
@@ -83,51 +74,11 @@ class EventsHandler {
 		return true;
 	}
 	
-	public function isAvailable(string $eventName): bool {
-		if ($this->useAvailableEvents) {
-			if (!in_array($eventName, $this->availableEvents)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private function checkAvailableEvent(string $eventName) {
-		if (!$this->isAvailable($eventName)) {
-			throw new Exception("Unavailable {$eventName} event.");
-		}
-	}
-
-	public function setAvailableEvents(array $eventsList){
-		$this->availableEvents = array_merge($this->availableEvents, $eventsList);
-		$this->useAvailableEvents = true;
-	}
-	
-	public function enableEvent(string $eventName) {
-		if (!in_array($eventName, $this->availableEvents)) {
-			$this->availableEvents[] = $eventName;
-		}
-	}
-
-	public function getAvailableEvents(): array {
-		return $this->availableEvents;
-	}
-	
-	public function hasListenersForEventName(string $eventName): bool {
+	public function hasListenersFor(string $eventName): bool {
 		if (!isset($this->events[$eventName])) {
 			return false;
 		}
 		return count($this->events[$eventName])>0;
-	}
-	
-	private function _getDependenciesList(callable $fn) {
-		$di = new DependencyInjector();
-		return $di->getDependenciesList($fn);
-	}
-	
-	private function _buildDependenciesArray(array $list, array $dependencies): array {
-		$di = new DependencyInjector();
-		return $di->buildDependenciesFromArray($list, $dependencies);
 	}
 	
 	public function getListenersFor($eventName): array {

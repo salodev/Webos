@@ -7,6 +7,12 @@ use Webos\StringChar;
 class ListItems extends Control {
 
 	protected $_selectedItem = null;
+	
+	public function initialize(array $params = []) {		
+		$this->getApplication()->addSystemEventListener('actionCalled', function() {
+			$this->getParentWindow()->removeChild($this);
+		}, false);
+	}
 
 	public function getSelectedItem(): Item {
 		return $this->_selectedItem;

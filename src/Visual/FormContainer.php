@@ -18,6 +18,7 @@ use Webos\Visual\Controls\Label;
 use Webos\Visual\Controls\Link;
 use Webos\Visual\Controls\LinkButton;
 use Webos\Visual\Controls\Menu\Bar as MenuBar;
+use Webos\Visual\Controls\Menu\ListItems;
 use Webos\Visual\Controls\MultiTab;
 use Webos\Visual\Controls\PasswordBox;
 use Webos\Visual\Controls\TextBox;
@@ -118,6 +119,14 @@ trait FormContainer {
 	}
 	
 	public function createCheckBox(string $label, string $name, array $options = []): CheckBox {
+		$list = $this->getObjectsByClassName(CheckBox::class);
+		if ($list->count() > 0) {
+			$lastCheck = $list->getLastObject();
+			$options = array_merge([
+				'checkedValue'   => $lastCheck->checkedValue,
+				'uncheckedValue' => $lastCheck->uncheckedValue,
+			], $options);
+		}
 		return $this->createControl($label, $name, CheckBox::class, $options);
 	}
 
@@ -430,5 +439,20 @@ trait FormContainer {
 	
 	public function createFilePicker(string $label = '', array $params = []): FilePicker {
 		return $this->createControl($label, '', FilePicker::class, $params);
+	}
+	
+	/**
+	 * 
+	 * @param type $top
+	 * @param type $left
+	 * @return ListItems
+	 */
+	public function createContextMenu($top, $left): ListItems {
+
+		return $this->createObject(ListItems::class, [
+			'top'      => $top,
+			'left'     => $left,
+			'position' => 'fixed',
+		]);
 	}
 }

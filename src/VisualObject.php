@@ -365,7 +365,7 @@ abstract class VisualObject extends BaseObject {
 	}
 	
 	public function hasListenerFor(string $eventName): bool {
-		return $this->_eventsHandler->hasListenersForEventName($eventName);
+		return $this->_eventsHandler->hasListenersFor($eventName);
 	}
 	
 	public function getEventsHandler(): EventsHandler {
@@ -399,6 +399,8 @@ abstract class VisualObject extends BaseObject {
 			'width',
 			'height',
 			'border',
+			'borderRight',
+			'borderLeft',
 			'textAlign',
 			'backgroundImage',
 			'backgroundColor',
@@ -492,14 +494,6 @@ abstract class VisualObject extends BaseObject {
 		}
 
 		return implode(';', $strings);
-	}
-
-	/**
-	 * Debe definirse una lista de nombres de eventos disponibles
-	 * @return array Lista de nombres de eventos disponibles.
-	 */
-	public function getAvailableEvents(): array {
-		return [];
 	}
 	
 	public function getPrevious(): self {

@@ -9,7 +9,6 @@ use Webos\Visual\Windows\PasswordPrompt;
 use Webos\Visual\Windows\Confirm;
 use Webos\Visual\Windows\Question;
 use Webos\Visual\Control;
-use Webos\Visual\Controls\Menu\ListItems;
 use Webos\Exceptions\Collection\NotFound;
 use Webos\StringChar;
 use Webos\WorkSpace;
@@ -29,11 +28,11 @@ class Window extends Container {
 	}
 	
 	public function preInitialize(): void {
-		$this->title  = $this->getObjectID();
-		$this->width  = 600;
-		$this->height = 400;
-		$this->top    = 100;
-		$this->left   = 100;
+		$this->title        = $this->getObjectID();
+		$this->width        = 600;
+		$this->height       = 400;
+		$this->top          = 100;
+		$this->left         = 100;
 		$this->showTitle    = true;
 		$this->showControls = true;
 		$this->allowResize  = true;
@@ -230,28 +229,6 @@ class Window extends Container {
 	
 	/**
 	 * 
-	 * @param type $top
-	 * @param type $left
-	 * @return ListItems
-	 */
-	public function createContextMenu($top, $left): ListItems {
-
-		$menu = $this->createObject(ListItems::class, [
-			'top'      => $top,
-			'left'     => $left,
-			'position' => 'fixed',
-		]);
-		
-		$this->getApplication()->addSystemEventListener('actionCalled', function($context) {
-			$menu     = $context['menu'];
-			$menu->getParentWindow()->removeChild($menu);
-		}, false, ['menu'=>$menu]);
-		
-		return $menu;
-	}
-	
-	/**
-	 * 
 	 * @param string $className
 	 * @param array $params
 	 * @return Window;
@@ -359,7 +336,7 @@ class Window extends Container {
 		return $this;
 	}
 	
-	public function syncDataWith(VisualObject $syncWith): self {
+	public function syncDataWith(self $syncWith): self {
 		$this->onNewData(function($context, $data) {
 			$object = $context['syncWith'];
 			$object->newData($data);

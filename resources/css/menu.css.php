@@ -4,10 +4,10 @@ use Webos\FrontEnd\CSS\StylesManager;
 $sm = StylesManager::InstanceWithDefinitions();
 
 // $sm->addRule('.');
-$sm->addRule('.MenuBar',                    [ 'overflow'=>'visible', 'border-bottom'=>'solid 1px #ccc', 'background'=>'#f0f0f0', ]);
+$sm->addRule('.MenuBar',                    [ 'overflow'=>'visible', 'background'=> $sm->getPalette('gray2'), ]);
 $sm->addRule('.MenuButton',                 [ 'display'=>'inline', 'float'=>'left', 'height'=>'25px', 'overflow'=>'hidden', 'font-size'=>'small',]);
 $sm->addRule('.MenuButton > .text',         [ 'padding'=>'4px 10px', 'height' => '25px',]);
-$sm->addRule('.MenuButton:hover .MenuList', [ 'display'=>'block',]);
+$sm->addRule('.MenuButton:hover .MenuList', [ 'display'=>'block']);
 $sm->addRule('.MenuList', [ 'position'=>'absolute', 'display'=>'block', 'z-index'=>1000, 'background'=>'#fff', 'border'=>'solid 1px #999', 'padding'=>'4px 0', 'box-shadow'=>'0 0 5px #999',]);
 
 $sm->addRule('.MenuItem', [ 'padding'=>'0 3px',]);

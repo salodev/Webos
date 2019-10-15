@@ -100,14 +100,13 @@ class Master {
 		];
 	}
 	
-	static private function _CreateUserService($userName, $userPort, $host, $userToken, $applicationName, $applicationParams) {
-		echo "spawing via fork for '{$userName}' in port {$userPort}\n";
-		$childProcess = Thread::Fork(function() use ($userName, $userPort, $host, $userToken) {
-			UserServer::SetToken($userToken);
-			UserServer::Listen($host, $userPort, $userName);
+	static private function _CreateUserService($userName, $port, $host, $userToken, $applicationName, $applicationParams) {
+		echo "spawing via fork for '{$userName}' in port {$port}\n";
+		$childProcess = Thread::Fork(function() use ($userName, $port, $host, $userToken) {
+			UserServer::Start($userName, $port, $host, $userToken, $applicationName, $applicationParams);
 		});
 		
-		$client = new Client($userToken, self::$_host, $userPort);
+		$client = new Client($userToken, self::$_host, $port);
 		
 		echo "waiting service availability...";
 		if (!$client->waitForService()) {
@@ -117,15 +116,9 @@ class Master {
 		echo "OK\n";
 		
 		// Store user info.
-		self::RegisterUserInfo($userName, $applicationName, $userPort, $userToken, $childProcess);
+		self::RegisterUserInfo($userName, $applicationName, $port, $userToken, $childProcess);
 		echo "service information stored\n";
 		
-		echo "spawing '{$applicationName}' application into user service...";
-		// Spawn application into created service
-		$client->call('startApplication', [
-			'name'   => $applicationName,
-			'params' => $applicationParams,
-		]);
 		echo "OK\n";
 		echo "SERVICE IS READY FOR USE\n";
 	}

@@ -29,7 +29,7 @@ class TextBox extends Field {
 			);
 		}
 		
-		$hasLeaveTypingEvent = $this->_eventsHandler->hasListenersForEventName('leaveTyping');
+		$hasLeaveTypingEvent = $this->_eventsHandler->hasListenersFor('leaveTyping');
 		$html->replaces([
 			'__id__'          => $this->getObjectID(),
 			// '__name__'        => $this->name,

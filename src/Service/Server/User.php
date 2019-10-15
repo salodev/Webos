@@ -8,9 +8,9 @@ use Webos\WorkSpace;
 use Webos\SystemInterface;
 use Webos\WorkSpaceHandlers\Instance as InstanceHandler;
 use Webos\FrontEnd\Page;
-use Webos\Service\Server\Base as BaseServer;
+use Webos\Service\Server\Base;
 
-class User {
+class User extends Base {
 	
 	/**
 	 *
@@ -30,11 +30,7 @@ class User {
 	 */
 	static private $_username = null;
 	
-	static public function SetToken(string $token):void {
-		BaseServer::SetToken($token);
-	}
-	
-	static public function Prepare(string $username) {
+	static public function Boot(string $username) {
 		self::$_username = $username;
 		self::$interface = new SystemInterface();
 		self::$system = self::$interface->getSystemInstance();
@@ -45,40 +41,41 @@ class User {
 	}
 	
 	static public function RegisterActionHandlers() {
-		BaseServer::RegisterActionHandler('startApplication', function(array $data) {
-			if (empty($data['name'])) {
-				throw new Exception('Missing name param');
-			}
-			$name   = $data['name'  ];
-			$params = $data['params'] ?? [];
-			self::GetWorkSpace()->startApplication($name, $params);
-			return true;
+		static::RegisterActionHandler('renderAll', function(array $data) {
+			return static::$interface->renderAll();
 		});
 		
-		BaseServer::RegisterActionHandler('renderAll', function(array $data) {
-			return self::$interface->renderAll();
-		});
-		
-		BaseServer::RegisterActionHandler('action', function(array $data) {
+		static::RegisterActionHandler('action', function(array $data) {
 			$actionName = $data['name'      ];
 			$objectID   = $data['objectID'  ];
 			$parameters = $data['parameters'] ?? [];
 			$ignoreUpdateObject = $data['ignoreUpdateObject'] ?? false;
-			return self::$interface->action($actionName, $objectID, $parameters, $ignoreUpdateObject);
+			return static::$interface->action($actionName, $objectID, $parameters, $ignoreUpdateObject);
 		});
 		
-		BaseServer::RegisterActionHandler('debug', function(array $data) {
-			return ObjectInspector::inspect(self::$interface, $data['path'], true);
+		static::RegisterActionHandler('debug', function(array $data) {
+			return ObjectInspector::inspect(static::$interface, $data['path'], true);
 		});
+	}
+	
+	static public function StartApplication(string $name, array $params = []): bool {
+		static::GetWorkSpace()->startApplication($name, $params);
+		return true;
 	}
 	
 	static public function GetWorkSpace(): WorkSpace {
-		return self::$system->getWorkSpace();
+		return static::$system->getWorkSpace();
 	}
 	
-	static public function Listen($address, $port, $username) {
-		self::Prepare($username);
-		self::RegisterActionHandlers();
-		BaseServer::Listen($address, $port);
+	static public function Listen($address, $port) {
+		static::Listen($address, $port);
+	}
+	
+	static public function Start($userName, $port, $host, $userToken, $applicationName, $applicationParams) {
+		static::Boot($userName);
+		static::StartApplication($applicationName, $applicationParams);
+		static::SetToken($userToken);
+		static::RegisterActionHandlers();
+		static::Listen($host, $port);
 	}
 }
