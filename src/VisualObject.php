@@ -338,7 +338,7 @@ abstract class VisualObject extends BaseObject {
 		$this->$methodName($params);
 	}
 	
-	public function scroll(array $params = []): void {
+	public function action_scroll(array $params = []): void {
 		$this->scrollTop  = $params['top' ] ?? 0;
 		$this->scrollLeft = $params['left'] ?? 0;
 		$this->triggerEvent('scroll');
