@@ -4,7 +4,7 @@ use Webos\FrontEnd\CSS\StylesManager;
 $sm = StylesManager::InstanceWithDefinitions();
 
 // $sm->addRule('.');
-$sm->addRule('.MenuBar',                    [ 'overflow'=>'visible', 'background'=> $sm->getPalette('gray2'), ]);
+$sm->addRule('.MenuBar',                    [ 'overflow'=>'visible', 'background'=> $sm->getPalette('lightgray'), 'border-bottom' => 'solid 1px ' . $sm->getPalette('gray2')]);
 $sm->addRule('.MenuButton',                 [ 'display'=>'inline', 'float'=>'left', 'height'=>'25px', 'overflow'=>'hidden', 'font-size'=>'small',]);
 $sm->addRule('.MenuButton > .text',         [ 'padding'=>'4px 10px', 'height' => '25px',]);
 $sm->addRule('.MenuButton:hover .MenuList', [ 'display'=>'block']);
