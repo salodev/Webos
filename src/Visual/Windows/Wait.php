@@ -31,9 +31,9 @@ class Wait extends Window {
 	 * Also is closed when Exceptions take place.
 	 * @throws Exception
 	 */
-	public function ready(): void {
+	public function action_ready(): void {
 		try {
-			parent::ready();
+			parent::action_ready();
 		} catch (Error $e) {
 			$this->close();
 			$this->triggerEvent('error');
