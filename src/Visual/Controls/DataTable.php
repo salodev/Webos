@@ -215,7 +215,7 @@ class DataTable extends Control {
 		$html .= "<div class=\"DataTableHole\" webos set-scroll-values=\"{$scrollTop},{$scrollLeft}\" style=\"bottom:{$footerHeight}px\">";
 		$html .= '<div class="DataTableBody" style="width:'.$bodyWidth.'px">';
 		
-		$html .= $this->renderRows($rs, $hasContextMenu);
+		$html .= $this->renderRows($rs, 1);
 		
 		$html .= '</div>'; // end DataTableBody
 		$html .= '</div>'; // end DataTableHole
