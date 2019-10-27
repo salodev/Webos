@@ -29,7 +29,8 @@ use Webos\Visual\Controls\VerticalSeparator;
 use Webos\Visual\Window;
 
 trait FormContainer {
-	
+
+	public    $verticalRelative  = false;
 	protected $maxTopControl     = 15;
 	protected $hasWindowButtons  = false;
 	
@@ -77,7 +78,9 @@ trait FormContainer {
 	 */
 	public function createControl(string $label, string $name, string $className = TextBox::class, array $options = [], bool $attachToContainer = true): Control {
 		$positions = $this->_getNextPositions();
-		
+		if ($this->verticalRelative) {
+			$options['relative'] = 'vertical';
+		}
 		$group = $this->createObject(Group::class, array_merge([
 			'top'        => $positions['top'       ],
 			'left'       => $positions['left'      ],

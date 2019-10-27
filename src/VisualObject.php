@@ -457,6 +457,11 @@ abstract class VisualObject extends BaseObject {
 			}
 		}
 		
+		if ($attributes['relative']??''=='vertical') {
+			unset($styles['top']);
+			$styles['position']='relative';
+		}
+		
 		$stylesString = self::getAsStyles($styles);
 		
 		if (!$wrapped) {
