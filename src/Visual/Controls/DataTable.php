@@ -154,7 +154,7 @@ class DataTable extends Control {
 		$this->_offset = $this->_offset + $this->_limit;
 		$newData = $this->_queryData($this->_offset, $this->_limit);
 		
-		$this->rows = array_merge($this->_rows, $newData);
+		$this->rows = array_merge($this->rows, $newData);
 		
 		$this->triggerEvent('nextPage', [
 			'offset' => $this->_offset,
@@ -223,6 +223,12 @@ class DataTable extends Control {
 		$html .= $this->renderRows($rs, 1);
 		
 		$html .= '</div>'; // end DataTableBody
+		
+		
+		if (count($rs)>=$this->_offset + $this->_limit) {
+			$html .= '<button style="top:10px;position:relative;background:#dbe2e5;color:#000" class="Control Button" webos action="nextPage">Load next</button>';
+		}
+		
 		$html .= '</div>'; // end DataTableHole
 		
 		if (count($this->footRows)) {

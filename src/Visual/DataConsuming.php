@@ -6,6 +6,7 @@
 namespace Webos\Visual;
 
 use Webos\Closure;
+use salodev\Validator;
 use Exception;
 
 trait DataConsuming {
@@ -20,14 +21,32 @@ trait DataConsuming {
 		return $this;
 	}
 	
-	public function setOffset(int $value): self {
+	public function setOffset(int $value, int $limit = null): self {
+		Validator::Value($value)
+				->positive('Offset value must be positive')
+				->integer('Offset value must be integer');
 		$this->_offset = $value;
+		if ($limit !== null) {
+			Validator::Value($limit)
+					->positive('Limit value must be positive')
+					->integer('Limit value must be integer');
+			$this->_limit = $limit;
+		}
 		$this->refresh();
 		
 		return $this;
 	}
 	
+	public function setNextOffset(): self {
+		$this->_offset += $this->_limit;
+		$this->refresh();
+		return $this;
+	}
+	
 	public function setLimit(int $value): self {
+		Validator::Value($value)
+			->positive('Limit value must be positive')
+			->integer('Limit value must be integer');
 		$this->_limit = $value;
 		$this->refresh();
 		

@@ -38,6 +38,12 @@ abstract class DataList extends Window {
 	 */
 	public $showSearch = true;
 	
+	/**
+	 * 
+	 * @var int;
+	 */
+	public $queryLimit = 100;
+	
 	public function preInitialize():void {
 		parent::preInitialize();
 		$this->width     = 600;
@@ -84,10 +90,6 @@ abstract class DataList extends Window {
 		$this->dataTable->setDataFn(function(int $offset = 0, int $limit = 0) {
 			return $this->getData($offset, $limit);
 		});
-		
-		$this->dataTable->bind('nextPage', function($params) {
-			$this->getData($params);
-		});
 	}
 	
 	public function afterInitialize() {
@@ -96,7 +98,7 @@ abstract class DataList extends Window {
 	}
 	
 	public function refreshList() {
-		$rs = $this->dataTable->setOffset(0);
+		$rs = $this->dataTable->setOffset(0, $this->queryLimit);
 	}
 	
 	abstract public function getData(int $offset = 0, int $limit = 0): array;
