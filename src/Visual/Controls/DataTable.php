@@ -48,6 +48,11 @@ class DataTable extends Control {
 		return $column;
 	}
 	
+	public function removeColumns(): self {
+		$this->columns->clear();
+		return $this;
+	}
+	
 	public function hasSelectedRow(): bool {
 		return $this->rowIndex !== null;
 	}
