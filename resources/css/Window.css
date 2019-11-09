@@ -1,15 +1,14 @@
 .Window {
     background: #efefef;
-    box-shadow:0 0 5px #ccc;
+    box-shadow:0 0 2px rgba(0, 0, 0, 0.2);
 	border: solid 1px #dbe2e5; /* gray2 */
     position:absolute;
-	border-radius:3px;
 }
 
 .Window.active {
     -webkit-box-shadow:0 0 10px #999;
     -moz-box-shadow:0 0 10px #999;
-    box-shadow:0 0 10px #999;
+    box-shadow:0 0 3px rgba(0, 0, 0, 0.2);
 }
 
 .Window .form-titlebar{

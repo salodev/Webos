@@ -8,7 +8,15 @@ $sm->addRule('.MenuBar',                    [ 'overflow'=>'visible', 'background
 $sm->addRule('.MenuButton',                 [ 'display'=>'inline', 'float'=>'left', 'height'=>'25px', 'overflow'=>'hidden', 'font-size'=>'small',]);
 $sm->addRule('.MenuButton > .text',         [ 'padding'=>'4px 10px', 'height' => '25px',]);
 $sm->addRule('.MenuButton:hover .MenuList', [ 'display'=>'block']);
-$sm->addRule('.MenuList', [ 'position'=>'absolute', 'display'=>'block', 'z-index'=>1000, 'background'=>'#fff', 'border'=>'solid 1px #999', 'padding'=>'4px 0', 'box-shadow'=>'0 0 5px #999',]);
+$sm->addRule('.MenuList', [
+	'position'	 => 'absolute', 
+	'display'	 => 'block', 
+	'z-index'	 => 1000, 
+	'background' => '#fff', 
+	'border'	 => 'solid 1px ' . $sm->getPalette('gray'), 
+	'padding'	 => '4px 0', 
+	'box-shadow' => '0 0 4px -1px rgba(0, 0, 0, 0.2)',
+]);
 
 $sm->addRule('.MenuItem', [ 'padding'=>'0 3px',]);
 $sm->addRule('.MenuItem:hover', [ 

@@ -53,7 +53,7 @@ Directives.register('leavetyping', function(el) {
 			ignoreUpdateObject: true
 		});
 	}
-	$el.unbind('keyup').bind('keyup', function(ev) {
+	$el.bind('keyup', function(ev) {
 		if (to) { clearTimeout(to); }
 		to = setTimeout(function() {
 			save();
@@ -336,7 +336,7 @@ Directives.register('ondrop', function(el) {
 
 Directives.register('key-press', function(el) {
 	var $el = $(el).is('[id]')?$(el):$(el).parents('[id]');
-	$el.unbind('keydown').keydown(function(ev) {
+	$el.keydown(function(ev) {
 		var allowedKeys = ($el.attr('key-press')||'').split(',');
 		var keyName, i;
 		for (i in allowedKeys) {

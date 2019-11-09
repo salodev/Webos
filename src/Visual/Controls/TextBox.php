@@ -2,16 +2,25 @@
 namespace Webos\Visual\Controls;
 
 use Webos\StringChar;
+use Webos\Visual\Behavior\KeyPressEnter;
 
 class TextBox extends Field {
+	
+	use KeyPressEnter;
 
 	public function render(): string {
 		$html = '';
+		$directivesList = [];
+		//if (!$this->hasListenerFor('keyPressEnter')) {
+			$directivesList[] = 'key-press="Enter"';
+			$directivesList[] = 'key-press-action="keyPressEnter"';
+		//}
+		$directives = implode(' ', $directivesList);
 		if ($this->multiline) {
 			$html =  new StringChar(
 				'<textarea id="__id__" ' .
 					'class="Control Field TextFieldControl"__style__ ' .
-					'webos leavetyping __focus__ __captureTyping__ ' .
+					"webos {$directives} leavetyping__focus__ __captureTyping__ " .
 					'placeholder="__placeholder__" ' .
 					// 'name="__name__"' . 
 					'__disabled__>__value__</textarea>'
@@ -22,7 +31,7 @@ class TextBox extends Field {
 					'class="Control Field TextFieldControl"__style__ ' .
 					'type="text" ' .
 					'autocomplete="off" ' .
-					'webos leavetyping __focus__ __captureTyping__ ' .
+					"webos {$directives} leavetyping __focus__ __captureTyping__ " .
 					// 'name="__name__" ' .
 					'placeholder="__placeholder__" ' .
 					'value="__value__"__disabled__ />'
