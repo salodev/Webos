@@ -17,7 +17,7 @@ class AuthService extends UserService {
 		$this->_system->setConfig('path/workspaces', PATH_PRIVATE . 'workspaces/');
 		$this->_system->setWorkSpaceHandler(new WorkSpaceHandler($this->_system));
 		$this->_system->addEventListener('createdWorkspace', function($data) {
-			$this->checkUserAgent($_SERVER['HTTP_USER_AGENT'], $data['ws']);
+			$data['ws']->checkUserAgent($_SERVER['HTTP_USER_AGENT']);
 			$data['ws']->startApplication($this->_applicationName, $this->_applicationParams);
 		});
 		$this->_system->loadWorkSpace($userName);

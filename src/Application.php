@@ -114,7 +114,7 @@ abstract class Application {
 	 * @return Visual\Windows\Exception
 	 */
 	public function openExceptionWindow(Throwable $e): ExceptionWindow {
-		$params = ExceptionWindow::ParseException($e);
+		$params = \salodev\Debug\ExceptionDumper::ParseFromThrowable($e);
 		return $this->openWindow(ExceptionWindow::class, $params, $this);
 	}
 

@@ -1,13 +1,16 @@
 <?php
+
 namespace Webos;
+
 use Webos\Exceptions\Collection\NotFound;
+
 /**
- * Cada elemento de esta colección es un objeto
+ * Each element of this collection is an Object
  */
 class ObjectsCollection extends Collection {
 
 	/**
-	 * Éste metodo se reescribe para admitir sólamente instancias de VisualObject.
+	 * Only allows VisualObject instances
 	 *
 	 * @param VisualObject $object
 	 **/
@@ -18,15 +21,9 @@ class ObjectsCollection extends Collection {
 	}
 
 	/**
-	 * Este método se reescribe para quitar de la colección una instancia de
-	 * VisualObject de manera sencilla.
-	 * Este método no destruye el objeto, sólo lo quita de la colección.
-	 * 
-	 * @param VisualObject      $objectToRemove Instancia del objeto a quitar de
-	 *                                           la colección.
-	 * @return ObjectsCollection Instancia de la colección.
+	 * Rremoves object from collection
 	 */
-	function removeObject(VisualObject $objectToRemove) {
+	function removeObject(VisualObject $objectToRemove): self {
 		foreach($this as $object) {
 			if ($object->getObjectID()==$objectToRemove->getObjectID()){
 				parent::remove($this->key());
@@ -98,12 +95,10 @@ class ObjectsCollection extends Collection {
 	}
 
 	/**
-	 * Este método envía un mensaje a todos los objetos de la collección.
-	 * Dicho mensaje corresponde al nombre de un método esperado en todos
-	 * los elementos de la colección que admitan a lo sumo un parámetro.
+	 * Dispatch a message to each objects collection.
 	 *
-	 * @param string $name Nombre del método a invocar
-	 * @param mixed $params Parámetros que se enviarán al método.
+	 * @param string $name Objects collection method name.
+	 * @param mixed $params Single parameter to send to all.
 	 */
 	function sendMessage(string $name, $params = null): void {
 		foreach($this->_data as $object) {
@@ -112,7 +107,7 @@ class ObjectsCollection extends Collection {
 	}
 	
 	/**
-	 * Obtiene la lista de objetos renderizada.
+	 * Render all objects and get its result as unique string
 	 * @return string
 	 */
 	public function render(): string {
@@ -158,6 +153,13 @@ class ObjectsCollection extends Collection {
 	public function unIndex(): self {
 		foreach($this->_data as $object) {
 			$object->unIndex();
+		}
+		return $this;
+	}
+	
+	public function index(): self {
+		foreach($this->_data as $object) {
+			$object->index();
 		}
 		return $this;
 	}

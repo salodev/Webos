@@ -3,14 +3,12 @@
 namespace Webos\Service\Server;
 
 use Exception;
-use Webos\Service\Server\Base as BaseServer;
-use Webos\Service\Server\User as UserServer;
 use Webos\Service\Client;
 use salodev\Pcntl\Thread;
-use salodev\Pcntl\Child;
+use salodev\IO\Stream;
 use salodev\IO\ClientSocket;
 
-class Master {
+class Master extends Base {
 	
 	static private $_host = null;
 	
@@ -18,23 +16,19 @@ class Master {
 	
 	static private $_lastPort = 0;
 	
-	static private $_usersInfo = [];
+	static private $_userServices = [];
 	
-	static public function RegisterUserInfo($name, $applicationName, $port, $token, Child $child) {
-		self::$_usersInfo[$name] = [
-			'child'   => $child,
-			'port'    => $port,
-			'token'   => $token,
-			'created' => microtime(true),
-			'applicationName' => $applicationName,
-		];
+	static private $_masterTokenSeed = null;
+	
+	static public function Register(UserService $userService): void {
+		self::$_userServices[$userService->userName] = $userService;
 	}
 	
-	static public function GetUserInfo(string $userName): array {
-		if (!isset(self::$_usersInfo[$userName])) {
+	static public function Get(string $userName): UserService {
+		if (!isset(self::$_userServices[$userName])) {
 			throw new Exception('User info not found');
 		}
-		return self::$_usersInfo[$userName];
+		return self::$_userServices[$userName];
 	}
 	
 	static private function _SelectNewPort($userPort) {
@@ -48,158 +42,182 @@ class Master {
 		return $userPort;
 	}
 	
-	static public function CheckUserService($userName) {
-		echo "looking for '{$userName}' service info...";
+	static public function Check($userName) {
+		static::Log("looking for '{$userName}' service info...");
 		try {
-			$userInfo = self::GetUserInfo($userName);
+			$userService = self::Get($userName);
 		} catch (Exception $e) {
-			echo "NOT FOUND\n";
+			static::Log("NOT FOUND\n");
 			return false;
 		}
-		echo "OK\n";
+		static::Log("OK\n");
 		
-		$port = $userInfo['port'];
 		try {
-			echo "making connection test for {$userName} in port no:{$port}...";
-			$socket = ClientSocket::Create('127.0.0.1', $port, 0.5);
+			static::Log("making connection test for {$userName} in port no:{$userService->port}...");
+			$socket = ClientSocket::Create($userService->host, $userService->port, 0.5);
 			$socket->close();
-			echo "OK\n";
+			static::Log("OK\n");
 		} catch (Exception $e) {
-			echo "TIMED OUT (0.5s)\n";
+			static::Log("TIMED OUT (0.5s)\n");
 			return false;
 		}
 		return true;
 	}
 	
-	static public function CreateUserService($userName, $applicationName, array $applicationParams = [], $userPort = null) {
+	static public function Create(UserService $userService) {
 		
 		// If user exists returns info.		
-		if (self::CheckUserService($userName)) {
-			$userInfo = self::GetUserInfo($userName);
+		if (self::Check($userService->userName)) {
+			$userService = self::Get($userService->userName);
 			return [
-				'port'  => $userInfo['port' ],
-				'token' => $userInfo['token'],
+				'port'  => $userService->port,
+				'token' => $userService->token,
 			];
 		}
 		
 		// If not, we need create a new service.
 		
-		$userPort = self::_SelectNewPort($userPort);
+		$userService->port = self::_SelectNewPort($userService->port);
 		
 		//generate a token;
-		$userToken = md5(time() . Thread::GetPid());
+		$userService->token       = md5(time() . Thread::GetPid());
+		$userService->masterToken = md5(time() . Thread::GetPid() . static::GetMasterTokenSeed());
 		
 		// Spawn service for user.
-		$host = self::$_host;		
-		self::_CreateUserService($userName, $userPort, $host, $userToken, $applicationName, $applicationParams);
+		$userService->host = self::$_host;		
+		self::CreateViaFork($userService);
+		
+		// Store user info.
+		self::Register($userService);
+		static::Log("service information stored\n");
 		
 		// And retrieve it.
 		return [
-			'port'  => $userPort,
-			'token' => $userToken,
+			'port'  => $userService->port,
+			'token' => $userService->token,
 		];
 	}
 	
-	static private function _CreateUserService($userName, $port, $host, $userToken, $applicationName, $applicationParams) {
-		echo "spawing via fork for '{$userName}' in port {$port}\n";
-		$childProcess = Thread::Fork(function() use ($userName, $port, $host, $userToken) {
-			UserServer::Start($userName, $port, $host, $userToken, $applicationName, $applicationParams);
+	static private function CreateViaFork(UserService $userService) {
+		static::Log("spawing via fork for '{$userService->userName}' in port {$userService->port}\n");
+
+		$childProcess = Thread::Fork(function() use ($userService) {
+			/**
+			 * Incoming connection must be closed from child.
+			 */
+			$connection = static::$incomingConnection;
+			if ($connection instanceof \salodev\IO\Socket && $connection->isValidResource()) {
+				$connection->close();
+			}
+			
+			/**
+			 * Clear unnecesary references list.
+			 * Avoid close master service connections.
+			 */
+			Stream::ClearIntancesList();
+			
+			/**
+			 * So we are ready for start new service
+			 */
+			User::Start($userService);
 		});
+		$userService->created = microtime(true);
+		$userService->setChildProcess($childProcess);
 		
-		$client = new Client($userToken, self::$_host, $port);
-		
-		echo "waiting service availability...";
-		if (!$client->waitForService()) {
-			echo "ERROR\n";
+		static::Log("waiting service availability...");
+		if (!$userService->getClient()->waitForService()) {
+			static::Log("ERROR\n");
 			throw new Exception('Service could not be spawned');
 		}
-		echo "OK\n";
+		static::Log("OK\n");
 		
-		// Store user info.
-		self::RegisterUserInfo($userName, $applicationName, $port, $userToken, $childProcess);
-		echo "service information stored\n";
-		
-		echo "OK\n";
-		echo "SERVICE IS READY FOR USE\n";
+		static::Log("SERVICE IS READY FOR USE\n");
 	}
 	
-	static public function RemoveUserService($userName) {
-		$userInfo = self::GetUserInfo($userName);
-		$userInfo['child']->kill();
-		unset(self::$_usersInfo[$userName]);
+	static public function Remove($userName) {
+		$userService = self::Get($userName);
+		$userService->getChildProcess()->kill();
+		unset(self::$_userServices[$userName]);
 		return true;
 	}
 	
-	static public function RestartUserService($userName) {
-		$userInfo = self::GetUserInfo($userName);
-		if (!$userInfo) {
+	static public function Restart($userName) {
+		$userService = self::Get($userName);
+		if (!$userService) {
 			throw new Exception('User service not found');
 		}
-		$child = $userInfo['child'];
+		$child = $userService->getChildProcess();
 		$child->kill();
 		$child->wait();
-		$userPort  = $userInfo['port'];
-		$userToken = $userInfo['token'];
-		$applicationName = $userInfo['applicationName'];
-		$host      = '127.0.0.1';
-		self::_CreateUserService($userName, $userPort, $host, $userToken, $applicationName);
+		self::CreateViaFork($userService);
 		return true;
 	}
 	
-	static public function Listen(string $host = '127.0.0.1', int $port = 3000) {
+	static public function Run(string $host = '127.0.0.1', int $port = 3000):void {
 		self::$_host = $host;
 		self::$_port = $port;
 		self::$_lastPort = $port;
 		
-		BaseServer::RegisterActionHandler('create', function(array $data) {
+		static::RegisterActionHandler('create', function(array $data) {
 			if (empty($data['userName'])) {
 				throw new Exception('Missing userName param');
 			}
 			if (empty($data['applicationName'])) {
 				throw new Exception('Missing applicationName param');
 			}
-			return self::CreateUserService($data['userName'], $data['applicationName'], $data['applicationParams'] ?? [], $data['port'] ?? null);
+			$userService					 = new UserService;
+			$userService->userName			 = $data['userName'         ];
+			$userService->applicationName	 = $data['applicationName'  ];
+			$userService->applicationParams	 = $data['applicationParams'] ?? [];
+			$userService->port				 = $data['port'             ] ?? null;
+			$userService->metadata			 = $data['metadata'         ] ?? [];
+			return self::Create($userService);
 		});
 		
-		BaseServer::RegisterActionHandler('remove', function(array $data) {
+		static::RegisterActionHandler('remove', function(array $data) {
 			if (empty($data['userName'])) {
 				throw new Exception('Missing userName param');
 			}
-			return self::RemoveUserService($data['userName']);
+			return self::Remove($data['userName']);
 		});
 		
-		BaseServer::RegisterActionHandler('restart', function(array $data) {
+		static::RegisterActionHandler('restart', function(array $data) {
 			if (empty($data['userName'])) {
 				throw new Exception('Missing userName param');
 			}
-			return self::RestartUserService($data['userName']);
+			return self::Restart($data['userName']);
 		});
 		
-		BaseServer::RegisterActionHandler('list', function() {
+		static::RegisterActionHandler('list', function() {
 			$rs = [];
-			foreach(self::$_usersInfo as $name => $userInfo) {
+			foreach(self::$_userServices as $name => $userService) {
 				$rs[] = [
 					'name'    => $name,
-					'port'    => $userInfo['port'   ],
-					'token'   => $userInfo['token'  ],
-					'pid'     => $userInfo['child'  ]->getPid(),
-					'created' => $userInfo['created'],
+					'port'    => $userService->port(),
+					'token'   => $userService->token(),
+					'pid'     => $userService->getChildProcess()->getPid(),
+					'created' => $userService->created,
 				];
 			}
 			return $rs;
 		});
 		
-		BaseServer::RegisterActionHandler('safeReload', function(array $data) {
-			if (empty($data['userName'])) {
-				throw new Exception('Missing userName param');
-			}
+		static::RegisterActionHandler('listCommands', function() {
+			return static::GetActionsList();
 		});
 		
-		BaseServer::RegisterActionHandler('listCommands', function() {
-			return BaseServer::GetActionsList();
-		});
-		
-		BaseServer::Listen($host, $port);
+		parent::Run($host, $port);
+	}
+	
+	static public function SetMasterTokenSeed(string $seed) {
+		static::$_masterTokenSeed = $seed;
+	}
+	
+	static public function GetMasterTokenSeed(): string {
+		if (static::$_masterTokenSeed == null) {
+			static::$_masterTokenSeed = 'master_seed_' . rand(1000, 9999);
+		}
+		return static::$_masterTokenSeed;
 	}
 }
 

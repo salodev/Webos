@@ -12,7 +12,7 @@ Webos.bind('updateElements', function(data){
 			setTimeout(function() {
 				Directives.applyAll($object);
 				Directives.findNApplyAll($object);
-			}, 100); // no entiendo porqué... $object no está disponible en el DOM y tengo que eperar ...
+			}, 100); // I dont know why.. $object no available in DOM yet, so await a bit ...
 		})(objectId);
 	}
 	Webos.trigger('elementsUpdated');
@@ -23,6 +23,7 @@ Webos.bind('createElements', function(data) {
 	for (i in data) {
 		(function(create) {
 			var parentObjectId = create.parentObjectId;
+			var objectId       = create.objectId;
 			var content        = create.content;
 			var $container     = $(document.body);
 
@@ -35,7 +36,8 @@ Webos.bind('createElements', function(data) {
 				}
 			}			
 			$container.append(content);
-			Directives.findNApplyAll($container);
+			Directives.applyAll($('#' + objectId));
+			Directives.findNApplyAll($('#' + objectId));
 		})(data[i]);
 	}
 	Webos.trigger('elementsUpdated');
@@ -105,7 +107,7 @@ Webos.bind('elementsUpdated', function() {
 });
 
 /**
- * Este observador se encarga de acomodar los MenuList disponibles.
+ * Try to keep active windows on top of dom, dropping it at the end of parent container.
  **/
 Webos.bind('elementsUpdated', function() {
 	$('.form-wrapper.active').each(function(){

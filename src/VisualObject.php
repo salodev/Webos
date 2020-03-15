@@ -1,13 +1,14 @@
 <?php
 namespace Webos;
 
+use Exception;
 use Webos\StringChar;
 use Webos\Visual\Window;
-use Exception;
 use Webos\Exceptions\Collection\NotFound;
 use Webos\Implementations\Rendering;
-use salodev\Utils;
 use Webos\Stream\Content;
+use salodev\Utils;
+use salodev\FileSystem\File;
 
 /**
  * Un VisualObject es subtipo de BaseObject porque puede ser representado
@@ -401,6 +402,7 @@ abstract class VisualObject extends BaseObject {
 			'border',
 			'borderRight',
 			'borderLeft',
+			'borderRadius',
 			'textAlign',
 			'backgroundImage',
 			'backgroundColor',
@@ -441,6 +443,12 @@ abstract class VisualObject extends BaseObject {
 			if ($name == 'backgroundImage') {
 				$value = "url({$value})";
 			}
+			if ($hyphenName=='border-radius') {
+				$value = "{$value}px";
+			}
+			if ($hyphenName=='padding') {
+				$value = "{$value}px";
+			}
 			if (strlen("{$value}")) {
 				$styles[$hyphenName] = $value;
 			}
@@ -460,6 +468,10 @@ abstract class VisualObject extends BaseObject {
 		if ($attributes['relative']??''=='vertical') {
 			unset($styles['top']);
 			$styles['position']='relative';
+		}
+		
+		if (isset($attributes['rotate'])) {
+			$styles['transform'] = "rotate({$attributes['rotate']}deg)";
 		}
 		
 		$stylesString = self::getAsStyles($styles);
@@ -531,12 +543,18 @@ abstract class VisualObject extends BaseObject {
 	
 	public function hide(): self {
 		$this->unindex();
+		$this->getApplication()->triggerSystemEvent('hideObject', $this, [
+			'objectId' => $this->getObjectID(),
+		]);
 		$this->visible = false;
 		return $this;
 	}
 	
 	public function show(): self {
 		$this->index();
+		$this->getApplication()->triggerSystemEvent('showObject', $this, [
+			'object' => $this,
+		]);
 		$this->visible = true;
 		return $this;
 	}
@@ -551,10 +569,6 @@ abstract class VisualObject extends BaseObject {
 		return $this;
 	}
 	
-	public function getMediaContent(array $parameters = []): Content {
-		throw new \Exception('No content for this object');
-	}
-	
 	public function index(): self {
 		$this->getApplication()->getWorkSpace()->indexObject($this);
 		return $this;
@@ -564,5 +578,38 @@ abstract class VisualObject extends BaseObject {
 		$this->getApplication()->getWorkSpace()->unIndexObject($this);
 		$this->getChildObjects()->unIndex();
 		return $this;
+	}
+
+	// Media content for object.
+	public function setFilePath(string $filePath): self {
+		$this->setFile(new File($filePath));
+		return $this;
+	}
+	
+	public function setFile(File $file): self {
+		$this->file = $file;
+		$this->modified();
+		return $this;
+	}
+	
+	public function getFile(): File {
+		return $this->file;
+	}
+	
+	public function getMediaContent(array $parameters = []): Content {
+		return Content::CreateFileContent($this->getFile()->getFullPath());
+	}
+	
+	public function getMediaContentForSrc(bool $embed = false): string {
+		if ($embed) {
+			$file           = $this->getFile();
+			$mimeType       = $file->getMimeType();
+			$encodedContent = base64_encode($file->getAllContent());
+			$src = "data:{$mimeType};base64, {$encodedContent}";
+		} else {
+			$src = '?getMediaContent=true&objectID=' . $this->getObjectID();
+		}
+		
+		return $src;
 	}
 }

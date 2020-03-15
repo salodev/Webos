@@ -29,6 +29,8 @@ class SystemInterface {
 
 		$system->addEventListener('sessionCreated',      [$this, 'onsSessionCreated']);
 		$system->addEventListener('createObject',        [$this, 'onCRUObjects'     ]);
+		$system->addEventListener('hideObject',          [$this, 'onCRUObjects'     ]);
+		$system->addEventListener('showObject',          [$this, 'onCRUObjects'     ]);
 		$system->addEventListener('removeObject',        [$this, 'onCRUObjects'     ]);
 		$system->addEventListener('updateObject',        [$this, 'onCRUObjects'     ]);
 		$system->addEventListener('loadedWorkSpace',     [$this, 'onLoadedWorkspace'], false);
@@ -121,7 +123,7 @@ class SystemInterface {
 	public function showError($e) {	
 		$app = $this->getActiveApplication();
 
-		$parsedException = ExceptionWindow::ParseException($e);
+		$parsedException = \salodev\Debug\ExceptionDumper::ParseFromThrowable($e);
 		$w = $app->openMessageWindow('Opps', $e->getMessage());
 		if (ENV==ENV_DEV||true) {
 			$w->createWindowButton('Details')->onClick(function($context, $source) {
@@ -165,7 +167,7 @@ class SystemInterface {
 
 	public function addCreateNotification(VisualObject $object): self {
 		// Verifica si tiene que agregar a la lista de notificaciones.
-		if ($this->checkNeccessary($object)) {
+		if ($this->checkNeccessary($object, true)) {
 			$this->_notifications['create'][$object->getObjectID()] = $object;
 		}
 		
@@ -200,7 +202,7 @@ class SystemInterface {
 	 * @param <type> $objectId
 	 * @return <type>
 	 */
-	public function checkNeccessary(VisualObject $checkObject): bool {
+	public function checkNeccessary(VisualObject $checkObject, bool $forCreation = false): bool {
 		if ($checkObject->getObjectID() == $this->lastObjectID) {
 			if ($this->ignoreUpdateObject) {
 				return false;
@@ -233,6 +235,9 @@ class SystemInterface {
 				 *
 				 **/
 				if ($object === $checkObject) {
+					if ($forCreation) {
+						return true;
+					}
 					return false;
 				}
 
@@ -330,8 +335,9 @@ class SystemInterface {
 			foreach($notif['create'] as $object) {
 				$parentObjectID = $object->hasParent() ? $object->getParent()->getObjectID() : '';
 				$eventData[] = [
+					'objectId'       => $object->getObjectID(),
 					'parentObjectId' => $parentObjectID,
-					'content' => '' . $object->render(),
+					'content'        => '' . $object->render(),
 				];
 			}
 
@@ -372,12 +378,14 @@ class SystemInterface {
 	public function onCRUObjects(string $eventName, array $params): void {
 		switch($eventName) {
 			case 'createObject':
+			case 'showObject':
 				if (isset($params['object'])){
 					$this->addCreateNotification($params['object']);
 				}
 			break;
 
 			case 'removeObject':
+			case 'hideObject':
 				if (isset($params['objectId'])){			
 					$this->addRemoveNotification($params['objectId']);
 				}

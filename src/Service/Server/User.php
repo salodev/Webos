@@ -2,15 +2,20 @@
 
 namespace Webos\Service\Server;
 
-use Exception;
 use salodev\Debug\ObjectInspector;
 use Webos\WorkSpace;
 use Webos\SystemInterface;
-use Webos\WorkSpaceHandlers\Instance as InstanceHandler;
-use Webos\FrontEnd\Page;
+use Webos\WorkSpaceHandlers\Instance   as InstanceHandler;
+use Webos\WorkSpaceHandlers\FileSystem as FileSystemHandler;
 use Webos\Service\Server\Base;
 
 class User extends Base {
+	
+	/**
+	 *
+	 * @var string 
+	 */
+	static private $_masterToken = null;
 	
 	/**
 	 *
@@ -30,14 +35,20 @@ class User extends Base {
 	 */
 	static private $_username = null;
 	
-	static public function Boot(string $username) {
-		self::$_username = $username;
-		self::$interface = new SystemInterface();
-		self::$system = self::$interface->getSystemInstance();
+	static public function Boot(string $username, bool $loadStoredWorkSpace = false, array $metadata = []) {
+		static::$_username = $username;
+		static::$interface = new SystemInterface();
+		static::$system    = self::$interface->getSystemInstance();
 		
-		self::$system->setWorkSpaceHandler(new InstanceHandler(self::$system));
+		static::$system->setWorkSpaceHandler(new InstanceHandler(static::$system));
 		
-		self::$system->loadWorkSpace($username);
+		if ($loadStoredWorkSpace) {
+			$storageHandler = new FileSystemHandler(static::$system);
+			$workSpace = $storageHandler->load($username);
+			static::$system->setWorkSpace($workSpace);
+		} else {
+			static::$system->loadWorkSpace($username);
+		}
 	}
 	
 	static public function RegisterActionHandlers() {
@@ -56,9 +67,37 @@ class User extends Base {
 		static::RegisterActionHandler('debug', function(array $data) {
 			return ObjectInspector::inspect(static::$interface, $data['path'], true);
 		});
+		
+		static::RegisterActionHandler('storeWorkSpace', function () {
+			static::CheckMasterToken();
+			static::StoreWorkSpace();
+		});
+		
+		static::RegisterActionHandler('testWorkSpace', function(array $data) {
+			static::CheckMasterToken();
+			if (empty($data['userName'])) {
+				throw new \Exception('Missing userName parameter');
+			}
+			$username = $data['userName'];
+						
+			$interface = new SystemInterface();
+			$system    = $interface->getSystemInstance();
+			$system->setWorkSpaceHandler(new FileSystemHandler($system));
+			$workSpace = $system->loadWorkSpace($username);
+			$workSpace->renderAll();
+			return true;
+		});
+		
+		static::RegisterActionHandler('kill', function () {
+			static::CheckMasterToken();
+			die();
+		});
 	}
 	
-	static public function StartApplication(string $name, array $params = []): bool {
+	static public function StartApplication(string $name, array $params = [], array $metadata = []): bool {
+		$ws = static::GetWorkSpace();
+		$ws->checkUserAgent($metadata['userAgent']??'');
+		$ws->startApplication($name, $params);		
 		static::GetWorkSpace()->startApplication($name, $params);
 		return true;
 	}
@@ -67,15 +106,38 @@ class User extends Base {
 		return static::$system->getWorkSpace();
 	}
 	
-	static public function Listen($address, $port) {
-		static::Listen($address, $port);
+	static public function Start(UserService $userService) {
+		/*\salodev\Pcntl\Thread::SetSignalHandler(SIGKILL, function() {
+			static::StoreWorkSpace();
+		});*/
+		static::Boot($userService->userName, $userService->loadStoredWorkSpace);
+		static::StartApplication($userService->applicationName, $userService->applicationParams, $userService->metadata);
+		static::SetToken($userService->token);
+		static::SetMasterToken($userService->masterToken);
+		static::RegisterActionHandlers();
+		static::Run($userService->host, $userService->port);
 	}
 	
-	static public function Start($userName, $port, $host, $userToken, $applicationName, $applicationParams) {
-		static::Boot($userName);
-		static::StartApplication($applicationName, $applicationParams);
-		static::SetToken($userToken);
-		static::RegisterActionHandlers();
-		static::Listen($host, $port);
+	static public function SetMasterToken(string $token):void {
+		static::$_masterToken = $token;
+	}
+	
+	static public function CheckMasterToken(): bool {
+		$requestData = static::GetLastRequest();
+		if (!isset($requestData['masterToken']) || empty($requestData['masterToken'])) {
+			throw new \Exception('Missing masterToken');
+		}
+		
+		if ($requestData['masterToken'] != static::$_masterToken) {
+			throw new \Exception('Invalid masterToken');
+		}
+		
+		return true;
+	}
+	
+	static public function StoreWorkSpace() {
+		$workSpaceHandler = new \Webos\WorkSpaceHandlers\FileSystem(static::$system);
+		$workspace = $workSpacestatic::$system->getWorkSpace();
+		$workSpaceHandler->store($workSpace);
 	}
 }

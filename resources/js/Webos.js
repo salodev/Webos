@@ -24,9 +24,15 @@ Webos.ajax = function(data) {
 		data: data
 	});
 }
-
+Webos.ajaxAction = function(actionName, objectID, params) {	
+	return Webos.ajax({
+		actionName: actionName,
+		objectID:   objectID,
+		params:     params
+	});
+}
 Webos.action = function(actionName, objectID, params) {
-	this.ajax({
+	return Webos.ajax({
 		actionName: actionName,
 		objectID:   objectID,
 		params:     params

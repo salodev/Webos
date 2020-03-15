@@ -75,8 +75,13 @@ class WorkSpace {
 	public function startApplication(string $name, array $params = []): self {
 
 		$appClassName = $name;// . 'Application';
-
-		$application = new $appClassName($this);
+		try {
+			$application = new $appClassName($this);
+		} catch (\Error $e) {
+			if (strpos($e->getMessage(), 'not found')) {
+				throw new \Exception("Application class {$name} not found", null, $e);
+			}
+		}
 		$application->setParams($params);		
 		
 		$this->triggerEvent('startApplication', $this, [
@@ -240,6 +245,15 @@ class WorkSpace {
 	
 	public function setSmart(bool $value = true): void {
 		$this->_vpSmart = $value;
+	}
+	
+	public function checkUserAgent(string $userAgentString) {
+		foreach(['iphone','mobile'] as $word) {
+			if (strpos(strtolower($userAgentString), $word)!==false) {
+				$this->setSmart(true);
+				return;
+			}
+		}
 	}
 	
 	public function getViewportWidth(): int {

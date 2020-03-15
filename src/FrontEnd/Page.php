@@ -53,6 +53,7 @@ class Page implements PageWrapper {
 					'<script type="text/javascript" src="js/engines/actionEngine.js"></script>' .
 					'<script type="text/javascript" src="js/engines/eventEngine.js"></script>' .
 					'<script type="text/javascript" src="js/engines/directives.js"></script>' .
+					'<script type="text/javascript" src="js/Queue.js"></script>' .
 					'<script type="text/javascript" src="js/Webos.js"></script>' .
 					'<script type="text/javascript" src="js/custom.js"></script>' .
 					'<script type="text/javascript" src="js/directives.js"></script>' .

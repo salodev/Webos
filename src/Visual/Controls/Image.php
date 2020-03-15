@@ -5,9 +5,7 @@ namespace Webos\Visual\Controls;
 use Webos\Visual\Control;
 use Exception;
 use Webos\StringChar;
-use Webos\Stream\Content;
 use Webos\Visual\Window;
-use salodev\FileSystem\File;
 
 class Image extends Control {
 	
@@ -32,34 +30,8 @@ class Image extends Control {
 		return $this;
 	}
 	
-	public function setFilePath(string $filePath): self {
-		$this->setFile(new File($filePath));
-		return $this;
-	}
-	
-	public function setFile(File $file): self {
-		$this->file = $file;
-		$this->modified();
-		return $this;
-	}
-	
-	public function getFile(): File {
-		return $this->file;
-	}
-	
-	public function getMediaContent(array $parameters = []): Content {
-		return Content::CreateFileContent($this->getFile()->getFullPath());
-	}
-	
 	public function render(): string {
-		if ($this->embedContent) {
-			$file = $this->getFile();
-			$mimeType = $file->getMimeType();
-			$encodedContent = base64_encode($file->getAllContent());
-			$src  = "data:{$mimeType};base64, {$encodedContent}";
-		} else {
-			$src  = '?getMediaContent=true&objectID=' . $this->getObjectID();
-		}
+		$src = $this->getMediaContentForSrc($this->embedContent||false);
 		$directive = '';
 		if ($this->hasListenerFor('click')) {
 			$directive = ' webos click';

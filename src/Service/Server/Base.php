@@ -4,6 +4,7 @@ namespace Webos\Service\Server;
 
 use Exception;
 use salodev\Implementations\SimpleServer;
+use salodev\Debug\ExceptionDumper;
 
 class Base extends SimpleServer {
 	
@@ -11,70 +12,94 @@ class Base extends SimpleServer {
 	 *
 	 * @var string 
 	 */
-	static private $_token = null;
+	static protected $_token = null;
+	
+	/**
+	 * @var ?array
+	 */
+	static protected $_lastRequest = null;
 	
 	/**
 	 *
 	 * @var array 
 	 */
-	static private $_actionHandlers = [];
+	static protected $_actionHandlers = [];
 	
 	static public function SetToken(string $token):void {
 		self::$_token = $token;
 	}
 	
-	static public function RegisterActionHandler($name, $handler) {
+	static public function RegisterActionHandler(string $name, callable $handler): void {
 		static::$_actionHandlers[$name] = $handler;
 	}
 	
 	static public function GetActionsList(): array {
-		return array_keys(self::$_actionHandlers);
+		return array_keys(static::$_actionHandlers);
 	}
 	
-	static public function Call($name, $token, array $data = [])  {
-		if (self::$_token) {
+	/**
+	 * 
+	 * @param string $name
+	 * @param string $token
+	 * @param array $data
+	 * @return string|array. Not is possible define a type now. It needs a refactor.
+	 * @throws Exception
+	 */
+	static public function Call(string $name, string $token, array $data = [])  {
+		if (static::$_token) {
 			if (!$token) {
 				throw new Exception('Missing token');
 			}
-			if (self::$_token != $token) {
+			if (static::$_token != $token) {
 				throw new Exception('Invalid token');
 			}
 		}
-		if (!isset(self::$_actionHandlers[$name])) {
+		if (!isset(static::$_actionHandlers[$name])) {
 			throw new Exception("Undefined '{$name}' action handler");
 		}
-		$actionHandler = self::$_actionHandlers[$name];
+		$actionHandler = static::$_actionHandlers[$name];
 		return $actionHandler($data);
 	}
 	
-	static public function Listen($address, $port) {
+	static public function Run(string $address, int $port): void {
 		
-		parent::Listen($address, $port, function($reqString) {
-			$json = json_decode($reqString, true);
-			if ($json==null) {
+		parent::Listen($address, $port, function(string $reqString): string {
+			$array = json_decode($reqString, true);
+			if ($array==null) {
 				return 'Bad json format: ' . $reqString;
 			}
+			
+			static::$_lastRequest = $array;
 
-			$command  = $json['command'];
-			$data     = $json['data'   ] ?? [];
-			$token    = $json['token'  ] ?? null;
+			$command  = $array['command'];
+			$data     = $array['data'   ] ?? [];
+			$token    = $array['token'  ] ?? '';
 			
 			try {
-				$commandResponse = self::Call($command, $token, $data);
+				$commandResponse = static::Call($command, $token, $data);
 			} catch(Exception $e) {
-				echo "Command Exception: {$e->getMessage()} at file '{$e->getFile()}' ({$e->getLine()})\n\n";
-				echo $e->getTraceAsString();
+				static::Log("Command Exception: {$e->getMessage()} at file '{$e->getFile()}' ({$e->getLine()})\n\n");
+				static::Log($e->getTraceAsString());
 				return json_encode([
 					'status' => 'error',
 					'errorMsg' => $e->getMessage(),
 				]);
 			}
 
-			// echo "enviando: " . print_r($commandResponse, true);
+			static::Log("enviando: " . print_r($commandResponse, true));
 			return json_encode([
 				'status' => 'ok',
 				'data'   => $commandResponse,
 			]);
 		});
+	}
+	
+	
+	static public function LogException($e) {
+		static::Log(ExceptionDumper::DumpFromThrowable($e)."\n");
+	}
+	
+	static public function GetLastRequest(): array {
+		return static::$_lastRequest;
 	}
 }

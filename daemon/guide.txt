@@ -1,0 +1,14 @@
+copy an rename template.sh script to webos-master.sh.
+replace tags with following data
+<NAME>        Service name
+<DESCRIPTION> A short service description
+<COMMAND>     Absolute path to WebosApp/private/services/master.php
+<USERNAME>    Usally root or another user
+
+So type following lines:
+
+sudo cp webos-master.sh /etc/init.d/webos-master
+sudo chmod +x /etc/init.d/webos-master
+sudo update-rc.d webos-master defaults
+
+Your daemon should be installed successfully and ready to serve.

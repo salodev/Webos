@@ -9,14 +9,13 @@ class ProductionService extends UserService {
 	
 	private $_client = null;
 	private $_userName = null;
-	private $_applicationName   = null;
-	private $_applicationParams = null;
 	
-	public function __construct(string $userName, string $applicationName, array $applicationParams = []) {
+	public function __construct(string $userName, string $applicationName, array $applicationParams = [], array $metadata = []) {
 		
 		$this->_userName          = $userName;
 		$this->_applicationName   = $applicationName;
 		$this->_applicationParams = $applicationParams;
+		$this->_metadata          = $metadata;
 		
 		$userName = $_SESSION['username' ] ?? $userName;
 		$port     = $_SESSION['port'     ] ?? null;
@@ -40,6 +39,7 @@ class ProductionService extends UserService {
 			'userName'          => $this->_userName,
 			'applicationName'   => $this->_applicationName,
 			'applicationParams' => $this->_applicationParams,
+			'metadata'          => $this->_metadata,
 		]);
 		$_SESSION['port' ] = $ret['port' ];
 		$_SESSION['token'] = $ret['token'];
@@ -69,13 +69,27 @@ class ProductionService extends UserService {
 	}
 	
 	public function getOutputStream(): array {
-		throw new \Exception('Not implemented!');
-		// return [];
+		return $this->_client->call('getOuputStream');
 	}
 	
 	public function getFilestoreDirectory(): string {
-		throw new \Exception('Not implemented!');
+		return $this->_client->call('getFilestoreDirectory');
 	}
+	
+	public function getMediaContent(string $objectID, array $params = []): array {
+		return $this->_client->call('getMediaContent', [
+			'objectId' => $objectID, 
+			'params'   => $params,
+		]);
+	}
+	
+	public function setViewportSize(int $width, int $height): void {
+		$this->_client->call('setViewportSize', [
+			'width'  => $width, 
+			'height' => $height,
+		]);
+	}
+	
 	
 	public function debug():void {
 		$html = $this->_client->call('debug', [

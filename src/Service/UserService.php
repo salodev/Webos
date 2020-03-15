@@ -11,12 +11,14 @@ use salodev\Debug\ObjectInspector;
 
 class UserService {
 	
-	protected $_user            = null;
-	public    $_applicationName = null;
-	protected $_interface       = null;
-	protected $_system          = null;
+	protected $_user              = null;
+	public    $_applicationName   = [];
+	public    $_applicationParams = [];
+	public    $_metadata          = [];
+	protected $_interface         = null;
+	protected $_system            = null;
 	
-	public function __construct(string $userName, string $applicationName, array $applicationParams = []) {
+	public function __construct(string $userName, string $applicationName, array $applicationParams = [], array $metadata = []) {
 		$this->_user = $userName;
 		$this->_applicationName   = $applicationName;
 		$this->_applicationParams = $applicationParams;
@@ -25,7 +27,7 @@ class UserService {
 		$this->_system->setConfig('path/workspaces', PATH_PRIVATE . 'workspaces/');
 		$this->_system->setWorkSpaceHandler(new FileSystemHanlder($this->_system));
 		$this->_system->addEventListener('createdWorkspace', function($data) {
-			$this->checkUserAgent($_SERVER['HTTP_USER_AGENT'], $data['ws']);
+			$data['ws']->checkUserAgent($_SERVER['HTTP_USER_AGENT']);
 			$data['ws']->startApplication($this->_applicationName, $this->_applicationParams);
 		});
 		$this->_system->loadWorkSpace($userName);
@@ -67,14 +69,5 @@ class UserService {
 	
 	public function setViewportSize(int $width, int $height): void {
 		$this->_interface->getWorkSpace()->setViewportSize($width, $height);
-	}
-	
-	public function checkUserAgent(string $userAgentString, WorkSpace $ws) {
-		foreach(['iphone','mobile'] as $word) {
-			if (strpos(strtolower($userAgentString), $word)!==false) {
-				$ws->setSmart(true);
-				return;
-			}
-		}
 	}
 }

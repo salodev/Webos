@@ -1,11 +1,11 @@
 <?php
 
 namespace Webos\Implementations;
+
 use Webos\Service\ProductionService;
 use Webos\Service\AuthService;
 use Webos\Service\UserService;
 use Webos\Implementations\Authentication;
-use Webos\Apps\Auth as AuthApplication;
 use Webos\Stream\Content as StreamContent;
 
 class Service {
@@ -37,6 +37,9 @@ class Service {
 	}
 	
 	static public function GetUrl(): string {
+		if (!self::$_url) {
+			self::$_url = self::AutoGenerateUrl();
+		}
 		return self::$_url;
 	}
 	
@@ -161,5 +164,15 @@ class Service {
 		ob_start('ob_gzhandler');
 		header('Content-Type: text/json');
 		die(json_encode($json));
+	}
+	
+	static public function AutoGenerateUrl() {
+		$protocols = [
+			'HTTP/1.0' => 'http',
+			'HTTP/1.1' => 'http',
+		];
+		$urlProtocol = $protocols[$_SERVER['SERVER_PROTOCOL']]??'http';
+		$urlHost     = $_SERVER['HTTP_HOST'];
+		return "{$urlProtocol}://{$urlHost}/";
 	}
 }

@@ -48,13 +48,18 @@ class System {
 	}
 	
 	public function loadWorkSpace($name): WorkSpace {
-		$this->_workSpaceName = $name;
 
 		if ($this->_workSpace) {
 			return $this->_workSpace;
 		}
 		
 		$ws = $this->_workSpaceHandler->load($name);
+		$this->setWorkSpace($ws, $name);
+		return $ws;
+	}
+	
+	public function setWorkSpace(WorkSpace $ws, $name): self {
+		$this->_workSpaceName = $name;
 
 		/**
 		 * NOTA:
@@ -84,7 +89,7 @@ class System {
 			$application->setup();
 		});
 
-		return $ws;
+		return $this;
 	}
 	
 	public function removeWorkSpace(): self {

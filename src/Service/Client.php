@@ -9,18 +9,23 @@ class Client {
 	 *
 	 * @var type \salodev\ClientSocket;
 	 */
-	private $_socket = null;
+	private $_socket      = null;
 	
-	private $_token = null;
-	private $_host = null;
-	private $_port = null;
+	private $_token       = null;
+	private $_masterToken = null;
+	private $_host        = null;
+	private $_port        = null;
 	
-	private $_logHandler = null;
+	private $_logHandler  = null;
 	
 	public function __construct(string $token = null, string $host = '127.0.0.1', int $port = 3000) {
-		$this->_host = $host;
-		$this->_port = $port;
+		$this->_host  = $host;
+		$this->_port  = $port;
 		$this->_token = $token;
+	}
+	
+	public function setMasterToken($masterToken) {
+		$this->_masterToken = $masterToken;
 	}
 	
 	public function getPort(): int {
@@ -64,11 +69,17 @@ class Client {
 		
 		$logHandler = $this->_logHandler ?? function() {};
 		
-		$msg = json_encode([
+		$array = [
 			'command'  => $commandName,
 			'data'     => $data,
 			'token'    => $this->_token,
-		]);
+		];
+		
+		if ($this->_masterToken) {
+			$array['masterToken'] = $this->_masterToken;
+		}
+		
+		$msg = json_encode($array);
 		
 		$logHandler('SEND ' . $msg);
 		

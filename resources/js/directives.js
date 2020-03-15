@@ -55,10 +55,10 @@ Directives.register('leavetyping', function(el) {
 	}
 	$el.bind('keyup', function(ev) {
 		if (to) { clearTimeout(to); }
-		to = setTimeout(function() {
+			to = setTimeout(function() {
 			save();
 		}, 400);
-	});
+				});
 	$(function(){
 		if ($el.is(":-webkit-autofill")) {
 			save();
