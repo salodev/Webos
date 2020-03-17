@@ -58,8 +58,8 @@ class System {
 		return $ws;
 	}
 	
-	public function setWorkSpace(WorkSpace $ws, $name): self {
-		$this->_workSpaceName = $name;
+	public function setWorkSpace(WorkSpace $ws): self {
+		$this->_workSpaceName = $ws->getName();
 
 		/**
 		 * NOTA:

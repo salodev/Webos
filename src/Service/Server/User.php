@@ -52,6 +52,7 @@ class User extends Base {
 	}
 	
 	static public function RegisterActionHandlers() {
+		
 		static::RegisterActionHandler('renderAll', function(array $data) {
 			return static::$interface->renderAll();
 		});
@@ -94,9 +95,9 @@ class User extends Base {
 		});
 	}
 	
-	static public function StartApplication(string $name, array $params = [], array $metadata = []): bool {
+	static public function StartApplication(string $name, array $params = [], string $userAgent = ''): bool {
 		$ws = static::GetWorkSpace();
-		$ws->checkUserAgent($metadata['userAgent']??'');
+		$ws->checkUserAgent($userAgent);
 		$ws->startApplication($name, $params);		
 		static::GetWorkSpace()->startApplication($name, $params);
 		return true;
@@ -107,11 +108,16 @@ class User extends Base {
 	}
 	
 	static public function Start(UserService $userService) {
-		/*\salodev\Pcntl\Thread::SetSignalHandler(SIGKILL, function() {
+		register_shutdown_function(function () {
 			static::StoreWorkSpace();
-		});*/
+			try {
+				\salodev\Pcntl\Thread::CloseAllStreams();
+			} catch (\Exception $e) {
+				
+			}
+		});
 		static::Boot($userService->userName, $userService->loadStoredWorkSpace);
-		static::StartApplication($userService->applicationName, $userService->applicationParams, $userService->metadata);
+		static::StartApplication($userService->applicationName, $userService->applicationParams, $userService->userAgent);
 		static::SetToken($userService->token);
 		static::SetMasterToken($userService->masterToken);
 		static::RegisterActionHandlers();
@@ -137,7 +143,7 @@ class User extends Base {
 	
 	static public function StoreWorkSpace() {
 		$workSpaceHandler = new \Webos\WorkSpaceHandlers\FileSystem(static::$system);
-		$workspace = $workSpacestatic::$system->getWorkSpace();
+		$workSpace = static::$system->getWorkSpace();
 		$workSpaceHandler->store($workSpace);
 	}
 }

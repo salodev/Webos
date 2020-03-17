@@ -16,7 +16,7 @@ class UserService {
 	public $applicationName;
 	public $applicationParams = [];
 	public $loadStoredWorkSpace = false;
-	public $metadata = [];
+	public $userAgent = null;
 	public $created = null;
 	
 	/**

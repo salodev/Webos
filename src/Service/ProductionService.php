@@ -25,21 +25,15 @@ class ProductionService extends UserService {
 			$this->_getService();
 		}
 		$this->_client = new Client($_SESSION['token'], '127.0.0.1', $_SESSION['port']);
-		// $this->_client->setLogHandler(function($msg) {
-		// 	file_put_contents(PATH_PRIVATE.'log/client.log', "{$msg}\n\n", FILE_APPEND);
-		// });
 	}
 	
 	private function _getService() {
 		$client = new Client('root', '127.0.0.1', 3000);
-		// $client->setLogHandler(function($msg) {
-		// 	file_put_contents(PATH_PRIVATE.'log/client.log', "{$msg}\n\n", FILE_APPEND);
-		// });
 		$ret = $client->call('create', [
 			'userName'          => $this->_userName,
 			'applicationName'   => $this->_applicationName,
 			'applicationParams' => $this->_applicationParams,
-			'metadata'          => $this->_metadata,
+			'userAgent'         => $_SERVER['HTTP_USER_AGENT'] || '',
 		]);
 		$_SESSION['port' ] = $ret['port' ];
 		$_SESSION['token'] = $ret['token'];
@@ -50,41 +44,33 @@ class ProductionService extends UserService {
 	}
 	
 	public function action(string $name, string $objectID, array $parameters, bool $ignoreUpdateObject = false): array {
-		$ret = $this->_client->call('action', [
+		$ret = $this->_call('action', [
 			'name'       => $name,
 			'objectID'   => $objectID,
 			'parameters' => $parameters,
 			'ignoreUpdateObject' => $ignoreUpdateObject,
 		]);
 		
-		if (isset($ret['events']) && is_array($ret['events'])){
-			foreach($ret['events'] as $event) {
-				if ($event['name']=='authUser') {
-					session_destroy();
-				}
-			}
-		}
-		
 		return $ret;
 	}
 	
 	public function getOutputStream(): array {
-		return $this->_client->call('getOuputStream');
+		return $this->_call('getOuputStream');
 	}
 	
 	public function getFilestoreDirectory(): string {
-		return $this->_client->call('getFilestoreDirectory');
+		return $this->_call('getFilestoreDirectory');
 	}
 	
 	public function getMediaContent(string $objectID, array $params = []): array {
-		return $this->_client->call('getMediaContent', [
+		return $this->_call('getMediaContent', [
 			'objectId' => $objectID, 
 			'params'   => $params,
 		]);
 	}
 	
 	public function setViewportSize(int $width, int $height): void {
-		$this->_client->call('setViewportSize', [
+		$this->_call('setViewportSize', [
 			'width'  => $width, 
 			'height' => $height,
 		]);

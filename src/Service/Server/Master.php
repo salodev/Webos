@@ -3,7 +3,6 @@
 namespace Webos\Service\Server;
 
 use Exception;
-use Webos\Service\Client;
 use salodev\Pcntl\Thread;
 use salodev\IO\Stream;
 use salodev\IO\ClientSocket;
@@ -53,7 +52,7 @@ class Master extends Base {
 		static::Log("OK\n");
 		
 		try {
-			static::Log("making connection test for {$userName} in port no:{$userService->port}...");
+			static::Log("making connection test for {$userName} in port no:{$userService->port}...", 'debug');
 			$socket = ClientSocket::Create($userService->host, $userService->port, 0.5);
 			$socket->close();
 			static::Log("OK\n");
@@ -170,7 +169,7 @@ class Master extends Base {
 			$userService->applicationName	 = $data['applicationName'  ];
 			$userService->applicationParams	 = $data['applicationParams'] ?? [];
 			$userService->port				 = $data['port'             ] ?? null;
-			$userService->metadata			 = $data['metadata'         ] ?? [];
+			$userService->userAgent			 = $data['userAgent'        ] ?? '';
 			return self::Create($userService);
 		});
 		
@@ -190,13 +189,13 @@ class Master extends Base {
 		
 		static::RegisterActionHandler('list', function() {
 			$rs = [];
-			foreach(self::$_userServices as $name => $userService) {
+			foreach(self::$_userServices as $userName => $userService) {
 				$rs[] = [
-					'name'    => $name,
-					'port'    => $userService->port(),
-					'token'   => $userService->token(),
-					'pid'     => $userService->getChildProcess()->getPid(),
-					'created' => $userService->created,
+					'userName' => $userName,
+					'port'     => $userService->port,
+					'token'    => $userService->token,
+					'pid'      => $userService->getChildProcess()->getPid(),
+					'created'  => $userService->created,
 				];
 			}
 			return $rs;

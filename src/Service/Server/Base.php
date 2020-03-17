@@ -4,7 +4,6 @@ namespace Webos\Service\Server;
 
 use Exception;
 use salodev\Implementations\SimpleServer;
-use salodev\Debug\ExceptionDumper;
 
 class Base extends SimpleServer {
 	
@@ -78,8 +77,7 @@ class Base extends SimpleServer {
 			try {
 				$commandResponse = static::Call($command, $token, $data);
 			} catch(Exception $e) {
-				static::Log("Command Exception: {$e->getMessage()} at file '{$e->getFile()}' ({$e->getLine()})\n\n");
-				static::Log($e->getTraceAsString());
+				static::LogException($e);
 				return json_encode([
 					'status' => 'error',
 					'errorMsg' => $e->getMessage(),
@@ -92,11 +90,6 @@ class Base extends SimpleServer {
 				'data'   => $commandResponse,
 			]);
 		});
-	}
-	
-	
-	static public function LogException($e) {
-		static::Log(ExceptionDumper::DumpFromThrowable($e)."\n");
 	}
 	
 	static public function GetLastRequest(): array {

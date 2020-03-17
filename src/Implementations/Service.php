@@ -61,8 +61,18 @@ class Service {
 	}
 	
 	static public function Start(): void {
+		set_exception_handler(function($e) {
+			if (static::$dev == true) {
+				echo '<pre>';
+				echo \salodev\Debug\ExceptionDumper::DumpFromThrowable($e);
+				echo '</pre>';
+			} else {
+				echo 'An unexpected error was ocurred..';
+				die();
+			}
+		});
 		$uri = $_SERVER['REQUEST_URI'];
-		
+		//print_r(self::$_applicationParams);die();
 		if (preg_match('/\/(img|js|css|fonts)\/.*/', $uri, $matches)) {
 			ResourcesLoader::ServeFile($matches[1], $matches[0]);
 		}
