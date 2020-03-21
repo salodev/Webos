@@ -1,15 +1,14 @@
 <?php
 
-namespace Webos\Service\Server;
+namespace Webos\Service\NetworkService;
 
-use salodev\Debug\ObjectInspector;
 use Webos\WorkSpace;
 use Webos\SystemInterface;
 use Webos\WorkSpaceHandlers\Instance   as InstanceHandler;
 use Webos\WorkSpaceHandlers\FileSystem as FileSystemHandler;
-use Webos\Service\Server\Base;
+use salodev\Pcntl\Thread;
 
-class User extends Base {
+class UserServer extends Server {
 	
 	/**
 	 *
@@ -53,22 +52,31 @@ class User extends Base {
 	
 	static public function RegisterActionHandlers() {
 		
-		static::RegisterActionHandler('renderAll', function(array $data) {
-			return static::$interface->renderAll();
+		static::RegisterActionHandler('interface', function(array $data = []) {
+			if (empty($data[0])) {
+				throw new \Exception('Missing fist param');
+			}
+			$methodName = $data[0];
+			$params     = $data[1];
+			$validMethods = [
+				'renderAll',
+				'action',
+				'debug',
+				'getOutputStream',
+				'getFilestoreDirectory',
+				'getMediaContent',
+				'setViewportSize'
+			];
+			if (!in_array($methodName, $validMethods)) {
+				throw new Exception('Only valid mehtods: ' . implode(', ', $validMethods));
+			}
+			if ($methodName != 'renderAll') {
+				// return $data;
+			}
+			return call_user_func_array([static::$interface, $methodName], $params);
+			
 		});
-		
-		static::RegisterActionHandler('action', function(array $data) {
-			$actionName = $data['name'      ];
-			$objectID   = $data['objectID'  ];
-			$parameters = $data['parameters'] ?? [];
-			$ignoreUpdateObject = $data['ignoreUpdateObject'] ?? false;
-			return static::$interface->action($actionName, $objectID, $parameters, $ignoreUpdateObject);
-		});
-		
-		static::RegisterActionHandler('debug', function(array $data) {
-			return ObjectInspector::inspect(static::$interface, $data['path'], true);
-		});
-		
+	
 		static::RegisterActionHandler('storeWorkSpace', function () {
 			static::CheckMasterToken();
 			static::StoreWorkSpace();
@@ -95,9 +103,11 @@ class User extends Base {
 		});
 	}
 	
-	static public function StartApplication(string $name, array $params = [], string $userAgent = ''): bool {
+	static public function StartApplication(string $name, array $params = [], string $userAgent = null): bool {
 		$ws = static::GetWorkSpace();
-		$ws->checkUserAgent($userAgent);
+		if ($userAgent !== null) {
+			$ws->checkUserAgent($userAgent);
+		}
 		$ws->startApplication($name, $params);		
 		static::GetWorkSpace()->startApplication($name, $params);
 		return true;
@@ -107,21 +117,30 @@ class User extends Base {
 		return static::$system->getWorkSpace();
 	}
 	
-	static public function Start(UserService $userService) {
-		register_shutdown_function(function () {
+	static public function Start(ServiceAuthorization $authorization) {
+		
+		/**
+		 *  It makes cancellabe by CTRL+C signal
+		 */
+		Thread::SetSignalHandler(SIGINT, function($signo) {
+			die();
+		});
+		
+		/*register_shutdown_function(function () {
 			static::StoreWorkSpace();
 			try {
 				\salodev\Pcntl\Thread::CloseAllStreams();
 			} catch (\Exception $e) {
 				
 			}
-		});
-		static::Boot($userService->userName, $userService->loadStoredWorkSpace);
-		static::StartApplication($userService->applicationName, $userService->applicationParams, $userService->userAgent);
-		static::SetToken($userService->token);
-		static::SetMasterToken($userService->masterToken);
+		});*/
+		
+		static::Boot($authorization->userName, $authorization->loadStoredWorkSpace);
+		static::StartApplication($authorization->applicationName, $authorization->applicationParams, $authorization->userAgent);
+		static::SetToken($authorization->token);
+		static::SetMasterToken($authorization->masterToken);
 		static::RegisterActionHandlers();
-		static::Run($userService->host, $userService->port);
+		static::Run($authorization->host, $authorization->port);
 	}
 	
 	static public function SetMasterToken(string $token):void {

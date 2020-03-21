@@ -1,5 +1,5 @@
 <?php
-namespace Webos\Service;
+namespace Webos\Service\NetworkService;
 use Exception;
 use salodev\IO\ClientSocket as Socket;
 
@@ -30,6 +30,10 @@ class Client {
 	
 	public function getPort(): int {
 		return $this->_port;
+	}
+	
+	public function getHost(): string {
+		return $this->_host;
 	}
 	
 	public function connect(): void {

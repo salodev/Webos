@@ -1,4 +1,5 @@
 var Webos = {};
+
 Webos.endPoint = '';
 
 Webos.parseResponse = function(data) {
@@ -17,22 +18,15 @@ Webos.parseResponse = function(data) {
 	}
 };
 
-Webos.ajax = function(data) {
+Webos.ajax = function(uri, data) {
 	return $.ajax({
-		url: this.endPoint,
+		url: this.endPoint + uri,
 		type: 'post',
 		data: data
 	});
 }
-Webos.ajaxAction = function(actionName, objectID, params) {	
-	return Webos.ajax({
-		actionName: actionName,
-		objectID:   objectID,
-		params:     params
-	});
-}
 Webos.action = function(actionName, objectID, params) {
-	return Webos.ajax({
+	return Webos.ajax('action', {
 		actionName: actionName,
 		objectID:   objectID,
 		params:     params
@@ -40,16 +34,9 @@ Webos.action = function(actionName, objectID, params) {
 		alert('Unexpected response:\n' + r);
 	});
 }
-Webos.trigger = function(eventName, eventData) {
-	eventEngine.triggerEvent(eventName, eventData);
-}
-Webos.bind = function(eventName, eventHandler, persistance) {
-	eventEngine.registerEventListener(eventName, eventHandler, persistance);
-}
 
 Webos.syncViewportSize = function() {
-	this.ajax({
-		syncViewportSize: true,
+	this.ajax('syncViewportSize', {
 		width:  window.outerWidth,
 		height: window.outerHeight
 	});
@@ -60,10 +47,17 @@ Webos.keyEscape = function() {
 	if (Webos.blockedKeyEscape) {
 		return;
 	}
+	return; // now blocked.
 	Webos.blockedKeyEscape = true;
-	this.ajax({
-		keyEscape: true,
-	}).always(function() {
+	this.ajax('keyEscape').always(function() {
 		Webos.blockedKeyEscape = false;
 	});
+}
+
+Webos.trigger = function(eventName, eventData) {
+	eventEngine.triggerEvent(eventName, eventData);
+}
+
+Webos.bind = function(eventName, eventHandler, persistance) {
+	eventEngine.registerEventListener(eventName, eventHandler, persistance);
 }

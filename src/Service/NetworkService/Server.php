@@ -1,11 +1,11 @@
 <?php
 
-namespace Webos\Service\Server;
+namespace Webos\Service\NetworkService;
 
 use Exception;
 use salodev\Implementations\SimpleServer;
 
-class Base extends SimpleServer {
+class Server extends SimpleServer {
 	
 	/**
 	 *
@@ -84,7 +84,7 @@ class Base extends SimpleServer {
 				]);
 			}
 
-			static::Log("enviando: " . print_r($commandResponse, true));
+			static::LogDebug("enviando: " . print_r($commandResponse, true));
 			return json_encode([
 				'status' => 'ok',
 				'data'   => $commandResponse,

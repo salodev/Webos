@@ -1,12 +1,11 @@
 <?php
 
-namespace Webos\Service\Server;
+namespace Webos\Service\NetworkService;
 
-use Webos\Service\Client;
 use salodev\Pcntl\Child;
 use salodev\Pcntl\Thread;
 
-class UserService {
+class ServiceAuthorization {
 	
 	public $userName;
 	public $port;

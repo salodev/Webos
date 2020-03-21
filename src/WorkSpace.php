@@ -233,7 +233,7 @@ class WorkSpace {
 		return "{$configPath}{$this->_name}/files/";
 	}
 	
-	public function setViewportSize(int $width, int $height) {
+	public function setViewportSize(int $width, int $height): void {
 		$this->_vpWidth  = $width;
 		$this->_vpHeight = $height;
 		$this->_vpSmart  = $this->_vpWidth < 600;

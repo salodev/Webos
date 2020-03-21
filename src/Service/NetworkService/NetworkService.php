@@ -1,11 +1,11 @@
 <?php
 
-namespace Webos\Service;
-use Exception;
-use Webos\SystemInterface;
-use Webos\WorkSpaceHandlers\FileSystem AS FileSystemHanlder;
+namespace Webos\Service\NetworkService;
 
-class ProductionService extends UserService {
+use Webos\Service\Service;
+use Exception;
+
+class NetworkService extends Service {
 	
 	private $_client = null;
 	private $_userName = null;
@@ -24,11 +24,11 @@ class ProductionService extends UserService {
 		if (!$userName || !$port || !$token) {
 			$this->_getService();
 		}
-		$this->_client = new Client($_SESSION['token'], '127.0.0.1', $_SESSION['port']);
+		$this->_client = $this->_createClient($_SESSION['token'], '127.0.0.1', $_SESSION['port']);
 	}
 	
 	private function _getService() {
-		$client = new Client('root', '127.0.0.1', 3000);
+		$client = $this->_createClient('root', '127.0.0.1', 3000);
 		$ret = $client->call('create', [
 			'userName'          => $this->_userName,
 			'applicationName'   => $this->_applicationName,
@@ -40,48 +40,42 @@ class ProductionService extends UserService {
 	}
 	
 	public function renderAll(): string {
-		return $this->_call('renderAll');
+		return $this->_remote('renderAll');
 	}
 	
 	public function action(string $name, string $objectID, array $parameters, bool $ignoreUpdateObject = false): array {
-		$ret = $this->_call('action', [
-			'name'       => $name,
-			'objectID'   => $objectID,
-			'parameters' => $parameters,
-			'ignoreUpdateObject' => $ignoreUpdateObject,
-		]);
-		
-		return $ret;
+		return $this->_remote('action', [$name, $objectID, $parameters, $ignoreUpdateObject]);
 	}
 	
 	public function getOutputStream(): array {
-		return $this->_call('getOuputStream');
+		return $this->_remote('getOuputStream');
 	}
 	
 	public function getFilestoreDirectory(): string {
-		return $this->_call('getFilestoreDirectory');
+		return $this->_remote('getFilestoreDirectory');
 	}
 	
 	public function getMediaContent(string $objectID, array $params = []): array {
-		return $this->_call('getMediaContent', [
-			'objectId' => $objectID, 
-			'params'   => $params,
-		]);
+		return $this->_remote('getMediaContent', [$objectID, $params]);
 	}
 	
 	public function setViewportSize(int $width, int $height): void {
-		$this->_call('setViewportSize', [
-			'width'  => $width, 
-			'height' => $height,
-		]);
+		$this->_remote('setViewportSize', [$width, $height]);
 	}
 	
-	
 	public function debug():void {
-		$html = $this->_client->call('debug', [
-			'path' => $_REQUEST['__path'] ?? null,
-		]);
+		$html = $this->_remote('debug', [$_REQUEST['__path'] ?? null]);
 		echo $html; die();
+	}
+	
+	private function _createClient($token, $host, $port): Client {
+		$client = new Client($token, $host, $port);
+		$client->setLogHandler(function($message) use ($client) {
+			$to = "{$client->getHost()}:{$client->getPort()}";
+			// file_put_contents('/var/www/sg/private/log/client.log', "[{$to}] {$message}\n", FILE_APPEND);
+		});
+		
+		return $client;
 	}
 	
 	private function _call(string $actionName, array $params = []) {
@@ -89,8 +83,13 @@ class ProductionService extends UserService {
 			return $this->_client->call($actionName, $params);
 		} catch (Exception $e){
 			$this->_getService();
-			$this->_client = new Client($_SESSION['token'], '127.0.0.1', $_SESSION['port']);
+			$this->_client = $this->_createClient($_SESSION['token'], '127.0.0.1', $_SESSION['port']);
 			return $this->_client->call($actionName, $params);
 		}
 	}
+	
+	private function _remote($methodName, array $params = []) {
+		return $this->_call('interface', [$methodName, $params]);
+	}
+
 }

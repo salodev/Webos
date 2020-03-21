@@ -1,13 +1,13 @@
 <?php
 
-namespace Webos\Service\Server;
+namespace Webos\Service\NetworkService;
 
 use Exception;
 use salodev\Pcntl\Thread;
 use salodev\IO\Stream;
 use salodev\IO\ClientSocket;
 
-class Master extends Base {
+class MasterServer extends Server {
 	
 	static private $_host = null;
 	
@@ -15,15 +15,19 @@ class Master extends Base {
 	
 	static private $_lastPort = 0;
 	
+	/**
+	 *
+	 * @var ServiceAuthorization[] 
+	 */
 	static private $_userServices = [];
 	
 	static private $_masterTokenSeed = null;
 	
-	static public function Register(UserService $userService): void {
-		self::$_userServices[$userService->userName] = $userService;
+	static public function Register(ServiceAuthorization $authorization): void {
+		self::$_userServices[$authorization->userName] = $authorization;
 	}
 	
-	static public function Get(string $userName): UserService {
+	static public function Get(string $userName): ServiceAuthorization {
 		if (!isset(self::$_userServices[$userName])) {
 			throw new Exception('User info not found');
 		}
@@ -42,65 +46,81 @@ class Master extends Base {
 	}
 	
 	static public function Check($userName) {
-		static::Log("looking for '{$userName}' service info...");
+		static::Log("looking for '{$userName}' service info...", 'info');
 		try {
-			$userService = self::Get($userName);
+			$authorization = self::Get($userName);
 		} catch (Exception $e) {
-			static::Log("NOT FOUND\n");
+			static::Log("NOT FOUND\n", 'info');
 			return false;
 		}
-		static::Log("OK\n");
 		
 		try {
-			static::Log("making connection test for {$userName} in port no:{$userService->port}...", 'debug');
-			$socket = ClientSocket::Create($userService->host, $userService->port, 0.5);
+			static::Log("making connection test for {$userName} in port no:{$authorization->port}...", 'debug');
+			$socket = ClientSocket::Create($authorization->host, $authorization->port, 0.5);
 			$socket->close();
 			static::Log("OK\n");
 		} catch (Exception $e) {
-			static::Log("TIMED OUT (0.5s)\n");
+			static::Log("TIMED OUT (0.5s)\n", 'info');
 			return false;
 		}
 		return true;
 	}
 	
-	static public function Create(UserService $userService) {
+	static public function Create(ServiceAuthorization $authorization) {
 		
-		// If user exists returns info.		
-		if (self::Check($userService->userName)) {
-			$userService = self::Get($userService->userName);
+		/**
+		 * If user exists returns info.		
+		 */
+		if (self::Check($authorization->userName)) {
+			$authorization = self::Get($authorization->userName);			
 			return [
-				'port'  => $userService->port,
-				'token' => $userService->token,
+				'port'  => $authorization->port,
+				'token' => $authorization->token,
 			];
 		}
 		
-		// If not, we need create a new service.
+		/**
+		 * If not, we need create a new service.
+		 */
+		static::Log("Creating new service", 'info');
+		$authorization->port = self::_SelectNewPort($authorization->port);
+		static::Log("port {$authorization->port}", 'info');
 		
-		$userService->port = self::_SelectNewPort($userService->port);
+		/**
+		 * generate a token;
+		 */
+		$authorization->token       = md5(time() . Thread::GetPid());
+		$authorization->masterToken = md5(time() . Thread::GetPid() . static::GetMasterTokenSeed());
 		
-		//generate a token;
-		$userService->token       = md5(time() . Thread::GetPid());
-		$userService->masterToken = md5(time() . Thread::GetPid() . static::GetMasterTokenSeed());
+		/**
+		 * Spawn service for user.
+		 */
+		$authorization->host = self::$_host;		
+		static::Log("port {$authorization->port}", 'info');
+		static::Log("Forking..", 'info');
+		self::CreateViaFork($authorization);
 		
-		// Spawn service for user.
-		$userService->host = self::$_host;		
-		self::CreateViaFork($userService);
+		static::Log("Registering..", 'info');
 		
-		// Store user info.
-		self::Register($userService);
+		/**
+		 * Store user info.
+		 */
+		self::Register($authorization);
 		static::Log("service information stored\n");
 		
-		// And retrieve it.
+		/**
+		 * And retrieve it.
+		 */
 		return [
-			'port'  => $userService->port,
-			'token' => $userService->token,
+			'port'  => $authorization->port,
+			'token' => $authorization->token,
 		];
 	}
 	
-	static private function CreateViaFork(UserService $userService) {
-		static::Log("spawing via fork for '{$userService->userName}' in port {$userService->port}\n");
+	static private function CreateViaFork(ServiceAuthorization $authorization) {
+		static::Log("spawing via fork for '{$authorization->userName}' in port {$authorization->port}\n");
 
-		$childProcess = Thread::Fork(function() use ($userService) {
+		$childProcess = Thread::Fork(function() use ($authorization) {
 			/**
 			 * Incoming connection must be closed from child.
 			 */
@@ -118,13 +138,13 @@ class Master extends Base {
 			/**
 			 * So we are ready for start new service
 			 */
-			User::Start($userService);
+			UserServer::Start($authorization);
 		});
-		$userService->created = microtime(true);
-		$userService->setChildProcess($childProcess);
+		$authorization->created = microtime(true);
+		$authorization->setChildProcess($childProcess);
 		
 		static::Log("waiting service availability...");
-		if (!$userService->getClient()->waitForService()) {
+		if (!$authorization->getClient()->waitForService()) {
 			static::Log("ERROR\n");
 			throw new Exception('Service could not be spawned');
 		}
@@ -134,8 +154,9 @@ class Master extends Base {
 	}
 	
 	static public function Remove($userName) {
-		$userService = self::Get($userName);
-		$userService->getChildProcess()->kill();
+		$authoriztion = self::Get($userName);
+		$authoriztion->getChildProcess()->kill();
+		
 		unset(self::$_userServices[$userName]);
 		return true;
 	}
@@ -153,24 +174,36 @@ class Master extends Base {
 	}
 	
 	static public function Run(string $host = '127.0.0.1', int $port = 3000):void {
+		
+		Thread::SetSignalHandler(SIGINT, function ($sigNumber) {
+			foreach(static::$_userServices as $authorization) {
+				$child = $authorization->getChildProcess();
+				static::LogInfo("Signaling Interrupt to Service Authorization: User={$authorization->userName}, Pid={$child->getPid()}, Service={$authorization->host}:{$authorization->port} ...");
+				$child->stop();
+				$child->wait();
+			}
+			
+			die();
+		});
+		
 		self::$_host = $host;
 		self::$_port = $port;
 		self::$_lastPort = $port;
 		
-		static::RegisterActionHandler('create', function(array $data) {
+		static::RegisterActionHandler('create', function(array $data, array $authenticationParameters = []) {
 			if (empty($data['userName'])) {
 				throw new Exception('Missing userName param');
 			}
 			if (empty($data['applicationName'])) {
 				throw new Exception('Missing applicationName param');
 			}
-			$userService					 = new UserService;
-			$userService->userName			 = $data['userName'         ];
-			$userService->applicationName	 = $data['applicationName'  ];
-			$userService->applicationParams	 = $data['applicationParams'] ?? [];
-			$userService->port				 = $data['port'             ] ?? null;
-			$userService->userAgent			 = $data['userAgent'        ] ?? '';
-			return self::Create($userService);
+			$authorization					  = new ServiceAuthorization;
+			$authorization->userName          = $data['userName'         ];
+			$authorization->applicationName   = $data['applicationName'  ];
+			$authorization->applicationParams = $data['applicationParams'] ?? [];
+			$authorization->port              = $data['port'             ] ?? null;
+			$authorization->userAgent         = $data['userAgent'        ] ?? '';
+			return self::Create($authorization, $authenticationParameters);
 		});
 		
 		static::RegisterActionHandler('remove', function(array $data) {

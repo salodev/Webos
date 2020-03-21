@@ -1,12 +1,13 @@
 <?php
 
-namespace Webos\Service;
+namespace Webos\Service\AuthService;
 
+use Webos\Service\Service;
 use Webos\SystemInterface;
 use Webos\WorkSpaceHandlers\Session as WorkSpaceHandler;
 use salodev\Debug\ObjectInspector;
 
-class AuthService extends UserService {
+class AuthService extends Service {
 	
 	public function __construct(string $userName, string $applicationName, array $applicationParams = []) {
 		$this->_user              = $userName;
@@ -35,4 +36,21 @@ class AuthService extends UserService {
 		ObjectInspector::inspect($this->_interface);
 		die();
 	}
+
+	public function getFilestoreDirectory(): string {
+		throw new \Exception('No implementation');
+	}
+
+	public function getMediaContent(string $objectID, array $params = array()): array {
+		throw new \Exception('No implementation');
+	}
+
+	public function getOutputStream(): array {
+		throw new \Exception('No implementation');
+	}
+
+	public function setViewportSize(int $width, int $height): void {
+		throw new \Exception('No implementation');
+	}
+
 }

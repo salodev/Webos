@@ -2,9 +2,10 @@
 
 namespace Webos\Implementations;
 
-use Webos\Service\ProductionService;
-use Webos\Service\AuthService;
-use Webos\Service\UserService;
+use Webos\Service\NetworkService\NetworkService;
+use Webos\Service\LocalService\LocalService;
+use Webos\Service\AuthService\AuthService;
+use Webos\Service\Service as SystemService;
 use Webos\Implementations\Authentication;
 use Webos\Stream\Content as StreamContent;
 
@@ -48,20 +49,8 @@ class Service {
 		self::$_applicationParams = $params;
 	}
 	
-	static public function Create(string $user, string $applicationName, array $applicationParams = []): UserService {
-		if (self::$dev) {
-			return new UserService($user, $applicationName, $applicationParams);
-		} else {
-			return new ProductionService($user, $applicationName, $applicationParams);
-		}
-	}
-	
-	static public function CreateAuth(): UserService {
-		return new AuthService('', Authentication::GetApplicationName(), Authentication::GetApplicationParams());
-	}
-	
 	static public function Start(): void {
-		set_exception_handler(function($e) {
+		/*set_exception_handler(function($e) {
 			if (static::$dev == true) {
 				echo '<pre>';
 				echo \salodev\Debug\ExceptionDumper::DumpFromThrowable($e);
@@ -70,50 +59,67 @@ class Service {
 				echo 'An unexpected error was ocurred..';
 				die();
 			}
-		});
-		$uri = $_SERVER['REQUEST_URI'];
-		//print_r(self::$_applicationParams);die();
-		if (preg_match('/\/(img|js|css|fonts)\/.*/', $uri, $matches)) {
-			ResourcesLoader::ServeFile($matches[1], $matches[0]);
-		}
+		});*/
 		
+		static::route();
+
+	}
+	
+	static public function CreateService(): SystemService {
 		if (empty($_SESSION['username'])) {
 			if (empty($_SESSION['ws'])) {
 				if (($_SERVER['HTTP_X_REQUESTED_WITH']??null)=='XMLHttpRequest') {
 					self::GetLogin();
+					die();
 				}			
 			}			
 			// self::GetLogin($location);
-			$service = self::CreateAuth();
+			return new AuthService('', Authentication::GetApplicationName(), Authentication::GetApplicationParams());
 		} else {
 			$userName = $_SESSION['username'];
 
-			$service = self::Create($userName, self::$_applicationName, self::$_applicationParams);
+			if (self::$dev) {
+				return new LocalService($userName, self::$_applicationName, self::$_applicationParams);
+			} else {
+				return new NetworkService($userName, self::$_applicationName, self::$_applicationParams);
+			}
+		}
+		return $service;
+	}
+	
+	static public function route() {
+		$fullUrl = "{$_SERVER['REQUEST_SCHEME']}://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+		$urlParts = parse_url($fullUrl);
+		$path = $urlParts['path'];
+		
+		$uri = substr($path, strlen(parse_url(static::GetUrl())['path']));
+		$route = explode('/', $uri)[0];
+		
+		if (empty($route)) {
+			$route = 'renderAll';
 		}
 		
-		if (!empty($_REQUEST['debug'])) {
-			self::Debug($service);
+		$routeMethod = "route_{$route}";
+		if (!method_exists(static::class, $routeMethod)) {
+			die("Unexistent route {$route}");
 		}
-		
-		if(!empty($_REQUEST['actionName'])) {
-			self::DoAction($service);
-		} elseif (!empty($_REQUEST['getOutputStream'])) {
-			self::GetOutputStream($service);
-		} elseif (!empty($_REQUEST['getMediaContent'])) {
-			self::GetMediaContent($service);
-		} elseif (!empty($_REQUEST['syncViewportSize'])) {
-			self::SyncViewportSize($service);
-		} else {
-			self::RenderAll($service);
+		$return = static::$routeMethod();
+		if (is_array($return)) {
+			static::SendJson($return);
+		}
+		if ($return instanceof StreamContent) {
+			$return->streamIt();
 		}
 	}
 	
-	static public function DoAction(UserService $service): void {
+	static public function route_action() {
+		$service = static::CreateService();
 		$actionName   = $_REQUEST['actionName'];
 		$objectID     = $_REQUEST['objectID'  ];
 		$params       = $_REQUEST['params'    ] ?? [];
 		$ignoreUpdate = $params['ignoreUpdateObject'] ?? false;
 		
+		//print_r($_REQUEST);die();
 		if (!empty($_FILES) && !empty($_FILES['file'])) {
 			$params['__uploadedFile'] = $_FILES['file']['tmp_name'];
 		}
@@ -128,42 +134,70 @@ class Service {
 			}
 		}
 		
-		self::SendJson($response);
+		return $response;
 	}
 	
-	static public function SyncViewportSize(UserService $service): void {
+	static public function route_syncViewportSize() {
+		$service = static::CreateService();
 		if (empty($_REQUEST['width']) || empty($_REQUEST['height'])) {
-			self::SendJson(['status'=>'error','message'=>'Missing width or height']);
-			return;
+			return [
+				'status'  => 'error',
+				'message' => 'Missing width or height'
+			];
 		}
 		$service->setViewportSize((int)$_REQUEST['width'], (int)$_REQUEST['height']);
-		self::SendJson([]);
+		return [];
 	}
 	
-	static public function GetOutputStream(UserService $service): void {
+	static public function route_getOutputStream() {
+		$service = static::CreateService();
 		$data = $service->getOutputStream();
-		$output = StreamContent::CreateFromArray($data);
-		$output->streamIt();
+		return StreamContent::CreateFromArray($data);
 		
 	}
 	
-	static public function GetMediaContent(UserService $service):void {
+	static public function route_getMediaContent() {
+		$service = static::CreateService();
 		$objectID     = $_REQUEST['objectID'  ];
 		$params       = $_REQUEST['params'    ] ?? [];
 		$data = $service->getMediaContent($objectID, $params);
-		$output = StreamContent::CreateFromArray($data);
-		$output->streamIt();
+		return StreamContent::CreateFromArray($data);
 	}
 	
-	static public function RenderAll(UserService $service): void {
+	static public function route_renderAll() {
+		$service = static::CreateService();
 		ob_start('ob_gzhandler');
 		echo $service->renderAll();
 		die();
 	}
 	
-	static public function Debug(UserService $service): void {
+	static public function route_debug() {
+		$service = static::CreateService();
 		$service->debug();
 		die();
+	}
+	
+	static public function route_img() {
+		static::_route_resource($service);
+	}
+	
+	static public function route_js() {
+		static::_route_resource();
+	}
+	
+	static public function route_css() {
+		static::_route_resource();
+	}
+	
+	static public function route_fonts() {
+		static::_route_resource();
+	}
+	
+	static protected function _route_resource() {
+		if (!preg_match('/\/(img|js|css|fonts)\/.*/', $_SERVER['REQUEST_URI'], $matches)) {
+			die('Invalid url');
+		}
+		ResourcesLoader::ServeFile($matches[1], $matches[0]);
 	}
 	
 	static public function GetLogin(): void {

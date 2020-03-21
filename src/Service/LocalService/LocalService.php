@@ -1,15 +1,13 @@
 <?php
 
-namespace Webos\Service;
+namespace Webos\Service\LocalService;
 
+use Webos\Service\Service;
 use Webos\SystemInterface;
 use Webos\WorkSpaceHandlers\FileSystem AS FileSystemHanlder;
-use Webos\Stream\Content;
-use Webos\WorkSpace;
-use Webos\VisualObject;
 use salodev\Debug\ObjectInspector;
 
-class UserService {
+class LocalService extends Service {
 	
 	protected $_user              = null;
 	public    $_applicationName   = [];
@@ -52,14 +50,6 @@ class UserService {
 	
 	public function getFilestoreDirectory(): string {
 		return $this->_interface->getFilestoreDirectory();
-	}
-	
-	public function getObjectByID(string $objectID): VisualObject {
-		return $this->_interface
-			->getSystemInstance()
-			->getWorkSpace()
-			->getApplications()
-			->getObjectByID($objectID);
 	}
 	
 	public function debug(): void {

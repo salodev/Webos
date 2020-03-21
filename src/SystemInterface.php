@@ -120,6 +120,11 @@ class SystemInterface {
 		return $this->_system->getWorkSpace()->getFilestoreDirectory();
 	}
 	
+	public function setViewportSize($width, $height): bool {
+		$this->_system->getWorkSpace()->setViewportSize($width/1, $height/1);
+		return true;
+	}
+	
 	public function showError($e) {	
 		$app = $this->getActiveApplication();
 
