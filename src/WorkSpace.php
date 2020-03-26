@@ -211,7 +211,7 @@ class WorkSpace {
 	}
 	
 	public function streamFile(string $path): self {
-		$this->_outputStream->addContent(new Stream\Content('', '', '', $path));
+		$this->_outputStream->addContent(new Stream\Content('', '', '', $path, true));
 		$this->triggerEvent('sendFileContent', $this, []);
 		return $this;
 	}

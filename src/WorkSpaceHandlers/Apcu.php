@@ -15,12 +15,11 @@ class Apcu extends WorkSpaceHandler{
 		return new $ws;
 	}
 	
-	public function store(WorkSpace $workSpace) {
+	public function store(WorkSpace $workSpace): void {
 		apc_store($workSpace->getName(), $workSpace);
-		return true;
 	}
 	
-	public function remove(string $name = null) {
+	public function remove(string $name = null): void {
 		apc_delete($name);
 	}
 }

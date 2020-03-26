@@ -1,6 +1,6 @@
 <?php
 
-namespace Webos\Service\NetworkService;
+namespace Webos\Implementations\Service\NetworkService;
 
 use salodev\Pcntl\Child;
 use salodev\Pcntl\Thread;
@@ -12,8 +12,6 @@ class ServiceAuthorization {
 	public $host;
 	public $token;
 	public $masterToken;
-	public $applicationName;
-	public $applicationParams = [];
 	public $loadStoredWorkSpace = false;
 	public $userAgent = null;
 	public $created = null;

@@ -1,6 +1,6 @@
 <?php
-use Webos\Implementations\Service;
-$url = Service::GetUrl();
+use Webos\Webos;
+$url = Webos::GetUrl();
 ?>
 .no-break { overflow: hidden;  /*text-overflow: ellipsis;*/ white-space: nowrap; }
 

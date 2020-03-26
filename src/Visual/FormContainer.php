@@ -389,17 +389,17 @@ trait FormContainer {
 		$this->leftPanel = $container->createObject(Frame::class, [
 			'top' => 0, 'bottom' => 0
 		]);
-		$this->verticalSeparator = $container->createObject(VerticalSeparator::class, [
+		$this->divider = $container->createObject(VerticalSeparator::class, [
 			'width'=> $tickness, 'top' => 0, 'bottom' => 0, 'draggable' => $draggable,
 		]);
 		$this->rightPanel = $container->createObject(Frame::class, [
 			'top' => 0, 'bottom' => 0
 		]);
 		if ($distribution < 0) {
-			$this->verticalSeparator->right = abs($distribution);
+			$this->divider->right = abs($distribution);
 		}
 		if ($distribution > 0) {
-			$this->verticalSeparator->left = abs($distribution);
+			$this->divider->left = abs($distribution);
 		}
 		return $this;
 	}
@@ -421,17 +421,17 @@ trait FormContainer {
 		$this->topPanel = $container->createObject(Frame::class, [
 			'top' => 0, 'left' => 0, 'right' => 0,
 		]);
-		$this->horizontalSeparator = $container->createObject(HorizontalSeparator::class, [
+		$this->divider = $container->createObject(HorizontalSeparator::class, [
 			'height' => $tickness, 'left' => 0, 'right' => 0, 'draggable' => $draggable,
 		]);
 		$this->bottomPanel = $container->createObject(Frame::class, [
 			'left' => 0, 'right' => 0, 'bottom' => 0,
 		]);
 		if ($distribution < 0) {
-			$this->horizontalSeparator->bottom = abs($distribution);
+			$this->divider->bottom = abs($distribution);
 		}
 		if ($distribution > 0) {
-			$this->horizontalSeparator->top = abs($distribution);
+			$this->divider->top = abs($distribution);
 		}
 		return $this;
 	}

@@ -1,5 +1,7 @@
 <?php
+
 namespace Webos;
+
 use Webos\Visual\Control;
 use Webos\Visual\Container;
 use Webos\Visual\Window;

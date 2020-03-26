@@ -1,13 +1,15 @@
 <?php
 
 namespace Webos\WorkSpaceHandlers;
+
+use Webos\Webos;
 use Webos\WorkSpaceHandler;
 use Webos\WorkSpace;
 
-class FileSystem extends WorkSpaceHandler{
+class FileSystem extends WorkSpaceHandler {
 	
 	public function load(string $name): WorkSpace {
-		$wsFileName = $this->_system->getConfig('path/workspaces') . $name;
+		$wsFileName = static::getFileName($name);
 		if (!is_file($wsFileName)) {
 			$ws = $this->_system->createWorkSpace($name);
 		} else {
@@ -19,14 +21,17 @@ class FileSystem extends WorkSpaceHandler{
 		return $ws;
 	}
 	
-	public function store(WorkSpace $workSpace) {
-		$wsFileName = $this->_system->getConfig('path/workspaces') . $workSpace->getName();
+	public function store(WorkSpace $workSpace): void {
+		$wsFileName = static::getFileName($workSpace->getName());
 		file_put_contents($wsFileName, serialize($workSpace), FILE_IGNORE_NEW_LINES);
-		return true;
 	}
 	
-	public function remove(string $name = null) {
-		$wsFileName = $this->_system->getConfig('path/workspaces') . $name;
+	public function remove(string $name = null): void {
+		$wsFileName = static::getFileName($name);
 		unlink($wsFileName);
+	}
+	
+	static protected function getFileName(string $name): string {
+		return Webos::GetWorkSpacesPath() . '/' . $name;
 	}
 }

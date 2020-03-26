@@ -5,7 +5,7 @@ use Exception;
 use Webos\StringChar;
 use Webos\Visual\Window;
 use Webos\Exceptions\Collection\NotFound;
-use Webos\Implementations\Rendering;
+use Webos\Implementations\Web\Rendering;
 use Webos\Stream\Content;
 use salodev\Utils;
 use salodev\FileSystem\File;

@@ -1,10 +1,10 @@
 <?php
 
 use Webos\FrontEnd\CSS\StylesManager;
-use Webos\Implementations\Service;
+use Webos\Webos;
 
 $sm = StylesManager::InstanceWithDefinitions();
-$url = Service::GetUrl();
+$url = Webos::GetUrl();
 
 $sm->addRule('*', [
 	'box-sizing' => 'border-box !important',

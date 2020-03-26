@@ -1,6 +1,6 @@
 <?php
 
-namespace Webos\Service\NetworkService;
+namespace Webos\Implementations\Service\NetworkService;
 
 use Exception;
 use salodev\Implementations\SimpleServer;
@@ -50,7 +50,7 @@ class Server extends SimpleServer {
 				throw new Exception('Missing token');
 			}
 			if (static::$_token != $token) {
-				throw new Exception('Invalid token');
+				throw new Exception('Invalid token. Must be ' . static::$_token);
 			}
 		}
 		if (!isset(static::$_actionHandlers[$name])) {

@@ -1,11 +1,12 @@
 <?php
 
-namespace Webos\Service\NetworkService;
+namespace Webos\Implementations\Service\NetworkService;
 
 use Exception;
 use salodev\Pcntl\Thread;
 use salodev\IO\Stream;
 use salodev\IO\ClientSocket;
+use Webos\Webos;
 
 class MasterServer extends Server {
 	
@@ -15,6 +16,10 @@ class MasterServer extends Server {
 	
 	static private $_lastPort = 0;
 	
+	static private $_userName = 'root';
+	
+	static protected $_token = 'root';
+	
 	/**
 	 *
 	 * @var ServiceAuthorization[] 
@@ -22,6 +27,30 @@ class MasterServer extends Server {
 	static private $_userServices = [];
 	
 	static private $_masterTokenSeed = null;
+	
+	static public function SetHost(string $host): void {
+		static::$_host = $host;
+	}
+	
+	static public function SetPort(int $port): void {
+		static::$_port = $port;
+	}
+	
+	static public function SetUserName(string $userName): void {
+		static::$_userName = $userName;
+	}
+	
+	static public function GetHost(): string {
+		return static::$_host;
+	}
+	
+	static public function GetPort(): int {
+		return static::$_port;
+	}
+	
+	static public function GetUserName(): string {
+		return static::$_userName;
+	}
 	
 	static public function Register(ServiceAuthorization $authorization): void {
 		self::$_userServices[$authorization->userName] = $authorization;
@@ -66,14 +95,17 @@ class MasterServer extends Server {
 		return true;
 	}
 	
-	static public function Create(ServiceAuthorization $authorization) {
+	static public function Create(ServiceAuthorization $authorization, array $authParams = []) {
+		
+		Webos::Authenticate($authorization->userName, $authParams);
 		
 		/**
-		 * If user exists returns info.		
+		 * If user exists returns info.
 		 */
 		if (self::Check($authorization->userName)) {
 			$authorization = self::Get($authorization->userName);			
 			return [
+				'host'  => $authorization->host,
 				'port'  => $authorization->port,
 				'token' => $authorization->token,
 			];
@@ -112,6 +144,7 @@ class MasterServer extends Server {
 		 * And retrieve it.
 		 */
 		return [
+			'host'  => $authorization->host,
 			'port'  => $authorization->port,
 			'token' => $authorization->token,
 		];
@@ -182,7 +215,6 @@ class MasterServer extends Server {
 				$child->stop();
 				$child->wait();
 			}
-			
 			die();
 		});
 		
@@ -190,20 +222,21 @@ class MasterServer extends Server {
 		self::$_port = $port;
 		self::$_lastPort = $port;
 		
-		static::RegisterActionHandler('create', function(array $data, array $authenticationParameters = []) {
+		static::RegisterActionHandler('create', function(array $data) {
 			if (empty($data['userName'])) {
 				throw new Exception('Missing userName param');
 			}
-			if (empty($data['applicationName'])) {
-				throw new Exception('Missing applicationName param');
+			if (empty($data['authParams'])) {
+				throw new Eception('Missing auth params');
+			}
+			if (!is_array($data['authParams'])) {
+				throw new Exception('Auth params must be an object');
 			}
 			$authorization					  = new ServiceAuthorization;
 			$authorization->userName          = $data['userName'         ];
-			$authorization->applicationName   = $data['applicationName'  ];
-			$authorization->applicationParams = $data['applicationParams'] ?? [];
 			$authorization->port              = $data['port'             ] ?? null;
 			$authorization->userAgent         = $data['userAgent'        ] ?? '';
-			return self::Create($authorization, $authenticationParameters);
+			return self::Create($authorization, $data['authParams']);
 		});
 		
 		static::RegisterActionHandler('remove', function(array $data) {

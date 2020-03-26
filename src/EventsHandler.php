@@ -57,6 +57,7 @@ class EventsHandler {
 					'data'        => $params,
 					'contextData' => $evData->contextData,
 					'context'     => $evData->contextData,
+					'scope'       => $evData->contextData,
 				]);
 				
 				$return = call_user_func_array($evData->eventListener, $dependencies);

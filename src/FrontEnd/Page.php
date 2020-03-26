@@ -2,7 +2,7 @@
 
 namespace Webos\FrontEnd;
 
-use \Webos\Implementations\Service;
+use \Webos\Webos;
 
 class Page implements PageWrapper {
 	
@@ -22,7 +22,7 @@ class Page implements PageWrapper {
 	}
 
 	private function renderTemplate(string $content): string {
-		$title = Service::GetTitle();
+		$title = Webos::GetTitle();
 		$html =
 			'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' .
 			'<html xmlns="https://www.w3.org/1999/xhtml">' .
@@ -30,8 +30,8 @@ class Page implements PageWrapper {
 					'<meta name="viewport" content= "width=device-width, initial-scale=1.0, user-scalable=no" />' .
 					'<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>' .
 					'<title>' . htmlentities($title) . '</title>';
-					if (Service::GetFavicon()) {
-						$html .= '<link rel="shortcut icon" type="image/png" href="' . Service::GetFavicon() . '"/>';
+					if (Webos::GetFavicon()) {
+						$html .= '<link rel="shortcut icon" type="image/png" href="' . Webos::GetFavicon() . '"/>';
 					}
 					$html .=
 					'<link rel="stylesheet" href="css/Window.css" />' .
@@ -55,7 +55,7 @@ class Page implements PageWrapper {
 					'<script type="text/javascript" src="js/engines/directives.js"></script>' .
 					'<script type="text/javascript" src="js/Queue.js"></script>' .
 					'<script type="text/javascript" src="js/Webos.js"></script>' .
-					'<script type="text/javascript">Webos.endPoint=\''.Service::GetUrl().'\'</script>' .
+					'<script type="text/javascript">Webos.endPoint=\''. Webos::GetUrl(). '\'</script>' .
 					'<script type="text/javascript" src="js/custom.js"></script>' .
 					'<script type="text/javascript" src="js/directives.js"></script>' .
 				'</head>' .

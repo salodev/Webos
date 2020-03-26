@@ -1,6 +1,7 @@
 <?php
 
-namespace Webos\Implementations;
+namespace Webos\Implementations\Web;
+
 use Webos\VisualObject;
 use Exception;
 

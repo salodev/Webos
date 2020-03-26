@@ -45,6 +45,21 @@ class SystemInterface {
 
 		$this->_system = $system;
 	}
+	
+	public function run(string $userName, string $applicationName, array $applicationParams, string $userAgent, string $workSpaceHandlerClasName): void {
+		$system = $this->getSystemInstance();
+		$system->setWorkSpaceHandler(new $workSpaceHandlerClasName($system));
+		
+		/**
+		 * Because callback function is stored with a special Closure artifact, not supporting 'use' definition in callback.
+		 * Scope variables must be passed by third parameter to addEventListener method.
+		 */
+		$this->_system->addEventListener('createdWorkspace', function($data, $scope) {
+			$data['ws']->checkUserAgent($scope['userAgent']);
+			$data['ws']->startApplication($scope['applicationName'], $scope['applicationParams']);
+		}, false, ['applicationName' => $applicationName, 'applicationParams' => $applicationParams, 'userAgent' => $userAgent]);
+		$this->_system->loadWorkSpace($userName);
+	}
 
 	private function _callAction(string $actionName, string $objectID, array $parameters, bool $ignoreUpdateObject = false): void {
 		$this->_resetNotifications();
@@ -106,7 +121,7 @@ class SystemInterface {
 		return $this->getParsedNotifications();
 	}
 	
-	public function getOuputSteam(): array {
+	public function getOutputStream(): array {
 		$ws = $this->_system->getWorkSpace();
 		return $ws->getFileContent()->getArray();
 	}
@@ -125,12 +140,12 @@ class SystemInterface {
 		return true;
 	}
 	
-	public function showError($e) {	
+	public function showError($e) {
 		$app = $this->getActiveApplication();
 
 		$parsedException = \salodev\Debug\ExceptionDumper::ParseFromThrowable($e);
 		$w = $app->openMessageWindow('Opps', $e->getMessage());
-		if (ENV==ENV_DEV||true) {
+		if (Webos::$development || true) {
 			$w->createWindowButton('Details')->onClick(function($context, $source) {
 				$source->getApplication()->openWindow(ExceptionWindow::class, $context['exception']);
 			}, [

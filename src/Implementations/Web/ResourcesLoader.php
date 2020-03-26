@@ -1,5 +1,6 @@
 <?php
-namespace Webos\Implementations;
+namespace Webos\Implementations\Web;
+
 use Webos\Webos;
 use Exception;
 
@@ -14,7 +15,7 @@ class ResourcesLoader {
 			throw new Exception('Invalid filename.');
 		}
 		
-		$basePath = Webos::GetInstallationPath();
+		$basePath = Webos::GetSourceRootPath();
 		
 		$fullPath = "{$basePath}/resources/{$resourceFileName}";
 		
@@ -23,7 +24,7 @@ class ResourcesLoader {
 		}
 		
 		if (!is_file($fullPath)) {
-			throw new Exception('File does not exist.');
+			throw new Exception("File does not exist.");
 		}
 		
 		if (!is_readable($fullPath)) {

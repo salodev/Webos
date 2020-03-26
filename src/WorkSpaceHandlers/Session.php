@@ -1,11 +1,22 @@
 <?php
 
 namespace Webos\WorkSpaceHandlers;
+
 use Webos\WorkSpaceHandler;
 use Webos\WorkSpace;
 
-class Session extends WorkSpaceHandler{
+/**
+ * This handler stores WorkSpace on website session
+ * but no handling how session is stored.
+ * Because it, you are free to setup session handlers.
+ */
+class Session extends WorkSpaceHandler {
 	
+	static public $stopStore = false;
+	
+	/**
+	 * Load or create a workspace for a given user name
+	 */
 	public function load(string $name): WorkSpace {
 		$ws = $_SESSION['ws']??null;
 		if (!$ws instanceof WorkSpace) {
@@ -15,12 +26,19 @@ class Session extends WorkSpaceHandler{
 		return $ws;
 	}
 	
-	public function store(WorkSpace $workSpace) {
-		$_SESSION['ws'] = $workSpace;
-		return true;
+	/**
+	 * Store it in ws session variable
+	 */
+	public function store(WorkSpace $workSpace): void {
+		if (!static::$stopStore) {
+			$_SESSION['ws'] = $workSpace;
+		}
 	}
 	
-	public function remove(string $name = null) {
+	/**
+	 * remove it by setting null
+	 */
+	public function remove(string $name = null): void {
 		$_SESSION['ws'] = null;
 	}
 }

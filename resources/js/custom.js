@@ -55,7 +55,7 @@ Webos.bind('authUser', function() {
 	location.reload();
 });
 Webos.bind('sendFileContent', function() {
-	location.search = '?getOutputStream=true';
+	location = Webos.endPoint + 'getOutputStream';
 });
 Webos.bind('navigateURL', function(data) {
 	location = data.url;

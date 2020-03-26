@@ -1,5 +1,5 @@
 <?php
-namespace Webos\Service\NetworkService;
+namespace Webos\Implementations\Service\NetworkService;
 use Exception;
 use salodev\IO\ClientSocket as Socket;
 
