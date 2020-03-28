@@ -44,6 +44,10 @@ class Window extends Container {
 				$this->close();
 			});
 		});
+		
+		$this->onKeyEscape(function() {
+			$this->close();
+		});
 	}
 	
 	public function initialize(array $params = []) {}
@@ -113,7 +117,18 @@ class Window extends Container {
 		return $this->activeControl === $object;
 	}
 
-	public function close(): void {
+	public function close(bool $force = false): void {
+		/**
+		 * Force it anyway avoiding event handlers
+		 */
+		if ($force === true) {
+			$this->getApplication()->closeWindow($this);
+		}
+		
+		/**
+		 * If trigger, so can be stopped if any handler
+		 * returns false
+		 */
 		if ($this->triggerEvent('close')) {
 			$this->getApplication()->closeWindow($this);
 		}
@@ -162,14 +177,6 @@ class Window extends Container {
 			$eventData = ['menu' => $menu];
 			$this->triggerEvent('contextMenu', $eventData);
 		}
-	}
-	
-	public function action_keyPress(array $params = []): void {
-		$this->triggerEvent('keyPress', [
-			'key' => $params['key'],
-		]);
-		
-		$this->triggerEvent("keyPress{$params['key']}");
 	}
 	
 	public function isActive(): bool {
@@ -383,6 +390,7 @@ class Window extends Container {
 	protected function _getRenderTemplate(): StringChar {
 		$keys = [];
 		$directives = [
+			'container-key-receiver',
 			// 'resize',
 			// 'focus',
 		];
@@ -395,7 +403,7 @@ class Window extends Container {
 
 		if (count($keys)) {
 			$keys = implode(',', array_unique($keys));
-			$directives[] = "key-press=\"{$keys}\"";
+			$directives[] = "key-press=\"{$keys}\"";			
 		}
 		if ($this->hasListenerFor('ready')) {
 			$directives[] = 'ready';

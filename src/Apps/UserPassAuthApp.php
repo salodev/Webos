@@ -24,6 +24,7 @@ class UserPassAuthApp extends AuthApplication {
 		$this->tlogin = $tlogin;
 		$u = $tlogin->createTextBox('Username', 'username', ['width'=>200, 'labelWidth' => 130]);
 		$tlogin->createPasswordBox('Password', 'password');
+		$u->focus();
 		
 		$tlogin->createWindowButton('Login')->onClick(function() {
 			$formData = $this->tlogin->getFormData();

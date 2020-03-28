@@ -47,15 +47,25 @@ Directives.register('leavetyping', function(el) {
 	var $el = $(el);
 	var id  = $el.attr('id');
 	var to  = null;
+	var value = $el.val();
 	var save = function() {
 		Webos.action('leaveTyping', id, { value: $el.val() }, true);
 	}
-	$el.bind('keyup', function(ev) {
-		if (to) { clearTimeout(to); }
-			to = setTimeout(function() {
-			save();
-		}, 400);
-				});
+	
+	var leaveTypingHandler = function(ev) {
+		ev.stopPropagation();		
+		if ($el.val() !== value) {
+			if (to) { clearTimeout(to); }
+				to = setTimeout(function() {
+				save();
+			}, 400);
+		}
+		value = $el.val();
+	}
+
+	$el.unbind('keyup', leaveTypingHandler);
+	$el.bind('keyup', leaveTypingHandler);
+
 	$(function(){
 		if ($el.is(":-webkit-autofill")) {
 			save();
@@ -331,26 +341,142 @@ Directives.register('ondrop', function(el) {
 });
 
 Directives.register('key-press', function(el) {
-	var $el = $(el).is('[id]')?$(el):$(el).parents('[id]');
-	$el.keydown(function(ev) {
+	var $el = $(el); //$(el).attr('id')?$(el):$(el).parents('[id]');
+	var id = Directives.getObjectId(el);
+	var keyPressHandler = function(ev, data) {
+		ev.stopPropagation();
+		
 		var allowedKeys = ($el.attr('key-press')||'').split(',');
-		var keyName, i;
-		for (i in allowedKeys) {
-			keyName = allowedKeys[i];
-			if(ev.key==keyName) {
-				ev.preventDefault();
-				Webos.action($el.attr('key-press-action')||'keyPress', $el.attr('id'), {
-					key: ev.key 
-				}, true);
-				break;
+		var ignoreUpdateObject = $el.attr('ignore-update-object')? true: false;
+		if (allowedKeys.indexOf(data.key) >= 0) {
+			Webos.action($el.attr('key-press-action') || 'keyPress', id, {
+				key: data.key 
+			}, ignoreUpdateObject);
+		}
+
+	}
+	$el.unbind('key-press', keyPressHandler);
+	$el.bind('key-press', keyPressHandler);
+});
+
+/**
+ * Make custom directive receptor of event.
+ */
+KeyboardDispatcher.addDirective('key-press', 'key-press-data-table');
+
+/**
+ * This is an special directive for data table.
+ * Because is a complex component, It need some fine user inetarction customization
+ * in orde to give a better usability, in this case for keyboard interactivity
+ */
+Directives.register('key-press-data-table', function(el) {
+	var $el = $(el).is('[id]')?$(el):$(el).parents('[id]');
+	var timeoutId;
+	var $hole = $el.find('.DataTableHole');
+	var $body = $el.find('.DataTableBody');
+	
+	/**
+	 * By name is possible unbind this handler
+	 * keeping others alive for same event name.
+	 */
+	var keyPressOnDataTable = function(ev, data) {
+		/**
+		 * Is very important stop the event propagation.
+		 * Default DOM propagation event to parent is undesired behavior
+		 * here, so stop it.
+		 */
+		ev.stopPropagation();
+		
+		/**
+		 * If no rows, nothing to do.
+		 */
+		if (!($body.find('.DataTableRow').length>0)) {
+			return;
+		}
+		
+		var index    = $body.find('.DataTableRow.selected').index()/1||0;
+		var max      = $body.find('.DataTableRow').length-1;	
+		var pageSize = Math.ceil($hole.height() / ($body.find('.DataTableRow:first-child()').height()||0));
+		
+		if (['ArrowUp','ArrowDown', 'PageUp', 'PageDown', 'Home', 'End'].indexOf(data.key)>=0) {
+			$el.focus();
+			if (data.key === 'Home') {
+				index = 0;
 			}
+			if (data.key === 'End') {
+				index = max;
+			}
+			if (data.key === 'PageUp') {
+				index -= pageSize;
+			}
+			if (data.key === 'PageDown') {
+				index += pageSize;
+			}
+			if (data.key === 'ArrowUp') {
+				index--;
+			}
+			if (data.key === 'ArrowDown') {
+				index++;
+			}
+			
+			if (index < 0  ) { index = 0;   }
+			if (index > max) { index = max; }
+			
+			$body.find('.DataTableRow.selected').removeClass('selected');
+			$body.find('.DataTableRow:nth-child('+(index+1)+')').addClass('selected');
+			
+			/**
+			 * Calculations about hole window and cursor position.
+			 */
+			var $selected = $body.find('.DataTableRow.selected');
+			var wheight   = $hole.height();
+			var wstart    = $hole.scrollTop();
+			var wend      = $hole.scrollTop() + $hole.height();
+			var rheight   = $selected.height();
+			var rstart    = index * rheight;
+			var rend      = rstart + rheight;
+			
+			/**
+			 * If selected row is out of bounds, so scroll hole according
+			 *  where is out.
+			 */
+			if (rend>wend) {
+				$hole.scrollTop(rend - wheight);
+			}
+			if (rstart<wstart) {
+				$hole.scrollTop(rstart);
+			}
+
+			/**
+			 * Delayed ajax call, allow make it when user stop pressing keys or 
+			 * leave hanged key. So timeout is freed and performed against webserver
+			 */
+			clearTimeout(timeoutId);
+			timeoutId = setTimeout(function() {
+				Webos.action('rowClick', $el.attr('id'), {
+					row: index,
+					fieldName:''
+				}, true);
+			}, 500);
+		}
+	};
+	
+	/**
+	 * Because directive is reapplied once element is updated
+	 * is need remove bound handler and set again, to avoid double execution call
+	 */
+	$el.unbind(keyPressOnDataTable);
+	$el.bind('key-press', keyPressOnDataTable);
+});
+
+Directives.register('key-press-type', function(el) {
+	$(el).bind('key-press-type', function(ev, data) {
+		ev.stopPropagation();
+		if (el !== $(':focus')[0]) { // not focused
+			//$(el).val('');
+			$(el).focus();
 		}
 	});
-});
-Directives.register('capture-typing', function(el) {
-	/**
-	 * nothing yet.
-	 */
 });
 
 Directives.register('focus', function(el) {

@@ -16,7 +16,7 @@ class Application extends Window {
 	
 	public function render(): string {
 		$stylesString = $this->getInlineStyle(true);
-		$html  = '<div id="'.$this->getObjectID(). '" ' . $stylesString .'>';
+		$html  = '<div id="'.$this->getObjectID(). '" ' . $stylesString .' webos container-key-receiver class="Window">';
 		$html .= '<div class="container" ' . $stylesString . '>';
 		$html .= $this->getChildObjects()->render();
 		

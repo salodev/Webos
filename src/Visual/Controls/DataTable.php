@@ -7,10 +7,12 @@ use Webos\Exceptions\Alert;
 use Webos\Collection;
 use Webos\Visual\Control;
 use Webos\Visual\DataConsuming;
+use Webos\Visual\KeysEvents;
 
 class DataTable extends Control {
 	
 	use DataConsuming;
+	use KeysEvents;
 	
 	// public $rowIndex = null;
 	public function initialize(array $params = []) {
@@ -102,7 +104,7 @@ class DataTable extends Control {
 		if (!isset($params['fieldName'])) {
 			throw new Exception('The \'rowClick\' event needs a \'fieldName\' parameter');
 		}
-		if ($this->rowIndex !== null && $this->rowIndex == $params['row']) {
+		if (false /*$this->rowIndex !== null && $this->rowIndex == $params['row']*/) {
 			// si clickea en una seleccionada, deselecciona
 			$this->rowIndex = null;
 		} else {
@@ -185,11 +187,18 @@ class DataTable extends Control {
 		$scrollTop  = $this->scrollTop  ?? 0;
 		$scrollLeft = $this->scrollLeft ?? 0;
 		
+		$directivesList = array_merge([
+			'key-press-data-table',
+		], $this->getKeyEventsDirectives());
+		
 		$hasContextMenu = $this->hasListenerFor('contextMenu');
 		$inlineStyle    = $this->getInlineStyle();
-		$contextMenuDirective = $hasContextMenu ? 'webos contextmenu' : '';
+		if ($hasContextMenu) {
+			$directivesList[] = 'contextmenu';
+		}
+		$strDirective = count($directivesList) ? 'webos ' . implode(' ', $directivesList) : '';
 		
-		$html = "<div id=\"{$objectID}\" class=\"DataTable\" {$inlineStyle} {$contextMenuDirective}>";
+		$html = "<div id=\"{$objectID}\" class=\"DataTable\" {$inlineStyle} {$strDirective}>";
 		
 		$rs = $this->rows;
 		$bodyWidth = 0;
