@@ -40,12 +40,17 @@ class Router {
 	}
 	
 	static public function route_action(Service $service) {
+		if (empty($_REQUEST['actionName'])) {
+			throw new \Exception('Mission actionName param');
+		}
+		if (empty($_REQUEST['objectID'])) {
+			throw new \Exception('Mission objectID param');
+		}
 		$actionName   = $_REQUEST['actionName'];
 		$objectID     = $_REQUEST['objectID'  ];
 		$params       = $_REQUEST['params'    ] ?? [];
-		$ignoreUpdate = $params['ignoreUpdateObject'] ?? false;
+		$ignoreUpdate = ($_REQUEST['ignoreUpdateObject'] ?? 'false') == 'true' ? true : false;
 		
-		//print_r($_REQUEST);die();
 		if (!empty($_FILES) && !empty($_FILES['file'])) {
 			$params['__uploadedFile'] = $_FILES['file']['tmp_name'];
 		}

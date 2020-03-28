@@ -25,11 +25,12 @@ Webos.ajax = function(uri, data) {
 		data: data
 	});
 }
-Webos.action = function(actionName, objectID, params) {
+Webos.action = function(actionName, objectID, params, ignoreUpdateObject) {
 	return Webos.ajax('action', {
-		actionName: actionName,
-		objectID:   objectID,
-		params:     params
+		actionName:         actionName,
+		objectID:           objectID,
+		params:             params,
+		ignoreUpdateObject: ignoreUpdateObject||false
 	}).done(Webos.parseResponse).fail(function(r) {
 		alert('Unexpected response:\n' + r);
 	});

@@ -1,5 +1,7 @@
 <?php
+
 namespace Webos;
+
 use Error;
 use ErrorException;
 use Exception;
@@ -8,10 +10,18 @@ use Webos\Application;
 use Webos\Visual\Window;
 use Webos\Visual\Windows\Exception as ExceptionWindow;
 use Webos\Exceptions\Collection\NotFound;
-use Webos\FrontEnd\Page;
 
+/**
+ * Originally this class was a real interface between
+ * System instance and web controller requests receiver
+ * But new features bring it behind new layers between the web controller
+ * and SystemInterface.
+ * I dont know how to name it. But its main goal is lead with actions and
+ * notifications in order to keep browser rener updated about what is present
+ * or not on the server stored WorkSpace
+ */
 class SystemInterface {
-	private   $_sessionId         = '';
+	
 	protected $_renderer          = null;
 	protected $_system            = null;
 	protected $_notifications     = null;
@@ -21,12 +31,16 @@ class SystemInterface {
 	public function __construct() {
 
 		/**
-		 * Establece parámetros iniciales.
+		 * Drop all unconsumed buffered notifications.
 		 **/
 		$this->_resetNotifications();
 		
 		$system = new System();
 
+		/**
+		 * By event subscription will be able to know once anything happen,
+		 * so notify properly to requester.
+		 */
 		$system->addEventListener('sessionCreated',      [$this, 'onsSessionCreated']);
 		$system->addEventListener('createObject',        [$this, 'onCRUObjects'     ]);
 		$system->addEventListener('hideObject',          [$this, 'onCRUObjects'     ]);
@@ -40,8 +54,6 @@ class SystemInterface {
 		$system->addEventListener('sendFileContent',     [$this, 'onSystemEvent'    ]);
 		$system->addEventListener('navigateURL',         [$this, 'onSystemEvent'    ]);
 		$system->addEventListener('printContent',        [$this, 'onSystemEvent'    ]);
-
-		$system->start();
 
 		$this->_system = $system;
 	}
@@ -62,6 +74,7 @@ class SystemInterface {
 	}
 
 	private function _callAction(string $actionName, string $objectID, array $parameters, bool $ignoreUpdateObject = false): void {
+		//die('<pre>'.\salodev\Debug\ExceptionDumper::DumpFromThrowable(new \Exception('e')));
 		$this->_resetNotifications();
 		$this->lastObjectID = $objectID;
 		$this->ignoreUpdateObject = $ignoreUpdateObject;
@@ -159,7 +172,7 @@ class SystemInterface {
 	}
 
 	public function getActiveApplication(): Application {
-		return $this->_system->getWorkspace($this->getSessionId())->getActiveApplication();
+		return $this->_system->getWorkspace()->getActiveApplication();
 	}
 
 	/**
@@ -167,7 +180,7 @@ class SystemInterface {
 	 * @return ApplicationsCollection
 	 */
 	public function getApplications(): ApplicationsCollection {
-		return $this->_system->getWorkspace($this->getSessionId())->getApplications();
+		return $this->_system->getWorkspace()->getApplications();
 	}
 
 	/**
@@ -175,7 +188,7 @@ class SystemInterface {
 	 * @return WorkSpace
 	 */
 	public function getWorkSpace(): WorkSpace {
-		return $this->_system->getWorkspace($this->getSessionId());
+		return $this->_system->getWorkspace();
 	}
 	/**
 	 * AGREGADO: 26-12-2012
@@ -381,14 +394,6 @@ class SystemInterface {
 		}
 		
 		return $parsed;
-	}
-
-	public function setSessionId(string $id): void {
-		$this->_sessionId = $id;
-	}
-
-	public function getSessionId(): string {
-		return $this->_sessionId;
 	}
 
 	public function addNotification(string $name, array $data): void {

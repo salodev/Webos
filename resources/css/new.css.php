@@ -20,21 +20,20 @@ $sm->addRule('body', [
 ]);
 
 $sm->addRule('.LabelControl', [
-	'font-weight' => '600',
-	'font-size' => '13px',
-	//'background' => $sm->getPalette('lightgray'),
+	'font-weight'	 => '600',
+	'font-size'		 => '13px',
+    // 'background'     => $sm->getPalette('lightgray'),
 ]);
 $sm->addRule('.Control.Field')->import('control');
 $sm->addRule('.Control.Field:focus,.Control.Field:active', [
-	'border-bottom' => 'solid 2px ' . $sm->getPalette('gray2'),
-	'box-shadow' => 'none !important',
-	'outline' => 'none',
+	'border-bottom'	 => 'solid 2px ' . $sm->getPalette('gray2'),
+	'box-shadow'	 => 'none !important',
+	'outline'		 => 'none',
 ]);
 $sm->addRule('.Control[disabled]', [
 	'opacity' => '0.7',
 	'cursor'  => 'initial',
 ]);
-
 
 $sm->addRule('.Button', [
 	// 'font-family'    => "'Roboto'",
@@ -58,15 +57,15 @@ $sm->addRule('.LinkButton', [
 ])->like('.Button')->set('padding', '5px 9px');
 
 $sm->addRule('.DropDown .icon', [
-	'font-family' => 'Glyphicons Halflings',
-    'display' => 'block',
-    'float' => 'right',
-    'width' => '19px',
-    'padding' => '0',
-    'margin-left' => '5px',    
-    'font-weight' => '100',
-    'border-left' => 'solid 1px #ccc',
-    'padding-left' => '5px',
+	'font-family'	 => 'Glyphicons Halflings',
+	'display'		 => 'block',
+	'float'			 => 'right',
+	'width'			 => '19px',
+	'padding'		 => '0',
+	'margin-left'	 => '5px',
+	'font-weight'	 => '100',
+	'border-left'	 => 'solid 1px #ccc',
+	'padding-left'	 => '5px',
 ]);
 $sm->addRule('.DropDown .icon:before', [
 	'content'=> '"\E114"'
@@ -83,10 +82,7 @@ $sm->addRule('.modal-wrapper', [
 $sm->addRule('.Window')->import('paper');
 $sm->addRule('.Window .form-titlebar .controls *')->import('gray4')->important('background');
 
-
-
 // $sm->addRule('.FilePicker')->like('.Button');
-
 
 $sm->addRule('.MultiTab > .Tabs', [
 	'border-bottom' => 'solid 2px ' . $sm->getPalette('gray2'),
@@ -114,6 +110,13 @@ $sm->addRule('.Control.Link:visited', [
 	'color' => 'blue',
 ]);
 
+$sm->addRule('.Control.VertialSeparator', [
+	'border-left' => 'solid 1px ' . $sm->getPalette('gray2'),
+]);
+
+$sm->addRule('.Control.HorizontalSeparator', [
+	'border-top' => 'solid 1px ' . $sm->getPalette('gray2'),
+]);
 
 echo $sm->getStyles(false);
 ?>

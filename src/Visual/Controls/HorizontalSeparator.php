@@ -54,8 +54,8 @@ class HorizontalSeparator extends Control {
 	
 	public function render(): string {
 		$style      = $this->getInlineStyle(true);
-		$directives = $this->draggable ? 'webos drag-vertical ondrag-vertical ondrop ignore-update-object="yes"' : '';
-		$class      = $this->draggable ? 'resize-vertical' : '';
+		$directives = $this->draggable ? 'webos drag-vertical ondrag-vertical ondrop' : '';
+		$class      =( $this->draggable ? 'resize-vertical' : '') . ' Control HorizontalSeparator';
 		return "<div class=\"{$class}\" id=\"{$this->getObjectID()}\" {$directives} {$style} >&nbsp;</div>";
 	}
 }

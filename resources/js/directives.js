@@ -48,10 +48,7 @@ Directives.register('leavetyping', function(el) {
 	var id  = $el.attr('id');
 	var to  = null;
 	var save = function() {
-		Webos.action('leaveTyping', id, {
-			value: $el.val(),
-			ignoreUpdateObject: true
-		});
+		Webos.action('leaveTyping', id, { value: $el.val() }, true);
 	}
 	$el.bind('keyup', function(ev) {
 		if (to) { clearTimeout(to); }
@@ -73,10 +70,7 @@ Directives.register('ready', function(el) {
 
 Directives.register('update-value', function(el) {
 	$(el).unbind('change').bind('change', function() {
-		Webos.action('setValue', $(el).attr('id'), {
-			value:$(el).val(),
-			ignoreUpdateObject: true
-		});
+		Webos.action('setValue', $(el).attr('id'), { value:$(el).val() }, true);
 	});
 });
 
@@ -100,9 +94,8 @@ Directives.register('set-scroll-values', function(el) {
 		to = setTimeout(function() {
 			Webos.action('scroll', id, {
 				left: el.scrollLeft, 
-				top:  el.scrollTop,
-				ignoreUpdateObject: true
-			});
+				top:  el.scrollTop
+			}, true);
 		}, 500);
 	});
 });
@@ -152,9 +145,8 @@ Directives.register('resize', function(el) {
 			x1: $el.offset().left,
 			x2: $el.offset().left + $el.width(),
 			y1: $el.offset().top,
-			y2: $el.offset().top + $el.height(),
-			ignoreUpdateObject: true
-		});
+			y2: $el.offset().top + $el.height()
+		}, true);
 		$el.find('.resize-handler').remove();
 	}
 	
@@ -262,7 +254,9 @@ Directives.register('ondrag-horizontal', function(el) {
 	var $el = $(el);
 	var $prev = $el.prev();
 	var $next = $el.next();
+	var top = $el.offset().top;
 	$el.ondrag(function(e) {
+		$el.offset({top:top});
 		var w = $el.offset().left - $prev.offset().left;
 		$prev.width(w);
 		var l = $el.offset().left + $el.width();
@@ -289,7 +283,9 @@ Directives.register('ondrag-vertical', function(el) {
 	var $el = $(el);
 	var $prev = $el.prev();
 	var $next = $el.next();
+	var left = $el.offset().left;
 	$el.ondrag(function(e) {
+		$el.offset({left:left});
 		var h = $el.offset().top - $prev.offset().top;
 		$prev.height(h);
 		var t = $el.offset().top + $el.height();
@@ -328,8 +324,8 @@ Directives.register('ondrop', function(el) {
 	$(el).ondrop(function() {
 		var id = $(el).attr('id') || $(el).parents('[id]').attr('id');
 		var data = $(el).position();
-		data.ignoreUpdateObject = $(el).attr('ignore-update-object')? true: false;
-		Webos.action('drop', id, data);
+		var ignoreUpdateObject = $(el).attr('ignore-update-object')? true: false;
+		Webos.action('drop', id, data, ignoreUpdateObject);
 	});
 	
 });
@@ -344,9 +340,8 @@ Directives.register('key-press', function(el) {
 			if(ev.key==keyName) {
 				ev.preventDefault();
 				Webos.action($el.attr('key-press-action')||'keyPress', $el.attr('id'), {
-					ignoreUpdateObject: true,
 					key: ev.key 
-				});
+				}, true);
 				break;
 			}
 		}

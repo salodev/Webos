@@ -4,12 +4,16 @@ namespace Webos\Visual\Controls;
 use Webos\Visual\Control;
 
 class VerticalSeparator extends Control {
+	
 	public function initialize(array $params = []) {
 		$this->top    = 0;
 		$this->bottom = 0;
 		$this->width  = 5;
 	}
 	
+	/**
+	 * Magic setter method for 'left' property
+	 */
 	public function __set_left($value) {
 		$this->getPrevious()->left = 0;
 		$this->getPrevious()->width = $value;
@@ -23,6 +27,9 @@ class VerticalSeparator extends Control {
 		return $value;
 	}
 	
+	/**
+	 * Magic setter method for 'right' proerty
+	 */
 	public function __set_right($value) {
 		$this->getPrevious()->left = 0;
 		$this->getPrevious()->right = $value + $this->width;
@@ -36,6 +43,9 @@ class VerticalSeparator extends Control {
 		return $value;
 	}
 	
+	/**
+	 * Drop user action hander method
+	 */
 	public function action_drop($params) {
 		if (!$this->draggable) {
 			return;
@@ -49,8 +59,8 @@ class VerticalSeparator extends Control {
 	
 	public function render(): string {
 		$style      = $this->getInlineStyle(true);
-		$directives = $this->draggable ? 'webos drag-horizontal ondrag-horizontal ondrop ignore-update-object="yes"': '';
-		$class      = $this->draggable ? 'resize-horizontal' : '';
+		$directives = $this->draggable ? 'webos drag-horizontal ondrag-horizontal ondrop': '';
+		$class      = ($this->draggable ? 'resize-horizontal' : '') . ' Control VertialSeparator';
 		return "<div class=\"{$class}\" id=\"{$this->getObjectID()}\" {$directives} {$style} >&nbsp;</div>";
 	}
 }

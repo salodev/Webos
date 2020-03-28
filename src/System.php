@@ -1,5 +1,7 @@
 <?php
+
 namespace Webos;
+
 use Exception;
 use Webos\WorkSpaceHandlers\FileSystem;
 use Webos\WorkSpaceHandler;
@@ -8,9 +10,8 @@ class System {
 
 	private $_eventsHandler  = null;
 	private $_workSpaceName  = null;
-
-	private $_workSpace = null;
-	private $_config = null;
+	private $_workSpace      = null;
+	private $_config         = null;
 
 	/**
 	 *
@@ -25,11 +26,6 @@ class System {
 	
 	public function setWorkSpaceHandler(WorkSpaceHandler $workSpaceHandler) {
 		$this->_workSpaceHandler = $workSpaceHandler;
-	}
-
-	public function start() {
-		// $this->triggerEvent('start', $this);
-		// $this->triggerEvent('globalConfigRequested', $this);
 	}
 	
 	/**
@@ -62,16 +58,10 @@ class System {
 		$this->_workSpaceName = $ws->getName();
 
 		/**
-		 * NOTA:
-		 * Por accidente (o por el diseño del sistema) queda almacenado
-		 * en el WorkSpace la instancia del objeto System. Esto es incorrecto
-		 * pero es necesario que el WorkSpace pueda enviar mensajes al
-		 * sistema que lo contiene.
-		 * 
-		 * Es por eso que cuando se recupera del disco duro, tiene que 
-		 * volver a indicarse la instacia actual del sistema para que
-		 * trabajen los controladores que se configuran cuando éste se
-		 * inicia.
+		 * Set the new environment instance to workspace in order to
+		 * keep in communication with workspace events and it with
+		 * system events.
+		 * Stored instance will be ever discarded.
 		 **/ 
 		$ws->setSystemEnvironment($this);
 		$this->_workSpace = $ws;
