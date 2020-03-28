@@ -111,7 +111,7 @@ Webos.bind('elementsUpdated', function() {
  **/
 Webos.bind('elementsUpdated', function() {
 	$('.form-wrapper.active').each(function(){
-		this.parentNode.appendChild(this);
+		//this.parentNode.appendChild(this);
 	});
 
 	/*var activeWindow = $activeWindow[0];

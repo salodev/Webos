@@ -103,7 +103,8 @@ $sm->addRule('.MultiTab > .Tabs > .tab:hover', [
 ]);
 
 $sm->addRule('.FrameControl', [ 
-    'overflow'=> 'hidden',
+    'overflow'   => 'hidden',
+	'background' => $sm->getPalette('white'),
 ]);
 
 $sm->addRule('.Control.Link:visited', [

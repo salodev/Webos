@@ -2,56 +2,96 @@
 namespace Webos\Visual\Controls;
 
 use Webos\StringChar;
-use Webos\Visual\Behavior\KeyPressEnter;
+use Webos\Visual\KeysEvents;
 
 class TextBox extends Field {
 	
-	use KeyPressEnter;
+	/**
+	 * Add key events behaviors
+	 */
+	use KeysEvents;
 
 	public function render(): string {
 		$html = '';
-		$directivesList = [];
-		//if (!$this->hasListenerFor('keyPressEnter')) {
-			$directivesList[] = 'key-press="Enter"';
-			$directivesList[] = 'key-press-action="keyPressEnter"';
-		//}
-		$directives = implode(' ', $directivesList);
+		
+		/**
+		 * Get all directives list.
+		 */
+		$directivesList = $this->getDirectivesList();
+		
+		/**
+		 * Make string for rendering.
+		 */
+		$directives = count($directivesList) ? 'webos ' . implode(' ', $directivesList) : '';
+		
 		if ($this->multiline) {
-			$html =  new StringChar(
-				'<textarea id="__id__" ' .
-					'class="Control Field TextFieldControl"__style__ ' .
-					"webos {$directives} leavetyping__focus__ __captureTyping__ " .
-					'placeholder="__placeholder__" ' .
-					// 'name="__name__"' . 
-					'__disabled__>__value__</textarea>'
-			);
+			$html =  new StringChar(implode(' ', [
+				'<textarea id="__id__"',
+					'class="Control Field TextFieldControl"__style__ ',
+					$directives,
+					'placeholder="__placeholder__"',
+					'__disabled__>__value__</textarea>',
+			]));
 		} else {
-			$html =  new StringChar(
-				'<input id="__id__" ' .
-					'class="Control Field TextFieldControl"__style__ ' .
-					'type="text" ' .
-					'autocomplete="off" ' .
-					"webos {$directives} leavetyping __focus__ __captureTyping__ " .
-					// 'name="__name__" ' .
-					'placeholder="__placeholder__" ' .
-					'value="__value__"__disabled__ />'
-			);
+			$html =  new StringChar(implode(' ', [
+				'<input id="__id__"',
+					'class="Control Field TextFieldControl"__style__ ',
+					'type="text"',
+					'autocomplete="off"',
+					$directives,
+					'placeholder="__placeholder__"',
+					'value="__value__"__disabled__ />',
+			]));
 		}
 		
-		$hasLeaveTypingEvent = $this->_eventsHandler->hasListenersFor('leaveTyping');
 		$html->replaces([
-			'__id__'          => $this->getObjectID(),
-			// '__name__'        => $this->name,
-			'__value__'       => $this->value,
-			'__placeholder__' => $this->placeholder,
-			'__style__'       => $this->getInlineStyle(),
-			'__disabled__'    => $this->disabled ? ' disabled="disabled"' : '',
-			'__leavetyping__' => $hasLeaveTypingEvent ? ' leavetyping' : '',
-			'__focus__'       => $this->hasFocus() ? 'focus' : '',
-			' __captureTyping__'=> $this->captureTyping() ? 'capture-typing' : '',
+			'__id__'            => $this->getObjectID(),
+			'__value__'         => $this->value,
+			'__placeholder__'   => $this->placeholder,
+			'__style__'         => $this->getInlineStyle(),
+			'__disabled__'      => $this->disabled ? ' disabled="disabled"' : '',
 		]);
 
 		return $html;
+	}
+	
+	/**
+	 * Easy way to get all available directives for current instace.
+	 * Calling this method is easier because it deal with cases where is
+	 * possible or not add some directives.
+	 */
+	public function getDirectivesList(): array {
+		/**
+		 * First, get all global keyEvents directives
+		 */
+		$directives = $this->getKeyEventsDirectives();
+		
+		/**
+		 * However check if object can receive actions.
+		 */
+		if (!$this->isDisabled() && !$this->isHidden()) {
+			
+			/**
+			 * Add directive for leaveTyping
+			 */
+			
+			$directives[] = 'leavetyping';
+			
+			/**
+			 * It allow catch any text key even if not focused
+			 */
+			if ($this->captureTyping()) {
+				$directives[] = 'key-press-type';
+			}
+			
+			/**
+			 * Directive to autofocus
+			 */
+			if ( $this->hasFocus()) {
+				$directives[] = 'focus';
+			}
+		}
+		return $directives;
 	}
 	
 	/**
@@ -77,8 +117,8 @@ class TextBox extends Field {
 		$this->triggerEvent('leaveTyping', $params);
 	}
 	
-	public function onLeaveTyping(callable $callback): self {
-		$this->bind('leaveTyping', $callback);
+	public function onLeaveTyping(callable $function, bool $persistent = true, array $context = []): self {
+		$this->bind('leaveTyping', $function, $persistent, $context);
 		return $this;
 	}
 }

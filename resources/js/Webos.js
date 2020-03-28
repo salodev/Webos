@@ -56,9 +56,13 @@ Webos.keyEscape = function() {
 }
 
 Webos.trigger = function(eventName, eventData) {
-	eventEngine.triggerEvent(eventName, eventData);
+	eventEngine.trigger(eventName, eventData);
 }
 
 Webos.bind = function(eventName, eventHandler, persistance) {
-	eventEngine.registerEventListener(eventName, eventHandler, persistance);
+	eventEngine.bind(eventName, eventHandler, persistance);
+}
+
+Webos.remove = function(eventName) {
+	eventEngine.remove(eventName);
 }

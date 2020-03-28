@@ -23,9 +23,17 @@ Directives.applyAll = function(selector) {
 	}
 }
 
-Directives.findNApplyAll = function (selector) {
-	var $c = $(selector).find('*[webos]');
+Directives.findNApplyAll = function (selector, directives) {
+	var directives = (directives||[]);
+	for (var i in directives) {
+		directives[i]='['+directives[i]+']';
+	}
+	var $c = $(selector).find('*[webos]' + directives.join(''));
 	for(var i = 0; i<$c.length;i++) {
 		this.applyAll($c[i]);
 	}
+}
+
+Directives.getObjectId = function(el) {
+	return $(el).attr('id') || $(el).parents('[id]').attr('id');
 }

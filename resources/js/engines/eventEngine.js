@@ -5,14 +5,14 @@ var eventEngine = {};
 (function(o){
     o.eventListeners = [];
 
-    o.registerEventListener = function(eventName, eventHandler){
+    o.bind = function(eventName, eventHandler) {
         var persistentEvent = true;
 
-        if (typeof(arguments[2])!='undefined'){
+        if (typeof(arguments[2])!='undefined') {
             persistentEvent = arguments[2];
         }
 
-        if (typeof(this.eventListeners[eventName])=='undefined'){
+        if (typeof(this.eventListeners[eventName])=='undefined') {
             this.eventListeners[eventName] = [];
         }
 
@@ -22,14 +22,14 @@ var eventEngine = {};
         });
     }
 
-    o.triggerEvent = function(eventName){
+    o.trigger = function(eventName) {
         var eventData = null;
 
         if (typeof(arguments[1])!='undefined') eventData = arguments[1];
 
         var nonPersistents = []
 
-        for (order in this.eventListeners[eventName]){
+        for (order in this.eventListeners[eventName]) {
             var tHandler = this.eventListeners[eventName][order];
             new tHandler.eventHandler(eventData);
 
@@ -37,23 +37,15 @@ var eventEngine = {};
         }
 
         // Non persistent event handlers must be destroyed.
-        for (i in nonPersistents){
+        for (i in nonPersistents) {
             delete this.eventListeners[eventName][nonPersistents[i]];
         }
     }
 
-    o.removeEvent = function(eventName){
-        if (typeof(this.eventListeners[eventName])!='undefined'){
+    o.remove = function(eventName) {
+        if (typeof(this.eventListeners[eventName])!='undefined') {
             delete this.eventListeners[eventName];
         }
     }
 
 })(eventEngine);
-
-function __triggerEvent(eventName, eventData){
-    eventEngine.triggerEvent(eventName, eventData);
-}
-
-function __registerEventListener (eventName, eventHandler, persistance){
-    eventEngine.registerEventListener(eventName, eventHandler, persistance);
-}

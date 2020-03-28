@@ -361,7 +361,7 @@ abstract class VisualObject extends BaseObject {
 	 * @param array|null $params
 	 * @return \Webos\EventsHandler
 	 */
-	public function triggerEvent(string $eventName, array $params = null) {
+	public function triggerEvent(string $eventName, array $params = null): bool {
 		return $this->_eventsHandler->trigger($eventName, $this, $params);
 	}
 	
