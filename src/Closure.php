@@ -55,7 +55,8 @@ class Closure {
 	private function _myEvaluate($codeToEval, $args, $thisScope) {
 		$this->_codeToEval = $codeToEval; // useful for debugging.
 		$this->_args       = $args;       // useful for debugging.
-		eval($codeToEval);
+		$ret = eval($codeToEval);
+		
 		return $ret;
 	}
 	
@@ -91,6 +92,10 @@ class Closure {
 		}
 	}
 	
+	/**
+	 * @TODO: THIS IS AN HORROR!
+	 * Now I have a Language interpreter, so I can use a language interpreter to do it.
+	 */
 	private function _getTopDeclarationsFromFile($f) {
 		$content = file_get_contents($f);
 		$content = str_replace("\n\r", "\n", $content);
@@ -102,7 +107,7 @@ class Closure {
 			if (preg_match('/(\<\?)/', $line)) {
 				continue;
 			}
-			if (preg_match('/(class|trait|abstract|function)/', $line)) {
+			if (preg_match('/^(\s)*(class|trait|abstract|function)/', $line)) {
 				break; // end of file efinitions
 			}
 			$extractedLines[] = $line;
