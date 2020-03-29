@@ -55,8 +55,8 @@ class Closure {
 	private function _myEvaluate($codeToEval, $args, $thisScope) {
 		$this->_codeToEval = $codeToEval; // useful for debugging.
 		$this->_args       = $args;       // useful for debugging.
-		$ret = eval($codeToEval);
-		
+		eval($codeToEval);
+		// $ret variable is defined into $codeToEval evaluated code..
 		return $ret;
 	}
 	
