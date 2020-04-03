@@ -607,7 +607,7 @@ abstract class VisualObject extends BaseObject {
 			$encodedContent = base64_encode($file->getAllContent());
 			$src = "data:{$mimeType};base64, {$encodedContent}";
 		} else {
-			$src = '?getMediaContent=true&objectID=' . $this->getObjectID();
+			$src = 'getMediaContent?objectID=' . $this->getObjectID();
 		}
 		
 		return $src;
