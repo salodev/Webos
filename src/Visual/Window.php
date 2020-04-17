@@ -13,7 +13,7 @@ use Webos\Exceptions\Collection\NotFound;
 use Webos\StringChar;
 use Webos\WorkSpace;
 
-class Window extends Container {
+class Window extends VisualObject {
 
 	protected $allowClose    = true;
 	protected $allowMaximize = true;
@@ -22,22 +22,35 @@ class Window extends Container {
 	
 	use KeysEvents;
 	
+	use FormContainer;
+	
+	public function getInitialAttributes(): array {
+		return [
+			'title'        => 'Window',
+			'width'        => 600,
+			'height'       => 400,
+			'top'          => 100,
+			'left'         => 100,
+			'showTitle'    => true,
+			'showControls' => true,
+			'allowResize'  => true,
+			'modal'        => false,			
+		];
+	}
+	
 	public function bind(string $eventName, $eventListener, bool $persistent = true, array $contextData = []): VisualObject {
-		if ($eventName=='ready') { $persistent = false; }
+		if ($eventName == 'ready') { 
+			$persistent = false;
+		}
 		return parent::bind($eventName, $eventListener, $persistent, $contextData);
 	}
 	
 	public function preInitialize(): void {
-		$this->title        = $this->getObjectID();
-		$this->width        = 600;
-		$this->height       = 400;
-		$this->top          = 100;
-		$this->left         = 100;
-		$this->showTitle    = true;
-		$this->showControls = true;
-		$this->allowResize  = true;
-		$this->modal        = false;
 		
+		if (!$this->_embed) {
+			$this->_application->addChildObject($this);
+		}
+		parent::preInitialize();
 		$this->onContextMenu(function($data) {
 			$menu = $data['menu'];
 			$menu->createItem('Cerrar')->onClick(function() {
@@ -49,8 +62,6 @@ class Window extends Container {
 			$this->close();
 		});
 	}
-	
-	public function initialize(array $params = []) {}
 	
 	public function afterInitialize() {
 		parent::afterInitialize();

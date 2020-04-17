@@ -6,12 +6,16 @@ use Webos\Visual\Controls\Menu\ListItems;
 
 class Application extends Window {
 	
-	public function preInitialize(): void {
-		$this->top    = 0;
-		$this->bottom = 0;
-		$this->right  = 0;
-		$this->left   = 0;
-		$this->backgroundColor = '#f9f9f9';
+	public function getInitialAttributes(): array {
+		return [
+			'top'             => 0,
+			'bottom'          => 0,
+			'right'           => 0,
+			'left'            => 0,
+			'backgroundColor' => '#f9f9f9',
+			'width'           => null,
+			'height'          => null,
+		];
 	}
 	
 	public function render(): string {

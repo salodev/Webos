@@ -1,4 +1,5 @@
 <?php
+
 namespace Webos;
 
 use Exception;
@@ -10,11 +11,6 @@ use Webos\Stream\Content;
 use salodev\Utils;
 use salodev\FileSystem\File;
 
-/**
- * Un VisualObject es subtipo de BaseObject porque puede ser representado
- * como un objeto de datos, o puede ser una representación visual de un
- * objeto de datos.
- **/
 abstract class VisualObject extends BaseObject {
 	
 	protected /* @var int               */ $_objectID      = null;
@@ -24,20 +20,38 @@ abstract class VisualObject extends BaseObject {
 	protected /* @var ObjectsCollection */ $_childObjects  = null;
 	protected /* @var EventsHandler     */ $_eventsHandler = null;
 
-	public function __construct(Application $application, array $data = []) {
+	final public function __construct(Application $application, self $parent = null, array $parameters = []) {
+
 		$this->_application = $application;
 		
-		$this->checkRequiredParams($data);
+		$this->checkRequiredParams($parameters);
 		
-		$data = array_merge($this->getInitialAttributes(), $data);
+		$parameters = array_merge($this->getInitialAttributes(), $parameters);
 
-		parent::__construct($data);
+		parent::__construct($parameters);
 		
 		$this->_objectID = $this->generateObjectID();
 		$this->index();
 		$this->_eventsHandler = new EventsHandler();
 		$this->_childObjects = new ObjectsCollection();
+
+		if ($parent !== null) {
+			$this->_parentObject = $parent;
+			$parent->addChildObject($this);
+		}
+		
+		$this->preInitialize();
+
+		$this->initialize($parameters);
+		
+		$this->afterInitialize();
 	}
+	
+	public function preInitialize(): void {}
+	
+	public function initialize(array $params = []) {}
+	
+	public function afterInitialize() {}
 	
 	public function checkRequiredParams(array $params): void {
 		$requiredParams = $this->getRequiredParams();
@@ -149,14 +163,8 @@ abstract class VisualObject extends BaseObject {
 	 * @return Window
 	 */
 	public function embedWindow(string $windowClassName, array $initialAttributes = []): Window {
-		$window = new $windowClassName($this->_application, $initialAttributes, true);
-		$window->setParentObject($this);
-
-		$this->getApplication()->triggerSystemEvent('createObject', $this, [
-			'object' => $window,
-		]);
-
-		return $window;
+		$initialAttributes['_embed'] = true;
+		return $this->createObject($windowClassName, $initialAttributes);
 	}
 
 	//abstract public function getObjectByID($id);

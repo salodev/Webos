@@ -101,7 +101,7 @@ abstract class Application {
 	 * @return Visual\Window
 	 */
 	public function openWindow(string $windowName = Window::class, array $params = [], Window $relativeTo = null): Window {
-		$window = new $windowName($this, $params);
+		$window = new $windowName($this, null, $params);
 		$this->setActiveWindow($window);
 		if ($relativeTo instanceof Window) {
 			$window->relativeTo = $relativeTo;
@@ -150,7 +150,7 @@ abstract class Application {
 	 * @param \Webos\Visual\Container $window
 	 * @return $this
 	 */
-	public function setActiveWindow(Container $window): self {
+	public function setActiveWindow(Window $window): self {
 		
 		if ($this->_activeWindow instanceof Container) {
 			$this->_activeWindow->modified();

@@ -16,11 +16,11 @@ class Message extends Window {
 		$this->height      = $params['height' ] ?? 150;
 
 	}
-
+/*
 	public function  getInitialAttributes(): array {
 		return [
 			'height' => 100,
 			'width'  => 200
 		];
-	}
+	}*/
 }

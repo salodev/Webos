@@ -6,26 +6,6 @@ use Webos\VisualObject;
 use Exception;
 
 abstract class Control extends VisualObject {
-
-	final public function __construct(Application $application, VisualObject $parent, array $initialAttributes = []) {
-		parent::__construct($application, $initialAttributes);
-
-		$this->_parentObject = $parent;
-		$parent->addChildObject($this);
-
-		$this->initialize($initialAttributes);
-	}
-
-	/**
-	 * La construcción del objeto ControlObject es delicada debido a la implementación
-	 * del patrón relacional padre - hijo.
-	 *
-	 * Para asegurar ese comportamiento, el constructor no puede ser especializado
-	 * y para permitir la inicialización de parámetros del objeto se dispone de un
-	 * método initialize() que será invocado por el constructor, y que podrá ser
-	 * especializado de acuerdo a las necesidades.
-	 */
-	public function initialize(array $params = []) {}
 	
 	public function focus() {
 		$this->getParentWindow()->setActiveControl($this);
@@ -34,17 +14,6 @@ abstract class Control extends VisualObject {
 	public function hasFocus() {
 		return $this->getParentWindow()->hasFocus($this);
 	}
-	
-//	public function action(string $name, array $params = []) {
-//		/**
-//		 * Por razones de seguridad, si el objeto está deshabilitado,
-//		 * se verifica y se frena la acción.
-//		 */
-//		if ($this->disabled == true) {
-//			throw new Exception('Object disabled');
-//		}
-//		return parent::action($name, $params);
-//	}
 	
 	public function action_click(): void {
 		$this->click();
