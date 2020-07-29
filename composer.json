@@ -1,6 +1,10 @@
 {
-    "name": "salojc2006/Webos",
+    "name": "webos/webos",
     "description": "Web OS Framework for PHP",
-    "keywords": ["framework", "webos"],
-    "type": "project"
+	"autoload": {
+        "psr-4": { 
+			"Webos\\": "src/" 
+		},
+		"classmap": ["src/"]
+    }
 }

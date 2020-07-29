@@ -163,8 +163,9 @@ class Webos {
 	
 	static public function Authenticate(string $userName, array $authParams) {
 		$authAppClassName = self::GetAuthApplicationName();
-		$authAppClassName::Authenticate($userName, $authParams);
+		$authData = $authAppClassName::Authenticate($userName, $authParams);
 		$_SESSION['userName'] = $userName;
+        return $authData;
 	}
 	
 	static public function GetSourceRootPath(): string {

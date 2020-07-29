@@ -11,6 +11,6 @@ abstract class AuthApplication extends Application {
 		$service = \Webos\Webos::Authorize($userName, $authParams);
 	}
 
-	abstract static public function Authenticate(string $userName, array $authParams): void;
+	abstract static public function Authenticate(string $userName, array $authParams);
 
 }

@@ -12,6 +12,7 @@ class LocalService implements Service {
 
 	protected $_workSpaceHandler  = FileSystemHanlder::class;
 	protected $userName           = null;
+    protected $authData           = null;
 	
 	static public function SetWorkSpaceHandlerClassName(string $workSpaceHandlerClassName) {
 		static::$_workSpaceHandler = $workSpaceHandlerClassName;
@@ -36,8 +37,9 @@ class LocalService implements Service {
 	}
 	
 	public function auth(string $userName, array $authParams): void {
-		Webos::Authenticate($userName, $authParams);
+		$authData = Webos::Authenticate($userName, $authParams);
 		$this->userName = $userName;
+        $this->authData = $authData;
 	}
 	
 	public function renderAll(): string {

@@ -82,7 +82,6 @@ class NetworkService implements Service {
 		$client = new Client($token, $host, $port);
 		$client->setLogHandler(function($message) use ($client) {
 			$to = "{$client->getHost()}:{$client->getPort()}";
-			file_put_contents('/var/www/sg/private/log/client.log', "[{$to}] {$message}\n", FILE_APPEND);
 		});
 		
 		return $client;
