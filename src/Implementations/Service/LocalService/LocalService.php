@@ -12,7 +12,7 @@ class LocalService implements Service {
 
 	protected $_workSpaceHandler  = FileSystemHanlder::class;
 	protected $userName           = null;
-    protected $authData           = null;
+    public    $authData           = null;
 	
 	static public function SetWorkSpaceHandlerClassName(string $workSpaceHandlerClassName) {
 		static::$_workSpaceHandler = $workSpaceHandlerClassName;
